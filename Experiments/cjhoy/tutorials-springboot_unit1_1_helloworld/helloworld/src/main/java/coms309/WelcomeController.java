@@ -9,15 +9,20 @@ class WelcomeController {
 
     @GetMapping("/")
     public String welcome() {
-        return "My name is cooper and I love pokemon cards ";
+        return "Welcome to the N3RD M@RKET ";
     }
     
-    @GetMapping("/{name}")
+    @GetMapping("/cooper")
     public String welcome(@PathVariable String name) {
         return "My name is cooper and I love pokemon cards " + name;
     }
     @GetMapping("/price")
     public String price() {
         return "Card price: $50";
+    }
+
+    @GetMapping("/image")
+    public String image() {
+        return "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'>";
     }
 }
