@@ -26,6 +26,11 @@ class WelcomeController {
         return "<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'>";
     }
 
+    @GetMapping("/data")
+    public String data() {
+        return "data";
+    }
+
     @GetMapping("/Hands")
     public String Hands() {
         return "<img src='https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWIzdXFsYXZ6d3F2aXVqbzJrbDlkbm84aHBra2F0NHhmejNyczdhMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VZVK5WCg0A0H37s8ND/giphy.gif'>";
