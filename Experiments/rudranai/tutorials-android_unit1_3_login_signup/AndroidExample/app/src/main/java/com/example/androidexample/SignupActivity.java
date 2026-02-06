@@ -91,11 +91,11 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             public boolean checkIfvalid(String password){
-                String specialchars = "@_!#$%^&*()<>?/|}{~:';";
+                String specialChars = "@_!#$%^&*()<>?/|}{~:';";
                 int specialCharacters = 0;
                 int numbers = 0;
                 for (int i = 0; i < password.length(); i++){
-                    if (specialchars.contains(Character.toString(password.charAt(i)))){
+                    if (specialChars.contains(Character.toString(password.charAt(i)))){
                         specialCharacters++;
                     }
                     if (Character.isDigit(password.charAt(i))){

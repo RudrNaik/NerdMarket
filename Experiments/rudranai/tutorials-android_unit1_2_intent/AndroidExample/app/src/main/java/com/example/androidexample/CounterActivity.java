@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +14,8 @@ public class CounterActivity extends AppCompatActivity {
 
     private TextView numberTxt; // define number textview variable
     private Button increaseBtn; // define increase button variable
+
+    private TextView targetTxt;
     private Button incby5btn; // define decrease button variable
     private Button decreaseBtn; // define decrease button variable
     private Button decby5Btn; // define decrease button variable
@@ -20,6 +24,14 @@ public class CounterActivity extends AppCompatActivity {
 
     private int counter = 0;    // counter variable
 
+    public int randomNum = 15;
+
+    protected void randomSet(int x){
+        randomNum = x;
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +39,7 @@ public class CounterActivity extends AppCompatActivity {
 
         /* initialize UI elements by using findviewbyid to search the xml file for the buttons.*/
         numberTxt = findViewById(R.id.number);
+        targetTxt = findViewById(R.id.target);
         increaseBtn = findViewById(R.id.counter_increase_btn);
         decreaseBtn = findViewById(R.id.counter_decrease_btn);
         incby5btn = findViewById(R.id.counter_incby5_btn);
@@ -34,11 +47,12 @@ public class CounterActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.counter_back_btn);
         zeroOutBtn = findViewById(R.id.counter_zero_btn);
 
+
         /* when increase btn is pressed, counter++, reset number textview */
         increaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numberTxt.setText(String.valueOf(++counter));
+                numberTxt.setText(String.valueOf(counter+=3));
             }
         });
 
@@ -53,7 +67,7 @@ public class CounterActivity extends AppCompatActivity {
         decreaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numberTxt.setText(String.valueOf(--counter));
+                numberTxt.setText(String.valueOf(counter+=3));
             }
         });
 
