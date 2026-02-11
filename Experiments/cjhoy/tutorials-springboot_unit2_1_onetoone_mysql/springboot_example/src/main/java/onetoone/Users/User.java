@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import onetoone.Laptops.Laptop;
@@ -22,8 +22,8 @@ public class User {
     private String name;
     private String emailId;
 
-    @JsonIgnore  // Don't expose password in GET responses
-    private String password;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;  // Don't expose password in GET responses
 
     private boolean ifActive;
 
