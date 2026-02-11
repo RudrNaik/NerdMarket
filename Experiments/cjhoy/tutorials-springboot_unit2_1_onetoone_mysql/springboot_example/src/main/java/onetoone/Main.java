@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import onetoone.Laptops.Laptop;
 import onetoone.Laptops.LaptopRepository;
@@ -22,9 +23,18 @@ class Main {
     @Bean
     CommandLineRunner initUser(UserRepository userRepository, LaptopRepository laptopRepository) {
         return args -> {
-            User user1 = new User("John", "john@somemail.com", "password123");
-            User user2 = new User("Jane", "jane@somemail.com", "janepass456");
-            User user3 = new User("Justin", "justin@somemail.com", "justinpass789");
+            // Only seed if database is empty (prevents duplicates on restart)
+            if (userRepository.count() > 0) {
+                System.out.println("=== Database already has data, skipping seed ===");
+                return;
+            }
+
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+            // Passwords are hashed before saving
+            User user1 = new User("John", "john@somemail.com", encoder.encode("password123"));
+            User user2 = new User("Jane", "jane@somemail.com", encoder.encode("janepass456"));
+            User user3 = new User("Justin", "justin@somemail.com", encoder.encode("justinpass789"));
 
             Laptop laptop1 = new Laptop(2.5, 4, 8, "Lenovo", 300);
             Laptop laptop2 = new Laptop(4.1, 8, 16, "Hp", 800);
@@ -39,7 +49,7 @@ class Main {
             userRepository.save(user3);
 
             System.out.println("===========================================");
-            System.out.println("  Test accounts created!");
+            System.out.println("  Test accounts seeded (passwords hashed)!");
             System.out.println("  Login with POST /login using:");
             System.out.println("    john@somemail.com / password123");
             System.out.println("    jane@somemail.com / janepass456");

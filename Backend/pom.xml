@@ -9,7 +9,7 @@
   <version>1.0.0</version>
 
   <!-- ============================================================ -->
-  <!-- SPRING BOOT PARENT - manages versions for all SB dependencies -->
+  <!-- SPRING BOOT PARENT                                           -->
   <!-- ============================================================ -->
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -21,7 +21,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>17</java.version>
   </properties>
 
@@ -43,18 +42,26 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 
+    <!-- Security: BCryptPasswordEncoder for password hashing       -->
+    <!-- NOTE: Requires SecurityConfig.java to disable default      -->
+    <!--       login wall - see SecurityConfig.java                 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
     <!-- ============================================================ -->
     <!-- DATABASE DRIVERS                                             -->
     <!-- ============================================================ -->
 
-    <!-- MySQL/MariaDB driver - for remote server -->
+    <!-- MySQL/MariaDB driver -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.33</version>
     </dependency>
 
-    <!-- H2 in-memory database - for local testing without MySQL -->
+    <!-- H2 in-memory database (for local testing) -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -63,11 +70,10 @@
     </dependency>
 
     <!-- ============================================================ -->
-    <!-- DEBUGGING & DEV TOOLS                                        -->
+    <!-- DEV TOOLS                                                    -->
     <!-- ============================================================ -->
 
-    <!-- DevTools: auto-restart on code changes, better error pages -->
-    <!-- Just save your file and the server restarts automatically  -->
+    <!-- Auto-restart on code changes -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
@@ -75,11 +81,7 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- Actuator: health checks and debug endpoints                -->
-    <!--   GET /actuator/health  - is the app running?              -->
-    <!--   GET /actuator/info    - app info                         -->
-    <!--   GET /actuator/beans   - all registered Spring beans      -->
-    <!--   GET /actuator/mappings - all URL endpoints and methods   -->
+    <!-- Health checks + debug endpoints at /actuator/* -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
