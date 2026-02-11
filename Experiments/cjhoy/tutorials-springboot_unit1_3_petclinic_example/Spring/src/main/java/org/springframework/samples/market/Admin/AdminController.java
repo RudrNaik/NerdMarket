@@ -45,12 +45,12 @@ class AdminController {
         return "New Admin "+ admin.getFirstName() + " Saved";
     }
      // function just to create dummy data
-    @RequestMapping(method = RequestMethod.GET, path = "/admin/create")
+    @RequestMapping(method = RequestMethod.GET, path = "/admins/create")
     public String createDummyData() {
-        Admins o1 = new Admins(1, "John", "Doe", "404 Not found", "some numbers");
-        Admins o2 = new Admins(2, "Jane", "Doe", "Its a secret", "you wish");
-        Admins o3 = new Admins(3, "Some", "Pleb", "Right next to the Library", "515-345-41213");
-        Admins o4 = new Admins(4, "Chad", "Champion", "Reddit memes corner", "420-420-4200");
+        Admins o1 = new Admins("Cooper", "Hoy", "Magic Cards", "cooper.hoy3105@gmail.com");
+        Admins o2 = new Admins("Marcus", "Yeung", "Pokemon Cards", "Myeung@gmail.com");
+        Admins o3 = new Admins("Hrushi", "Bhatt", "Pokemon Cards", "Hbhatt10@iastate.edu");
+        Admins o4 = new Admins("Kennedy", "Lind", "Funko Pops", "kklind10@gmail.com");
         adminRepository.save(o1);
         adminRepository.save(o2);
         adminRepository.save(o3);
@@ -58,7 +58,7 @@ class AdminController {
         return "Successfully created dummy data";
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/admin")
+    @RequestMapping(method = RequestMethod.GET, path = "/admins")
     public List<Admins> getAllAdmins() {
         logger.info("Entered into Controller Layer");
         List<Admins> results = adminRepository.findAll();

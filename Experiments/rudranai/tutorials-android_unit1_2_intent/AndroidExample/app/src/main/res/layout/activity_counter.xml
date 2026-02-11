@@ -11,50 +11,67 @@
         android:id="@+id/number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_gravity="center"
         android:textSize="150sp"
         android:textColor="#E91E63"
         android:text="0" >
     </TextView>
 
-    <Button
-        android:id="@+id/counter_incby5_btn"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="+5">
-    </Button>
-
-
-    <Button
-        android:id="@+id/counter_increase_btn"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
+    <TextView
+        android:id="@+id/target"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Increase">
-    </Button>
-
-
-    <Button
-        android:id="@+id/counter_decrease_btn"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="Decrease">
-    </Button>
+        android:textSize="30sp"
+        android:textColor="#E91E63"
+        android:text="15" >
+    </TextView>
 
-    <Button
-        android:id="@+id/counter_decby5_btn"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="-5">
-    </Button>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/counter_incby5_btn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="+5">
+        </Button>
+
+
+        <Button
+            android:id="@+id/counter_increase_btn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="+3">
+        </Button>
+
+
+        <Button
+            android:id="@+id/counter_decrease_btn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="-3">
+        </Button>
+
+        <Button
+            android:id="@+id/counter_decby5_btn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="-5">
+        </Button>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/counter_zero_btn"

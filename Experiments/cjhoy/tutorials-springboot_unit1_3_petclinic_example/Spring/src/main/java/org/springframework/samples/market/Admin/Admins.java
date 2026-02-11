@@ -54,24 +54,23 @@ public class Admins {
     @NotFound(action = NotFoundAction.IGNORE)
     private String lastName;
 
-    @Column(name = "address")
+    @Column(name = "expertise")
     @NotFound(action = NotFoundAction.IGNORE)
-    private String address;
+    private String expertise;
 
-    @Column(name = "telephone")
+    @Column(name = "email")
     @NotFound(action = NotFoundAction.IGNORE)
-    private String telephone;
+    private String email;
 
     public Admins(){
         
     }
 
-    public Admins(int id, String firstName, String lastName, String address, String telephone){
-        this.id = id;
+    public Admins(String firstName, String lastName, String expertise, String email){
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
-        this.telephone = telephone;
+        this.expertise = expertise;
+        this.email = email;
     }
 
     public Integer getId() {
@@ -102,20 +101,20 @@ public class Admins {
         this.lastName = lastName;
     }
 
-    public String getAddress() {
-        return this.address;
+    public String getExpertise() {
+        return this.expertise;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setExpertise(String expertise) {
+        this.expertise = expertise;
     }
 
-    public String getTelephone() {
-        return this.telephone;
+    public String getEmail() {
+        return this.email;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -126,7 +125,7 @@ public class Admins {
                 .append("new", this.isNew())
                 .append("lastName", this.getLastName())
                 .append("firstName", this.getFirstName())
-                .append("address", this.address)
-                .append("telephone", this.telephone).toString();
+                .append("Expertise", this.expertise)
+                .append("Email", this.email).toString();
     }
 }

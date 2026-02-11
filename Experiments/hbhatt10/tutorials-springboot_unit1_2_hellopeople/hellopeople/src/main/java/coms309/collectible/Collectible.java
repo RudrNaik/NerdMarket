@@ -80,7 +80,7 @@ public class Collectible {
     public String toString() {
         return itemName + " "
                + category + " "
-               + currentPrice + " $"
+               + currentPrice + " "
                + predictedPrice;
     }
 }
