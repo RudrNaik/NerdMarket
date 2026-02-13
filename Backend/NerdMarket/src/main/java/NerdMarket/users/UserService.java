@@ -11,7 +11,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private static final int MAX_ATTEMPTS = 3;
 
     public Users signup(Users user) {
@@ -67,8 +67,10 @@ public class UserService {
     }
 
     public Users changePassword(Long id, String oldPassword, String newPassword) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
 
         if (!encoder.matches(oldPassword, user.getPassword())) {
             throw new RuntimeException("Old password is incorrect");
@@ -95,22 +97,28 @@ public class UserService {
     }
 
     public Users deactivateAccount(Long id) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
         user.setActive(false);
         return userRepository.save(user);
     }
 
     public Users activateAccount(Long id) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
         user.setActive(true);
         return userRepository.save(user);
     }
 
     public Users setAdmin(Long id, boolean isAdmin) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
         user.setAdmin(isAdmin);
         return userRepository.save(user);
     }
@@ -120,8 +128,11 @@ public class UserService {
     }
 
     public Users getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user;
     }
 
     public void deleteUser(Long id) {
