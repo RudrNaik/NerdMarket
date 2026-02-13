@@ -2,5 +2,9 @@
 
 package NerdMarket.market;
 
-public class MarketRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+public interface MarketRepository extends JpaRepository<Market, Long> {
+    List<Market> findByCardType(String cardType);
 }
