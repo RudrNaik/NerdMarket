@@ -1,0 +1,133 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  DISCORD_WEBHOOK: "https://discord.com/api/webhooks/1470458727512412212/cE_zJ4I3ZIHMem0OwyLhig6wPhT9XJLgSkx_vxKa2-U3OpXiIirLzLBOhjE4FmX_Rd-7"
+
+# Cache Maven dependencies
+cache:
+  paths:
+    - .m2/repository/
+    - Backend/NerdMarket/target/
+
+build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  script:
+    - cd Backend/NerdMarket
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - Backend/NerdMarket/target/*.jar
+      - Backend/NerdMarket/src/**
+      - Backend/NerdMarket/pom.xml
+    expire_in: 1 hour
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    # Install necessary tools
+    - apk add --no-cache openssh-client rsync curl
+    # Set up SSH
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H coms-3090-022.class.las.iastate.edu >> ~/.ssh/known_hosts
+  script:
+    # Get commit info
+    - COMMIT_MSG=$(echo "$CI_COMMIT_MESSAGE" | head -n 1)
+
+    # Send Discord notification - Starting
+    - |
+      curl -H "Content-Type: application/json" -X POST -d "{
+        \"embeds\": [{
+          \"title\": \"🔄 Deployment Started\",
+          \"description\": \"Deploying Backend to production server...\",
+          \"color\": 3447003,
+          \"fields\": [
+            {\"name\": \"Branch\", \"value\": \"$CI_COMMIT_REF_NAME\", \"inline\": true},
+            {\"name\": \"Commit\", \"value\": \"$CI_COMMIT_SHORT_SHA\", \"inline\": true},
+            {\"name\": \"Author\", \"value\": \"$GITLAB_USER_NAME\", \"inline\": true}
+          ],
+          \"footer\": {\"text\": \"$COMMIT_MSG\"},
+          \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+        }]
+      }" "$DISCORD_WEBHOOK"
+
+    # Sync entire Backend directory to /app on server
+    - |
+      rsync -avz --delete \
+        --exclude='.git' \
+        --exclude='node_modules' \
+        --exclude='.idea' \
+        --exclude='*.iml' \
+        --exclude='.DS_Store' \
+        Backend/ cjhoy@coms-3090-022.class.las.iastate.edu:~/app/
+
+    # Restart application on server
+    - |
+      ssh cjhoy@coms-3090-022.class.las.iastate.edu << 'ENDSSH'
+        cd ~/app/NerdMarket/target
+      
+        # Stop old process
+        pkill -f demo-0.0.1-SNAPSHOT.jar 2>/dev/null || true
+        sleep 3
+      
+        # Start new process in screen session named "nerdmarket"
+        screen -dmS nerdmarket java -jar demo-0.0.1-SNAPSHOT.jar
+        sleep 2
+      
+        # Verify it started
+        if screen -list | grep -q nerdmarket; then
+          echo "✅ Application started successfully in screen session 'nerdmarket'"
+        else
+          echo "❌ Failed to start application"
+          exit 1
+        fi
+      ENDSSH
+
+    # Send Discord notification - Success
+    - |
+      curl -H "Content-Type: application/json" -X POST -d "{
+        \"embeds\": [{
+          \"title\": \"✅ Deployment Successful\",
+          \"description\": \"Backend deployed and running successfully!\n\n**Server:** http://coms-3090-022.class.las.iastate.edu:8080\n**Location:** ~/app/\n**Screen Session:** nerdmarket\",
+          \"color\": 3066993,
+          \"fields\": [
+            {\"name\": \"Branch\", \"value\": \"$CI_COMMIT_REF_NAME\", \"inline\": true},
+            {\"name\": \"Commit\", \"value\": \"$CI_COMMIT_SHORT_SHA\", \"inline\": true},
+            {\"name\": \"Author\", \"value\": \"$GITLAB_USER_NAME\", \"inline\": true}
+          ],
+          \"footer\": {\"text\": \"$COMMIT_MSG\"},
+          \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+        }]
+      }" "$DISCORD_WEBHOOK"
+
+  # Send failure notification
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" = "failed" ]; then
+        curl -H "Content-Type: application/json" -X POST -d "{
+          \"embeds\": [{
+            \"title\": \"❌ Deployment Failed\",
+            \"description\": \"Backend deployment failed. Check pipeline logs.\n\n**Pipeline:** $CI_PIPELINE_URL\",
+            \"color\": 15158332,
+            \"fields\": [
+              {\"name\": \"Branch\", \"value\": \"$CI_COMMIT_REF_NAME\", \"inline\": true},
+              {\"name\": \"Commit\", \"value\": \"$CI_COMMIT_SHORT_SHA\", \"inline\": true},
+              {\"name\": \"Author\", \"value\": \"$GITLAB_USER_NAME\", \"inline\": true}
+            ],
+            \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+          }]
+        }" "$DISCORD_WEBHOOK"
+      fi
+
+  only:
+    - main
+  dependencies:
+    - build
