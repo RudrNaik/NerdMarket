@@ -48,6 +48,9 @@ public class CounterActivity extends AppCompatActivity {
         zeroOutBtn = findViewById(R.id.counter_zero_btn);
 
 
+        targetTxt.setVisibility(TextView.INVISIBLE);
+
+
         /* when increase btn is pressed, counter++, reset number textview */
         increaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override

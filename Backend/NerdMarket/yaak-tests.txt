@@ -1,0 +1,222 @@
+=============================================
+  YAAK API TESTS — NerdMarket User CRUD
+  Base URL: http://localhost:8080
+=============================================
+
+
+=============================================
+1. SIGNUP — Create a new user
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/signup
+Headers: Content-Type: application/json
+Body:
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "johndoe",
+  "email": "john@example.com",
+  "phoneNumber": "515-555-1234",
+  "password": "password123"
+}
+
+Expected: 200 OK — returns the created user with an auto-assigned ID
+Test bad case: send the same request again — should get "Username is already taken"
+
+
+=============================================
+2. SIGNUP — Second user (for testing)
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/signup
+Headers: Content-Type: application/json
+Body:
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "username": "janesmith",
+  "email": "jane@example.com",
+  "phoneNumber": "515-555-5678",
+  "password": "mypassword"
+}
+
+
+=============================================
+3. LOGIN — With username
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/login
+Headers: Content-Type: application/json
+Body:
+{
+  "usernameOrEmail": "johndoe",
+  "password": "password123"
+}
+
+Expected: 200 OK — returns the user object
+
+
+=============================================
+4. LOGIN — With email
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/login
+Headers: Content-Type: application/json
+Body:
+{
+  "usernameOrEmail": "john@example.com",
+  "password": "password123"
+}
+
+Expected: 200 OK — same user returned
+
+
+=============================================
+5. LOGIN — Wrong password (test soft lock)
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/login
+Headers: Content-Type: application/json
+Body:
+{
+  "usernameOrEmail": "johndoe",
+  "password": "wrongpassword"
+}
+
+Expected: 400 — "Wrong password. Attempt 1 of 3"
+Send this 3 times total — on the 3rd attempt the account gets locked.
+4th attempt should return: "Account is locked due to too many failed attempts. Reset your password to unlock."
+
+
+=============================================
+6. GET ALL USERS
+=============================================
+Method:  GET
+URL:     http://localhost:8080/users
+
+Expected: 200 OK — returns a list of all users
+
+
+=============================================
+7. GET USER BY ID
+=============================================
+Method:  GET
+URL:     http://localhost:8080/users/1
+
+Expected: 200 OK — returns user with id 1
+
+
+=============================================
+8. CHANGE PASSWORD
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/users/2/change-password
+Headers: Content-Type: application/json
+Body:
+{
+  "oldPassword": "mypassword",
+  "newPassword": "newpassword456"
+}
+
+Expected: 200 OK — returns updated user
+Test bad case: wrong oldPassword — should get "Old password is incorrect"
+
+
+=============================================
+9. REQUEST PASSWORD RESET (forgot password)
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/request-reset
+Headers: Content-Type: application/json
+Body:
+{
+  "email": "john@example.com"
+}
+
+Expected: 200 OK — returns "Reset token: <some-uuid>"
+Copy the token for the next test!
+
+
+=============================================
+10. RESET PASSWORD (using the token)
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/reset-password
+Headers: Content-Type: application/json
+Body:
+{
+  "token": "PASTE-THE-TOKEN-FROM-STEP-9-HERE",
+  "newPassword": "freshpassword789"
+}
+
+Expected: 200 OK — returns user with new password, account unlocked
+Now login with the new password to confirm it worked.
+
+
+=============================================
+11. DEACTIVATE ACCOUNT
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/users/1/deactivate
+
+Expected: 200 OK — returns user with isActive = false
+Now try to login as that user — should get "Account Deactivated"
+
+
+=============================================
+12. ACTIVATE ACCOUNT
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/users/1/activate
+
+Expected: 200 OK — returns user with isActive = true
+Login should work again after this.
+
+
+=============================================
+13. GRANT ADMIN PRIVILEGES
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/users/1/admin?isAdmin=true
+
+Expected: 200 OK — returns user with isAdmin = true
+
+
+=============================================
+14. REMOVE ADMIN PRIVILEGES
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/users/1/admin?isAdmin=false
+
+Expected: 200 OK — returns user with isAdmin = false
+
+
+=============================================
+15. DELETE USER
+=============================================
+Method:  DELETE
+URL:     http://localhost:8080/users/2
+
+Expected: 200 OK — "User deleted"
+GET /users should now only show 1 user.
+
+
+=============================================
+  SUGGESTED TEST ORDER
+=============================================
+1. Signup user 1 (johndoe)
+2. Signup user 2 (janesmith)
+3. Get all users — verify both exist
+4. Get user by ID — verify details
+5. Login with username — should work
+6. Login with email — should work
+7. Login with wrong password x3 — verify soft lock
+8. Request password reset — save the token
+9. Reset password with token — verify unlock
+10. Login with new password — should work
+11. Change password — verify old one stops working
+12. Deactivate account — verify login blocked
+13. Activate account — verify login works again
+14. Grant admin — verify isAdmin = true
+15. Remove admin — verify isAdmin = false
+16. Delete user 2 — verify gone from get all
