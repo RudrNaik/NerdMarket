@@ -47,7 +47,7 @@ deploy:
       curl -H "Content-Type: application/json" -X POST -d "{
         \"embeds\": [{
           \"title\": \"🔄 Deployment Started\",
-          \"description\": \"Deploying Backend directory to production server...\",
+          \"description\": \"Deploying Backend to production server...\",
           \"color\": 3447003,
           \"fields\": [
             {\"name\": \"Branch\", \"value\": \"$CI_COMMIT_REF_NAME\", \"inline\": true},
@@ -59,7 +59,7 @@ deploy:
         }]
       }" "$DISCORD_WEBHOOK"
 
-    # Sync entire Backend directory to server
+    # Sync entire Backend directory to /app on server
     - |
       rsync -avz --delete \
         --exclude='.git' \
@@ -67,24 +67,24 @@ deploy:
         --exclude='.idea' \
         --exclude='*.iml' \
         --exclude='.DS_Store' \
-        Backend/ cjhoy@coms-3090-022.class.las.iastate.edu:~/Backend/
+        Backend/ cjhoy@coms-3090-022.class.las.iastate.edu:~/app/
 
     # Restart application on server
     - |
       ssh cjhoy@coms-3090-022.class.las.iastate.edu << 'ENDSSH'
-        cd ~/Backend/NerdMarket/target
+        cd ~/app/NerdMarket/target
       
         # Stop old process
         pkill -f demo-0.0.1-SNAPSHOT.jar 2>/dev/null || true
         sleep 3
       
-        # Start new process in screen
+        # Start new process in screen session named "nerdmarket"
         screen -dmS nerdmarket java -jar demo-0.0.1-SNAPSHOT.jar
         sleep 2
       
         # Verify it started
         if screen -list | grep -q nerdmarket; then
-          echo "✅ Application started successfully"
+          echo "✅ Application started successfully in screen session 'nerdmarket'"
         else
           echo "❌ Failed to start application"
           exit 1
@@ -96,7 +96,7 @@ deploy:
       curl -H "Content-Type: application/json" -X POST -d "{
         \"embeds\": [{
           \"title\": \"✅ Deployment Successful\",
-          \"description\": \"Backend deployed and running successfully!\n\n**Server:** http://coms-3090-022.class.las.iastate.edu:8080\n**Location:** ~/Backend/\",
+          \"description\": \"Backend deployed and running successfully!\n\n**Server:** http://coms-3090-022.class.las.iastate.edu:8080\n**Location:** ~/app/\n**Screen Session:** nerdmarket\",
           \"color\": 3066993,
           \"fields\": [
             {\"name\": \"Branch\", \"value\": \"$CI_COMMIT_REF_NAME\", \"inline\": true},
