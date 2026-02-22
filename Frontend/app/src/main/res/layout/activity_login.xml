@@ -24,7 +24,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="30dp"
         android:textSize="30dp"
-        android:textColor="#3AA6ff">
+        android:textColor="#ffffff">
     </TextView>
 
     <LinearLayout
@@ -37,13 +37,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="username: "
+            android:text="Username: "
             android:textSize="20dp"
-            android:textColor="#000000">
+            android:textColor="#ffffff">
         </TextView>
 
         <EditText
-            android:id="@+id/login_username_edt"
+            android:id="@+id/login_username"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:hint="Enter Username Here">
@@ -60,13 +60,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="password: "
+            android:text="Password: "
             android:textSize="20dp"
-            android:textColor="#000000">
+            android:textColor="#ffffff">
         </TextView>
 
         <EditText
-            android:id="@+id/login_password_edt"
+            android:id="@+id/login_password"
             android:layout_width="wrap_content"
             android:inputType="textPassword"
             android:layout_height="50dp"
@@ -74,6 +74,8 @@
         </EditText>
 
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -83,6 +85,7 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/login_go_btn"
             android:layout_width="292dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -92,6 +95,7 @@
             android:textColor="#fff" />
 
         <Button
+            android:id="@+id/login_signup_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -99,7 +103,7 @@
             android:background="#00000000"
             android:elevation="0dp"
             android:text="New User? SIGN UP"
-            android:textColor="#000"/>
+            android:textColor="#ffffff"/>
 
     </LinearLayout>
 
