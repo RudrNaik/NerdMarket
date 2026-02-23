@@ -44,9 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private Button loginButton;     // define login button variable
     private Button signupButton;    // define signup button variable
     private Button loginBackButton;
-    private Button signupBackButton;
-
     private Button cardDetailsButton;
+    private Button signupBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.main_login_btn);    // link to login button in the Main activity XML
         signupButton = findViewById(R.id.main_signup_btn);// link to signup button in the Main activity XML
         signupBackButton = findViewById(R.id.back_to_signup_btn);
+        cardDetailsButton = findViewById(R.id.to_carddetails_btn);
         loginBackButton = findViewById(R.id.back_to_login_btn);
         signupBackButton.setVisibility(View.INVISIBLE);
         loginBackButton.setVisibility(View.INVISIBLE);
-        cardDetailsButton.findViewById(R.id.to_carddetails_btn);
+
 
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 Intent intent = new Intent(MainActivity.this, CardDetailActivity.class);
+                startActivity(intent);
             }
         });
     }

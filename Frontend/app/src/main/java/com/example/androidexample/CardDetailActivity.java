@@ -101,6 +101,6 @@ public class CardDetailActivity extends AppCompatActivity{
         };
 
         // Adding request to the Volley request queue
-//        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 }
