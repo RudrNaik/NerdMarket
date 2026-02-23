@@ -40,6 +40,18 @@ public class MarketController {
         return marketRepository.findByCardType(cardType);
     }
 
+    //GET top 10 most expensive cards in the entire DB
+    @GetMapping(path ="/api/cards/top10")
+    List<Market> getTop10MostExpensiveCards() {
+        return marketRepository.findTop10ByOrderByPriceDesc();
+    }
+
+    //GET top 10 most expensive cards by card type
+    @GetMapping(path = "/api/cards/top10/{cardType}")
+    List<Market> getTop10MostExpensiveCardsByCardType(@PathVariable String cardType) {
+        return marketRepository.findTop10ByCardTypeOrderByPriceDesc(cardType);
+    }
+
     // POST creating new card
     @PostMapping(path = "/api/cards")
     String createCard(@RequestBody Market card) {
@@ -69,13 +81,6 @@ public class MarketController {
             return error;
         }
         marketRepository.deleteById(id);
-        return success;
-    }
-
-    //DELETE All cards
-    @DeleteMapping(path = "/api/cards")
-    String deleteAllCards() {
-        marketRepository.deleteAll();
         return success;
     }
 
