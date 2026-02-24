@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +20,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);            // link to Login activity XML
-
+        if (findViewById(R.id.login_go_btn) == null) {
+            throw new RuntimeException("login_go_btn NOT FOUND in layout");
+        }
+        Log.d("DEBUG", "Layout loaded");
+        Log.d("DEBUG", "goButton found? " + (findViewById(R.id.login_go_btn) != null));
         /* initialize UI elements */
         usernameEditText = findViewById(R.id.login_username);
         passwordEditText = findViewById(R.id.login_password);
