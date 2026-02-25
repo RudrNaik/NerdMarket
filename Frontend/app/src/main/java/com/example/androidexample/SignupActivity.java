@@ -93,7 +93,7 @@ void makeSignupRequest() {
     JSONObject jsonObject = new JSONObject();
 
     try{
-        jsonObject.put("firstname", firstName);
+        jsonObject.put("firstName", firstName);
         jsonObject.put("lastName", lastName);
         jsonObject.put("email", email);
         jsonObject.put("username", username);
