@@ -1,11 +1,16 @@
 =============================================
-  YAAK API TESTS — NerdMarket User CRUD
+  YAAK API TESTS — NerdMarket
   Base URL: http://localhost:8080
 =============================================
 
 
 =============================================
-1. SIGNUP — Create a new user
+  USER ENDPOINTS
+=============================================
+
+
+=============================================
+1. SIGNUP — Create user 1
 =============================================
 Method:  POST
 URL:     http://localhost:8080/users/signup
@@ -20,12 +25,12 @@ Body:
   "password": "password123"
 }
 
-Expected: 200 OK — returns the created user with an auto-assigned ID
-Test bad case: send the same request again — should get "Username is already taken"
+Expected: 200 OK — returns created user with auto-assigned ID
+Bad case: send again — should get "Username is already taken"
 
 
 =============================================
-2. SIGNUP — Second user (for testing)
+2. SIGNUP — Create user 2
 =============================================
 Method:  POST
 URL:     http://localhost:8080/users/signup
@@ -40,6 +45,8 @@ Body:
   "password": "mypassword"
 }
 
+Expected: 200 OK — returns created user
+
 
 =============================================
 3. LOGIN — With username
@@ -53,7 +60,7 @@ Body:
   "password": "password123"
 }
 
-Expected: 200 OK — returns the user object
+Expected: 200 OK — returns user object
 
 
 =============================================
@@ -72,7 +79,7 @@ Expected: 200 OK — same user returned
 
 
 =============================================
-5. LOGIN — Wrong password (test soft lock)
+5. LOGIN — Wrong password (soft lock test)
 =============================================
 Method:  POST
 URL:     http://localhost:8080/users/login
@@ -84,30 +91,22 @@ Body:
 }
 
 Expected: 400 — "Wrong password. Attempt 1 of 3"
-Send this 3 times total — on the 3rd attempt the account gets locked.
-4th attempt should return: "Account is locked due to too many failed attempts. Reset your password to unlock."
+Send 3 times total — on attempt 3 the account locks.
+4th attempt: "Account is locked due to too many failed attempts. Reset your password to unlock."
 
 
 =============================================
-6. GET ALL USERS
-=============================================
-Method:  GET
-URL:     http://localhost:8080/users
-
-Expected: 200 OK — returns a list of all users
-
-
-=============================================
-7. GET USER BY ID
+6. GET USER BY ID
 =============================================
 Method:  GET
 URL:     http://localhost:8080/users/1
 
 Expected: 200 OK — returns user with id 1
+Bad case: invalid ID — should get "User not found"
 
 
 =============================================
-8. CHANGE PASSWORD
+7. CHANGE PASSWORD
 =============================================
 Method:  PUT
 URL:     http://localhost:8080/users/2/change-password
@@ -119,197 +118,116 @@ Body:
 }
 
 Expected: 200 OK — returns updated user
-Test bad case: wrong oldPassword — should get "Old password is incorrect"
+Bad case: wrong oldPassword — should get "Old password is incorrect"
 
 
 =============================================
-9. REQUEST PASSWORD RESET (forgot password)
-=============================================
-Method:  POST
-URL:     http://localhost:8080/users/request-reset
-Headers: Content-Type: application/json
-Body:
-{
-  "email": "john@example.com"
-}
-
-Expected: 200 OK — returns "Reset token: <some-uuid>"
-Copy the token for the next test!
-
-
-=============================================
-10. RESET PASSWORD (using the token)
+8. RESET PASSWORD (unlocks account too)
 =============================================
 Method:  POST
 URL:     http://localhost:8080/users/reset-password
 Headers: Content-Type: application/json
 Body:
 {
-  "token": "PASTE-THE-TOKEN-FROM-STEP-9-HERE",
+  "email": "john@example.com",
+  "oldPassword": "password123",
   "newPassword": "freshpassword789"
 }
 
-Expected: 200 OK — returns user with new password, account unlocked
+Expected: 200 OK — returns user with new password, locked = false, loginAttempts = 0
 Now login with the new password to confirm it worked.
 
 
 =============================================
-11. DEACTIVATE ACCOUNT
-=============================================
-Method:  PUT
-URL:     http://localhost:8080/users/1/deactivate
-
-Expected: 200 OK — returns user with isActive = false
-Now try to login as that user — should get "Account Deactivated"
-
-
-=============================================
-12. ACTIVATE ACCOUNT
-=============================================
-Method:  PUT
-URL:     http://localhost:8080/users/1/activate
-
-Expected: 200 OK — returns user with isActive = true
-Login should work again after this.
-
-
-=============================================
-13. GRANT ADMIN PRIVILEGES
-=============================================
-Method:  PUT
-URL:     http://localhost:8080/users/1/admin?isAdmin=true
-
-Expected: 200 OK — returns user with isAdmin = true
-
-
-=============================================
-14. REMOVE ADMIN PRIVILEGES
-=============================================
-Method:  PUT
-URL:     http://localhost:8080/users/1/admin?isAdmin=false
-
-Expected: 200 OK — returns user with isAdmin = false
-
-
-=============================================
-15. DELETE USER
-=============================================
-Method:  DELETE
-URL:     http://localhost:8080/users/2
-
-Expected: 200 OK — "User deleted"
-GET /users should now only show 1 user.
-
-
-=============================================
-  ADMIN PORTAL ENDPOINTS
+  ADMIN ENDPOINTS
+  Note: all require ?userId= of a user with admin=true
 =============================================
 
 
 =============================================
-16. ADMIN — Get All Users
+9. ADMIN — Get All Users
 =============================================
 Method:  GET
-URL:     http://localhost:8080/admin/users?adminId=1
-Headers: Content-Type: application/json
+URL:     http://localhost:8080/admin/users?userId=1
 
-Expected: 200 OK — returns all users
-Test bad case: use adminId of non-admin user — should get "Unauthorized - admin access required"
+Expected: 200 OK — returns list of all users
+Bad case: userId of non-admin user — "Unauthorized - admin access required"
 
 
 =============================================
-17. ADMIN — Delete User Account
+10. ADMIN — Delete User
 =============================================
 Method:  DELETE
-URL:     http://localhost:8080/admin/users/2
-Headers: Content-Type: application/json
-Body:
-{
-  "adminId": 1
-}
+URL:     http://localhost:8080/admin/users/2?userId=1
 
 Expected: 200 OK — "User deleted successfully"
-Test bad cases:
-  - Non-admin trying to delete: should fail with "Unauthorized"
-  - Admin trying to delete themselves: should fail with "Can't delete your own account"
+Bad cases:
+  - userId of non-admin: "Unauthorized - admin access required"
+  - Admin deleting themselves: "Can't delete your own account"
 
 
 =============================================
-18. ADMIN — Promote User to Admin
-=============================================
-Method:  PUT
-URL:     http://localhost:8080/admin/users/2/promote
-Headers: Content-Type: application/json
-Body:
-{
-  "adminId": 1
-}
-
-Expected: 200 OK — returns user with isAdmin = true
-Test bad case: non-admin trying to promote — should get "Unauthorized"
-
-
-=============================================
-19. ADMIN — Demote User from Admin
+11. ADMIN — Promote User to Admin
 =============================================
 Method:  PUT
-URL:     http://localhost:8080/admin/users/2/demote
-Headers: Content-Type: application/json
-Body:
-{
-  "adminId": 1
-}
+URL:     http://localhost:8080/admin/users/2/promote?userId=1
 
-Expected: 200 OK — returns user with isAdmin = false
-Test bad cases:
-  - Non-admin trying to demote: should fail
-  - Admin trying to demote themselves: should fail with "Can't remove your own admin status"
+Expected: 200 OK — returns user with admin = true
+Bad case: userId of non-admin — "Unauthorized"
 
 
 =============================================
-20. ADMIN — Toggle User Active Status
+12. ADMIN — Demote User from Admin
 =============================================
 Method:  PUT
-URL:     http://localhost:8080/admin/users/2/toggle-active
-Headers: Content-Type: application/json
-Body:
-{
-  "adminId": 1,
-  "active": false
-}
+URL:     http://localhost:8080/admin/users/2/demote?userId=1
 
-Expected: 200 OK — returns user with active status changed
-Change "active" to true to reactivate
-Test bad case: non-admin trying to toggle — should get "Unauthorized"
+Expected: 200 OK — returns user with admin = false
+Bad cases:
+  - userId of non-admin: "Unauthorized"
+  - Admin demoting themselves: "Can't remove your own admin status"
+
+
+=============================================
+13. ADMIN — Activate User
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/admin/users/2/activate?userId=1
+
+Expected: 200 OK — returns user with active = true
+Bad case: userId of non-admin — "Unauthorized"
+
+
+=============================================
+14. ADMIN — Deactivate User
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/admin/users/2/deactivate?userId=1
+
+Expected: 200 OK — returns user with active = false
+Then try logging in as that user — should get "Account Deactivated"
+Bad case: userId of non-admin — "Unauthorized"
 
 
 =============================================
   SUGGESTED TEST ORDER
 =============================================
-1. Signup user 1 (johndoe)
-2. Signup user 2 (janesmith)
-3. Get all users — verify both exist
-4. Get user by ID — verify details
-5. Login with username — should work
-6. Login with email — should work
-7. Login with wrong password x3 — verify soft lock
-8. Request password reset — save the token
-9. Reset password with token — verify unlock
-10. Login with new password — should work
-11. Change password — verify old one stops working
-12. Deactivate account — verify login blocked
-13. Activate account — verify login works again
-14. Grant admin — verify isAdmin = true
-15. Remove admin — verify isAdmin = false
-16. Delete user 2 — verify gone from get all
+1.  Signup user 1 (johndoe)
+2.  Signup user 2 (janesmith)
+3.  Login with username — verify works
+4.  Login with email — verify works
+5.  Login with wrong password x3 — verify account locks
+6.  Reset password — verify account unlocks, login with new password
+7.  Change password — verify old one stops working
+8.  Get user by ID — verify details
 
 ADMIN PORTAL TESTS:
-17. Grant user 1 admin privileges (use endpoint #13)
-18. Admin get all users — verify works
-19. Signup user 3 for testing
-20. Admin promote user 3 to admin — verify works
-21. Admin demote user 3 from admin — verify works
-22. Admin toggle user 3 to inactive — verify login fails
-23. Admin toggle user 3 to active — verify login works
-24. Admin delete user 3 — verify gone
-25. Try admin endpoints with non-admin user 2 — verify all fail
+9.  Use DB or promote johndoe to admin manually for first-time setup
+10. Admin get all users — verify works
+11. Signup user 3 for admin testing
+12. Admin promote user 3 — verify admin = true
+13. Admin demote user 3 — verify admin = false
+14. Admin deactivate user 3 — verify login fails with "Account Deactivated"
+15. Admin activate user 3 — verify login works again
+16. Admin delete user 3 — verify gone from get all
+17. Try all admin endpoints with non-admin user — verify all return "Unauthorized"

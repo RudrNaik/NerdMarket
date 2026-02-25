@@ -3,9 +3,7 @@ package NerdMarket.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -35,6 +33,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            Users user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody Map<String, String> body) {
         try {
@@ -57,54 +65,4 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}/deactivate")
-    public ResponseEntity<?> deactivateAccount(@PathVariable Long id) {
-        try {
-            Users user = userService.deactivateAccount(id);
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/{id}/activate")
-    public ResponseEntity<?> activateAccount(@PathVariable Long id) {
-        try {
-            Users user = userService.activateAccount(id);
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/{id}/admin")
-    public ResponseEntity<?> setAdmin(@PathVariable Long id, @RequestParam boolean isAdmin) {
-        try {
-            Users user = userService.setAdmin(id, isAdmin);
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping
-    public List<Users> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        try {
-            Users user = userService.getUserById(id);
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok("User deleted");
-    }
 }

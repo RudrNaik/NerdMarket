@@ -12,78 +12,51 @@ public class AdminService {
     @Autowired
     private UserRepository userRepository;
 
-    public void deleteUserAccount(Long adminId, Long targetUserId) {
-        Users admin = userRepository.findUsersById(adminId);
-        if (admin == null || !admin.isAdmin()) {
+    private Users requireAdmin(Long userId) {
+        Users user = userRepository.findUsersById(userId);
+        if (user == null || !user.isAdmin()) {
             throw new RuntimeException("Unauthorized - admin access required");
         }
-
-        if (adminId.equals(targetUserId)) {
-            throw new RuntimeException("Can't delete your own account");
-        }
-
-        Users target = userRepository.findUsersById(targetUserId);
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        userRepository.deleteById(targetUserId);
+        return user;
     }
 
-    public List<Users> getAllUsers(Long adminId) {
-        Users admin = userRepository.findUsersById(adminId);
-        if (admin == null || !admin.isAdmin()) {
-            throw new RuntimeException("Unauthorized - admin access required");
+    private Users requireUser(Long targetId) {
+        Users user = userRepository.findUsersById(targetId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
         }
+        return user;
+    }
+
+    public List<Users> getAllUsers(Long userId) {
+        requireAdmin(userId);
         return userRepository.findAll();
     }
 
-    public Users promoteToAdmin(Long adminId, Long targetUserId) {
-        Users admin = userRepository.findUsersById(adminId);
-        if (admin == null || !admin.isAdmin()) {
-            throw new RuntimeException("Unauthorized - admin access required");
+    public void deleteUserAccount(Long userId, Long targetId) {
+        requireAdmin(userId);
+        if (userId.equals(targetId)) {
+            throw new RuntimeException("Can't delete your own account");
         }
-
-        Users target = userRepository.findUsersById(targetUserId);
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        target.setAdmin(true);
-        return userRepository.save(target);
+        requireUser(targetId);
+        userRepository.deleteById(targetId);
     }
 
-    public Users removeAdmin(Long adminId, Long targetUserId) {
-        Users admin = userRepository.findUsersById(adminId);
-        if (admin == null || !admin.isAdmin()) {
-            throw new RuntimeException("Unauthorized - admin access required");
+    public Users updateUser(Long userId, Long targetId, Boolean admin, Boolean active) {
+        requireAdmin(userId);
+        Users target = requireUser(targetId);
+
+        if (admin != null) {
+            if (!admin && userId.equals(targetId)) {
+                throw new RuntimeException("Can't remove your own admin status");
+            }
+            target.setAdmin(admin);
         }
 
-        if (adminId.equals(targetUserId)) {
-            throw new RuntimeException("Can't remove your own admin status");
+        if (active != null) {
+            target.setActive(active);
         }
 
-        Users target = userRepository.findUsersById(targetUserId);
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        target.setAdmin(false);
-        return userRepository.save(target);
-    }
-
-    public Users toggleUserActive(Long adminId, Long targetUserId, boolean active) {
-        Users admin = userRepository.findUsersById(adminId);
-        if (admin == null || !admin.isAdmin()) {
-            throw new RuntimeException("Unauthorized - admin access required");
-        }
-
-        Users target = userRepository.findUsersById(targetUserId);
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        target.setActive(active);
         return userRepository.save(target);
     }
 }

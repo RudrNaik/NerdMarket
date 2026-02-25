@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -14,56 +13,57 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @DeleteMapping("/users/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody Map<String, Long> body) {
-        try {
-            Long adminId = body.get("adminId");
-            adminService.deleteUserAccount(adminId, userId);
-            return ResponseEntity.ok("User deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(@RequestParam Long adminId) {
+    public ResponseEntity<?> getAllUsers(@RequestParam Long userId) {
         try {
-            List<Users> users = adminService.getAllUsers(adminId);
+            List<Users> users = adminService.getAllUsers(userId);
             return ResponseEntity.ok(users);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/users/{userId}/promote")
-    public ResponseEntity<?> promoteToAdmin(@PathVariable Long userId, @RequestBody Map<String, Long> body) {
+    @DeleteMapping("/users/{targetId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
-            Long adminId = body.get("adminId");
-            Users updated = adminService.promoteToAdmin(adminId, userId);
-            return ResponseEntity.ok(updated);
+            adminService.deleteUserAccount(userId, targetId);
+            return ResponseEntity.ok("User deleted successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/users/{userId}/demote")
-    public ResponseEntity<?> removeAdmin(@PathVariable Long userId, @RequestBody Map<String, Long> body) {
+    @PutMapping("/users/{targetId}/promote")
+    public ResponseEntity<?> promoteUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
-            Long adminId = body.get("adminId");
-            Users updated = adminService.removeAdmin(adminId, userId);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(adminService.updateUser(userId, targetId, true, null));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/users/{userId}/toggle-active")
-    public ResponseEntity<?> toggleActive(@PathVariable Long userId, @RequestBody Map<String, Object> body) {
+    @PutMapping("/users/{targetId}/demote")
+    public ResponseEntity<?> demoteUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
-            Long adminId = ((Number) body.get("adminId")).longValue();
-            boolean active = (boolean) body.get("active");
-            Users updated = adminService.toggleUserActive(adminId, userId, active);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(adminService.updateUser(userId, targetId, false, null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/users/{targetId}/activate")
+    public ResponseEntity<?> activateUser(@PathVariable Long targetId, @RequestParam Long userId) {
+        try {
+            return ResponseEntity.ok(adminService.updateUser(userId, targetId, null, true));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/users/{targetId}/deactivate")
+    public ResponseEntity<?> deactivateUser(@PathVariable Long targetId, @RequestParam Long userId) {
+        try {
+            return ResponseEntity.ok(adminService.updateUser(userId, targetId, null, false));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
