@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -65,4 +66,13 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/{id}/delete-account")
+    public ResponseEntity<String> deleteOwnAccount(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            userService.deleteOwnAccount(id, body.get("password"));
+            return ResponseEntity.ok("Account deleted");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

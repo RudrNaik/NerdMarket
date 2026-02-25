@@ -102,4 +102,15 @@ public class UserService {
         user.setLoginAttempts(0);
         return userRepository.save(user);
     }
+
+    public void deleteOwnAccount(Long id, String password) {
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+        userRepository.deleteById(id);
+    }
 }
