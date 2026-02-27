@@ -10,33 +10,52 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 public class VolleySingleton {
-
+    // Static instance of the Singleton class
     private static VolleySingleton instance;
+
+    // RequestQueue for handling network requests
     private RequestQueue requestQueue;
+
+    // ImageLoader for handling image caching and loading
     private ImageLoader imageLoader;
+
+    // Context reference to avoid memory leaks
     private static Context ctx;
 
+    /**
+     * Private constructor to prevent direct instantiation from other classes.
+     * Initializes the request queue and image loader.
+     */
     private VolleySingleton(Context context) {
-        ctx = context;
-        requestQueue = getRequestQueue();
+        ctx = context;  // Store the application context
+        requestQueue = getRequestQueue(); // Initialize request queue
 
+        // Initialize ImageLoader with an LRU cache to store images efficiently
         imageLoader = new ImageLoader(requestQueue,
                 new ImageLoader.ImageCache() {
-                    private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
+
+                    // LRU (Least Recently Used) cache to store up to 20 images
+                    private final LruCache<String, Bitmap> cache = new LruCache<>(20);
 
                     @Override
                     public Bitmap getBitmap(String url) {
-                        return cache.get(url);
+                        return cache.get(url); // Retrieve image from cache
                     }
 
                     @Override
                     public void putBitmap(String url, Bitmap bitmap) {
-                        cache.put(url, bitmap);
+                        cache.put(url, bitmap); // Store image in cache
                     }
                 });
     }
 
+    /**
+     * Provides the global instance of VolleySingleton.
+     * Ensures only one instance is created (Singleton pattern).
+     *
+     * @param context Application context
+     * @return Singleton instance of VolleySingleton
+     */
     public static synchronized VolleySingleton getInstance(Context context) {
         if (instance == null) {
             instance = new VolleySingleton(context);
@@ -44,20 +63,38 @@ public class VolleySingleton {
         return instance;
     }
 
+    /**
+     * Returns the RequestQueue instance, creating one if it doesn’t exist.
+     * This ensures that a single request queue is used across the application.
+     *
+     * @return RequestQueue instance
+     */
     public RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
+            // Use application context to avoid leaking activity context
             requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
         }
         return requestQueue;
     }
 
+    /**
+     * Adds a request to the request queue for execution.
+     *
+     * @param req The request to be added to the queue
+     * @param <T> The type of the request response
+     */
     public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
+        getRequestQueue().add(req); // Add request to queue
     }
 
+    /**
+     * Returns the ImageLoader instance to load and cache images.
+     *
+     * @return ImageLoader instance
+     */
     public ImageLoader getImageLoader() {
         return imageLoader;
     }
+
+
 }

@@ -1,0 +1,247 @@
+=============================================
+  YAAK API TESTS — NerdMarket
+  Base URL: http://localhost:8080
+=============================================
+
+
+=============================================
+  USER ENDPOINTS
+=============================================
+
+
+=============================================
+1. SIGNUP — Create user 1
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/signup
+Headers: Content-Type: application/json
+Body:
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "johndoe",
+  "email": "john@example.com",
+  "phoneNumber": "515-555-1234",
+  "password": "password123"
+}
+
+Expected: 200 OK — returns created user with auto-assigned ID
+Bad case: send again — should get "Username is already taken"
+
+
+=============================================
+2. SIGNUP — Create user 2
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/signup
+Headers: Content-Type: application/json
+Body:
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "username": "janesmith",
+  "email": "jane@example.com",
+  "phoneNumber": "515-555-5678",
+  "password": "mypassword"
+}
+
+Expected: 200 OK — returns created user
+
+
+=============================================
+3. LOGIN — With username
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/login
+Headers: Content-Type: application/json
+Body:
+{
+  "usernameOrEmail": "johndoe",
+  "password": "password123"
+}
+
+Expected: 200 OK — returns user object
+
+
+=============================================
+4. LOGIN — With email
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/login
+Headers: Content-Type: application/json
+Body:
+{
+  "usernameOrEmail": "john@example.com",
+  "password": "password123"
+}
+
+Expected: 200 OK — same user returned
+
+
+=============================================
+5. LOGIN — Wrong password (soft lock test)
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/login
+Headers: Content-Type: application/json
+Body:
+{
+  "usernameOrEmail": "johndoe",
+  "password": "wrongpassword"
+}
+
+Expected: 400 — "Wrong password. Attempt 1 of 3"
+Send 3 times total — on attempt 3 the account locks.
+4th attempt: "Account is locked due to too many failed attempts. Reset your password to unlock."
+
+
+=============================================
+6. GET USER BY ID
+=============================================
+Method:  GET
+URL:     http://localhost:8080/users/1
+
+Expected: 200 OK — returns user with id 1
+Bad case: invalid ID — should get "User not found"
+
+
+=============================================
+7. CHANGE PASSWORD
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/users/2/change-password
+Headers: Content-Type: application/json
+Body:
+{
+  "oldPassword": "mypassword",
+  "newPassword": "newpassword456"
+}
+
+Expected: 200 OK — returns updated user
+Bad case: wrong oldPassword — should get "Old password is incorrect"
+
+
+=============================================
+8. RESET PASSWORD (unlocks account too)
+=============================================
+Method:  POST
+URL:     http://localhost:8080/users/reset-password
+Headers: Content-Type: application/json
+Body:
+{
+  "email": "john@example.com",
+  "oldPassword": "password123",
+  "newPassword": "freshpassword789"
+}
+
+Expected: 200 OK — returns user with new password, locked = false, loginAttempts = 0
+Now login with the new password to confirm it worked.
+
+
+=============================================
+  ADMIN ENDPOINTS
+  Note: all require ?userId= of a user with admin=true
+=============================================
+
+
+=============================================
+9. ADMIN — Get All Users
+=============================================
+Method:  GET
+URL:     http://localhost:8080/admin/users?userId=1
+
+Expected: 200 OK — returns list of all users
+Bad case: userId of non-admin user — "Unauthorized - admin access required"
+
+
+=============================================
+10. ADMIN — Delete User
+=============================================
+Method:  DELETE
+URL:     http://localhost:8080/admin/users/2?userId=1
+
+Expected: 200 OK — "User deleted successfully"
+Bad cases:
+  - userId of non-admin: "Unauthorized - admin access required"
+  - Admin deleting themselves: "Can't delete your own account"
+
+
+=============================================
+11. ADMIN — Promote User to Admin
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/admin/users/2/promote?userId=1
+
+Expected: 200 OK — returns user with admin = true
+Bad case: userId of non-admin — "Unauthorized"
+
+
+=============================================
+12. ADMIN — Demote User from Admin
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/admin/users/2/demote?userId=1
+
+Expected: 200 OK — returns user with admin = false
+Bad cases:
+  - userId of non-admin: "Unauthorized"
+  - Admin demoting themselves: "Can't remove your own admin status"
+
+
+=============================================
+13. ADMIN — Activate User
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/admin/users/2/activate?userId=1
+
+Expected: 200 OK — returns user with active = true
+Bad case: userId of non-admin — "Unauthorized"
+
+
+=============================================
+14. ADMIN — Deactivate User
+=============================================
+Method:  PUT
+URL:     http://localhost:8080/admin/users/2/deactivate?userId=1
+
+Expected: 200 OK — returns user with active = false
+Then try logging in as that user — should get "Account Deactivated"
+Bad case: userId of non-admin — "Unauthorized"
+
+
+=============================================
+9. DELETE OWN ACCOUNT
+=============================================
+Method:  DELETE
+URL:     http://localhost:8080/users/1/delete-account
+Headers: X-Password: password123
+
+Expected: 204 No Content — account is deleted, no response body
+Bad cases:
+  - Wrong password — should get "Incorrect password"
+  - Invalid ID — should get "User not found"
+
+
+=============================================
+  SUGGESTED TEST ORDER
+=============================================
+1.  Signup user 1 (johndoe)
+2.  Signup user 2 (janesmith)
+3.  Login with username — verify works
+4.  Login with email — verify works
+5.  Login with wrong password x3 — verify account locks
+6.  Reset password — verify account unlocks, login with new password
+7.  Change password — verify old one stops working
+8.  Get user by ID — verify details
+9.  Delete own account — verify 204, then try logging in to confirm gone
+
+ADMIN PORTAL TESTS:
+9.  Use DB or promote johndoe to admin manually for first-time setup
+10. Admin get all users — verify works
+11. Signup user 3 for admin testing
+12. Admin promote user 3 — verify admin = true
+13. Admin demote user 3 — verify admin = false
+14. Admin deactivate user 3 — verify login fails with "Account Deactivated"
+15. Admin activate user 3 — verify login works again
+16. Admin delete user 3 — verify gone from get all
+17. Try all admin endpoints with non-admin user — verify all return "Unauthorized"

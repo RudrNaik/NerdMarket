@@ -3,7 +3,6 @@ package NerdMarket.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -66,6 +65,14 @@ public class UserService {
         return user;
     }
 
+    public Users getUserById(Long id) {
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user;
+    }
+
     public Users changePassword(Long id, String oldPassword, String newPassword) {
         Users user = userRepository.findUsersById(id);
         if (user == null) {
@@ -96,46 +103,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Users deactivateAccount(Long id) {
+    public void deleteOwnAccount(Long id, String password) {
         Users user = userRepository.findUsersById(id);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
-        user.setActive(false);
-        return userRepository.save(user);
-    }
-
-    public Users activateAccount(Long id) {
-        Users user = userRepository.findUsersById(id);
-        if (user == null) {
-            throw new RuntimeException("User not found");
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
         }
-        user.setActive(true);
-        return userRepository.save(user);
-    }
-
-    public Users setAdmin(Long id, boolean isAdmin) {
-        Users user = userRepository.findUsersById(id);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-        user.setAdmin(isAdmin);
-        return userRepository.save(user);
-    }
-
-    public List<Users> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public Users getUserById(Long id) {
-        Users user = userRepository.findUsersById(id);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-        return user;
-    }
-
-    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 }
