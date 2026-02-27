@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity<?> deleteOwnAccount(@PathVariable Long id, @RequestBody Map<String, String> body) {
         try {
             userService.deleteOwnAccount(id, body.get("password"));
-            return ResponseEntity.ok("Account deleted");
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
