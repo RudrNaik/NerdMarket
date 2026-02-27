@@ -136,19 +136,64 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+// STRING REQUEST
+//        StringRequest stringRequest = new StringRequest(
+//                Request.Method.DELETE,
+//                url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        String message = "Account delete Failed.";
+//                        if (error.networkResponse != null && error.networkResponse.data != null) {
+//                            message = new String(error.networkResponse.data);
+//                        }
+//                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+//                        Log.e("Volley Error", message);
+//                    }
+//                }
+//        ) {
+//            @Override
+//            public byte[] getBody() {
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("password", password);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                return jsonObject.toString().getBytes();
+//            }
+//
+//            @Override
+//            public String getBodyContentType() {
+//                return "application/json; charset=utf-8";
+//            }
+//        };
 
-        final String mRequestBody = jsonObject.toString();
-        StringRequest stringRequest = new StringRequest(
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
                 Request.Method.DELETE,
                 url,
-
-                new Response.Listener<String>() {
+                jsonObject,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                            Toast.makeText(getApplicationContext(), "Account deleted", Toast.LENGTH_LONG).show();
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String message = response.getString("message");
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
 
@@ -157,6 +202,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         String message = "Account delete Failed.";
                         if (error.networkResponse != null && error.networkResponse.data != null){
+                            try{
+                                JSONObject object = new JSONObject(new String(error.networkResponse.data));
+                                message = object.getString("error");
+                            } catch (Exception ignored){
+                            }
                             message = new String(error.networkResponse.data);
                         }
                         Log.e("Volley Error", message); // Log error details
@@ -166,29 +216,15 @@ public class MainActivity extends AppCompatActivity {
         ){
 
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
 
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.d("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                    return null;
-                }
-            }
         };
         VolleySingleton.getInstance(getApplicationContext())
-                .addToRequestQueue(stringRequest);
+                .addToRequestQueue(jsonRequest);
     }
     void deleteAccountConfirm(){
         EditText passwordConfirm = new EditText(this);
@@ -201,9 +237,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String password = passwordConfirm.getText().toString();
                                 deleteAccountRequest(password);
-                                Toast.makeText(MainActivity.this,
-                                        "Account deleted",
-                                        Toast.LENGTH_LONG).show();
                             }
                         }).setNegativeButton("Cancel", null).show();
     }
