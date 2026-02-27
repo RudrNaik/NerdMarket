@@ -67,9 +67,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/delete-account")
-    public ResponseEntity<?> deleteOwnAccount(@PathVariable Long id, @RequestBody Map<String, String> body) {
+    public ResponseEntity<?> deleteOwnAccount(@PathVariable Long id, @RequestHeader("X-Password") String password) {
         try {
-            userService.deleteOwnAccount(id, body.get("password"));
+            userService.deleteOwnAccount(id, password);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

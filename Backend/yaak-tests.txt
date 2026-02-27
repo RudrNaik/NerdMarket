@@ -210,6 +210,19 @@ Bad case: userId of non-admin — "Unauthorized"
 
 
 =============================================
+9. DELETE OWN ACCOUNT
+=============================================
+Method:  DELETE
+URL:     http://localhost:8080/users/1/delete-account
+Headers: X-Password: password123
+
+Expected: 204 No Content — account is deleted, no response body
+Bad cases:
+  - Wrong password — should get "Incorrect password"
+  - Invalid ID — should get "User not found"
+
+
+=============================================
   SUGGESTED TEST ORDER
 =============================================
 1.  Signup user 1 (johndoe)
@@ -220,6 +233,7 @@ Bad case: userId of non-admin — "Unauthorized"
 6.  Reset password — verify account unlocks, login with new password
 7.  Change password — verify old one stops working
 8.  Get user by ID — verify details
+9.  Delete own account — verify 204, then try logging in to confirm gone
 
 ADMIN PORTAL TESTS:
 9.  Use DB or promote johndoe to admin manually for first-time setup
