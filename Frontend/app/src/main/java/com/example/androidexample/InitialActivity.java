@@ -3,7 +3,8 @@ package com.example.androidexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,15 +37,13 @@ public class InitialActivity extends AppCompatActivity{
 
         image.setAnimation(topAnim);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        },FADE_TIME);
+        new Handler(getMainLooper()).postDelayed(() -> {
+            Intent intent = new Intent(InitialActivity.this, LoginActivity.class);
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation
+                            (InitialActivity.this, image, "logo_image_welcome");
+            ActivityCompat.startActivity(InitialActivity.this, intent, options.toBundle());
+            finish();
+        }, FADE_TIME);
     }
-
-
 }

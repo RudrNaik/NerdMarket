@@ -2,11 +2,30 @@ package com.example.androidexample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.w3c.dom.Text;
 
@@ -43,11 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView messageText;   // define message textview variable
     private TextView usernameText;  // define username textview variable
-    private Button loginButton;     // define login button variable
-    private Button signupButton;    // define signup button variable
     private Button loginBackButton;
     private Button signupBackButton;
-
+    private Button deleteAccountButton;
+    private int id;
+    private static final String DELETE_URL = "http://coms-3090-022.class.las.iastate.edu:8080/users/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,48 +75,23 @@ public class MainActivity extends AppCompatActivity {
         /* initialize UI elements */
         messageText = findViewById(R.id.main_msg_txt);      // link to message textview in the Main activity XML
         usernameText = findViewById(R.id.main_username_txt);// link to username textview in the Main activity XML
-        loginButton = findViewById(R.id.main_login_btn);    // link to login button in the Main activity XML
-        signupButton = findViewById(R.id.main_signup_btn);// link to signup button in the Main activity XML
         signupBackButton = findViewById(R.id.back_to_signup_btn);
         loginBackButton = findViewById(R.id.back_to_login_btn);
         signupBackButton.setVisibility(View.INVISIBLE);
         loginBackButton.setVisibility(View.INVISIBLE);
+        deleteAccountButton = findViewById(R.id.delete_account_btn);
 
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             messageText.setText("Home Page");
-            usernameText.setVisibility(View.INVISIBLE);             // set username text invisible initially
         } else {
-            messageText.setText("Welcome");
-            usernameText.setText(extras.getString("USERNAME")); // this will come from LoginActivity
-            loginButton.setVisibility(View.INVISIBLE);              // set login button invisible
-            signupButton.setVisibility(View.INVISIBLE);             // set signup button invisible
+            id = extras.getInt("id", -1);
+            messageText.setText("Welcome " + extras.getString("username"));
+            usernameText.setText(extras.getString("username")); // this will come from LoginActivity
             loginBackButton.setVisibility(View.VISIBLE);            // set new login button visible
             signupBackButton.setVisibility(View.VISIBLE);           // set new signup button visible
         }
-
-        /* click listener on login button pressed */
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when login button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        /* click listener on signup button pressed */
-        signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when signup button is pressed, use intent to switch to Signup Activity */
-                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-                startActivity(intent);
-            }
-        });
 
         signupBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,5 +112,79 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccountConfirm();
+            }
+        });
+    }
+
+    void deleteAccountRequest(String password){
+        String url = DELETE_URL + id + "/delete-account";
+
+        JSONObject jsonObject = new JSONObject();
+
+        if (id == -1) {
+            Toast.makeText(this, "Bad user session", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            jsonObject.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.DELETE,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String message = "Account delete Failed.";
+//                        if (error.networkResponse != null && error.networkResponse.data != null) {
+//                            message = new String(error.networkResponse.data); //FOR GETTING SPECIFIC ERROR INFO
+//                        }
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    }
+                }
+        ) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("X-Password", password);
+                return headers;
+            }
+        };
+
+        VolleySingleton.getInstance(getApplicationContext())
+                .addToRequestQueue(stringRequest);
+    }
+    void deleteAccountConfirm(){
+        EditText passwordConfirm = new EditText(this);
+
+        new AlertDialog.Builder(this).setTitle("Are you sure")
+                .setMessage("Enter password to confirm").setView(passwordConfirm)
+                .setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String password = passwordConfirm.getText().toString();
+                                deleteAccountRequest(password);
+                            }
+                        }).setNegativeButton("Cancel", null).show();
     }
 }
