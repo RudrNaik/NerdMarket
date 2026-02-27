@@ -56,6 +56,19 @@ public class UserController {
         }
     }
 
+    //Changing EMAIL added
+    @PutMapping("/{id}/change-email")
+    public ResponseEntity<?> changeEmail(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            String password = body.get("password");
+            String newEmail = body.get("newEmail");
+            Users user = userService.changeEmail(id, password, newEmail);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> body) {
         try {

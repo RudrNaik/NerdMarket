@@ -87,6 +87,21 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public Users changeEmail (Long id, String password, String email ) {
+        Users user = userRepository.findUsersById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Password is incorrect");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email is already in use");
+        }
+        user.setEmail(email);
+        return userRepository.save(user);
+    }
+
     public Users resetPassword(String email, String oldPassword, String newPassword) {
         Users user = userRepository.findByEmail(email);
         if (user == null) {
