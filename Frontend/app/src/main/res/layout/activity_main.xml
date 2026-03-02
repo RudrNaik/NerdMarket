@@ -63,7 +63,6 @@
     </Button>
 
     <Button
-        Frontend/app/src/main/res/layout/activity_main.xml
         android:id="@+id/to_carddetails_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"

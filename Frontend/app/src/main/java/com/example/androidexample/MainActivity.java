@@ -120,6 +120,14 @@ public class MainActivity extends AppCompatActivity {
                 deleteAccountConfirm();
             }
         });
+
+        cardDetailsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, CardSearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     void deleteAccountRequest(String password){
