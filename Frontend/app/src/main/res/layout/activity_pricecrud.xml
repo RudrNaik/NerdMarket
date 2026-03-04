@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
             <TextView
@@ -36,15 +36,15 @@
             </TextView>
 
             <EditText
-                android:id="@+id/pricecrud_id"
+                android:id="@+id/pricecrud_search_txt"
                 android:layout_width="wrap_content"
                 android:textColor="#ffffff"
                 android:layout_height="50dp"
-                android:hint="                         ">
+                android:hint="ID Number here">
             </EditText>
 
             <Button
-                android:id="@+id/pricecrud_findbyid"
+                android:id="@+id/pricecrud_search_btn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Find"
@@ -55,55 +55,102 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/pricecrud_currentprice"
+            android:id="@+id/pricecrud_currentprice_txt"
             android:text="Current Price: "
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textColor="#85BB65"
+            android:textSize="20sp"
+            android:layout_marginBottom="50dp"
             android:layout_width="230sp"
             android:layout_height="30sp"/>
 
-        <EditText
-            android:id="@+id/pricecrud_changeprice"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="20dp"/>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Price: "
+                android:textSize="20dp"
+                android:textColor="#ffffff">
+            </TextView>
+
+            <EditText
+                android:id="@+id/pricecrud_update_txt"
+                android:layout_width="wrap_content"
+                android:textColor="#ffffff"
+                android:layout_height="50dp"
+                android:hint="New price here">
+            </EditText>
+
+            <Button
+                android:id="@+id/pricecrud_update_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Update"
+                android:textColor="#0B1F3A"
+                android:backgroundTint="#FFFFFF"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Record: "
+                android:textSize="20dp"
+                android:textColor="#ffffff">
+            </TextView>
+
+            <EditText
+                android:id="@+id/pricecrud_create_txt"
+                android:layout_width="wrap_content"
+                android:textColor="#ffffff"
+                android:layout_height="50dp"
+                android:hint="Enter price here">
+            </EditText>
+
+            <Button
+                android:id="@+id/pricecrud_create_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Create"
+                android:textColor="#0B1F3A"
+                android:backgroundTint="#FFFFFF"
+                />
+
+        </LinearLayout>
 
         <Button
-            android:id="@+id/pricecrud_update"
+            android:id="@+id/pricecrud_delete_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Update Price"
-            android:textColor="#0B1F3A"
-            android:backgroundTint="#FFFFFF"
-            android:layout_marginBottom="15dp"/>
-
-        <Button
-            android:id="@+id/pricecrud_create"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Create New Record"
-            android:textColor="#0B1F3A"
-            android:backgroundTint="#FFFFFF"
-            android:layout_marginBottom="5dp"/>
-
-        <EditText
-            android:id="@+id/pricecrud_changeprice"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:textColor="#FFFFFF"
-            android:hint="Enter new price here"
-            android:layout_marginBottom="30dp"/>
-
-
-        <Button
-            android:id="@+id/pricecrud_delete"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Delete Record"
+            android:text="Delete Current Record"
             android:textColor="#FFFFFF"
             android:backgroundTint="#B00020"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="0dp"/>
+
+        <Button
+            android:id="@+id/pricecrud_home_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Home"
+            android:textColor="#000000"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginTop="190dp"/>
+
 
     </LinearLayout>
 
