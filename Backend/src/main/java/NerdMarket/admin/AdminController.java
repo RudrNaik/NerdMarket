@@ -51,6 +51,15 @@ public class AdminController {
         }
     }
 
+    @PostMapping("/users/{targetId}/unlock")
+    public ResponseEntity<?> unlockUser(@PathVariable Long targetId, @RequestParam Long userId) {
+        try {
+            return ResponseEntity.ok(adminService.unlockUser(userId, targetId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/users/{targetId}/activate")
     public ResponseEntity<?> activateUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {

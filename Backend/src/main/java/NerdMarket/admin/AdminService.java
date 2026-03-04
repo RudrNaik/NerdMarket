@@ -42,6 +42,14 @@ public class AdminService {
         userRepository.deleteById(targetId);
     }
 
+    public Users unlockUser(Long userId, Long targetId) {
+        requireAdmin(userId);
+        Users target = requireUser(targetId);
+        target.setLocked(false);
+        target.setLoginAttempts(0);
+        return userRepository.save(target);
+    }
+
     public Users updateUser(Long userId, Long targetId, Boolean admin, Boolean active) {
         requireAdmin(userId);
         Users target = requireUser(targetId);
