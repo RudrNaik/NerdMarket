@@ -71,6 +71,15 @@
         android:textColor="#ffffff"
         android:textSize="20sp" />
 
+    <Button
+        android:id="@+id/to_pricecrud_btn"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="To Price Crud"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
 <Button
         android:id="@+id/delete_account_btn"
         android:layout_width="250dp"

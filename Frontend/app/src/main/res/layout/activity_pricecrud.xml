@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PriceCrudActivity"
     android:background="#0B1F3A">
 
     <LinearLayout
@@ -134,10 +137,10 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/pricecrud_delete_btn"
+            android:id="@+id/pricecrud_deleteALL_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Delete Current Record"
+            android:text="Delete ALL Records of Card ID"
             android:textColor="#FFFFFF"
             android:backgroundTint="#B00020"
             android:layout_marginTop="0dp"/>

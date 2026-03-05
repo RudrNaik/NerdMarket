@@ -23,6 +23,9 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".PriceCrudActivity"
+            android:exported="false" />
+        <activity
             android:name=".CardSearchActivity"
             android:exported="true">
         </activity>

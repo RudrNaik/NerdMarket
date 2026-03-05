@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView usernameText;  // define username textview variable
     private Button loginBackButton;
     private Button cardDetailsButton;
+    private Button priceCRUDButton;
     private Button signupBackButton;
     private Button deleteAccountButton;
     private int id;
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         signupBackButton.setVisibility(View.INVISIBLE);
         loginBackButton.setVisibility(View.INVISIBLE);
         deleteAccountButton = findViewById(R.id.delete_account_btn);
+        priceCRUDButton = findViewById(R.id.to_pricecrud_btn);
 
 
         /* extract data passed into this activity from another activity */
@@ -100,6 +102,16 @@ public class MainActivity extends AppCompatActivity {
 
                 /* when signup button is pressed, use intent to switch to Signup Activity */
                 Intent intent = new Intent(MainActivity.this, SignupActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        priceCRUDButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* when signup button is pressed, use intent to switch to Signup Activity */
+                Intent intent = new Intent(MainActivity.this, PriceCrudActivity.class);
                 startActivity(intent);
             }
         });
