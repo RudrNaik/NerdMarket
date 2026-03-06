@@ -56,7 +56,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private TextView messageText;   // define message textview variable
     private TextView usernameText;  // define username textview variable
-    private Button loginBackButton;
+    private Button activateDeacButton;
     private Button cardDetailsButton;
     private Button signupBackButton;
     private Button deleteAccountButton;
@@ -71,13 +71,10 @@ public class AdminActivity extends AppCompatActivity {
         /* initialize UI elements */
         messageText = findViewById(R.id.admin_main_msg_txt);      // link to message textview in the Main activity XML
         usernameText = findViewById(R.id.admin_main_username_txt);// link to username textview in the Main activity XML
-        signupBackButton = findViewById(R.id.admin_back_to_signup_btn);
         cardDetailsButton = findViewById(R.id.admin_to_carddetails_btn);
         toMainButton = findViewById(R.id.admin_to_main_btn);
-        loginBackButton = findViewById(R.id.admin_back_to_login_btn);
-        signupBackButton.setVisibility(View.INVISIBLE);
-        loginBackButton.setVisibility(View.INVISIBLE);
-        deleteAccountButton = findViewById(R.id.admin_delete_account_btn);
+        activateDeacButton = findViewById(R.id.admin_activate_deactivate_btn);
+        deleteAccountButton = findViewById(R.id.admin_delete_other_account_btn);
 
 
         /* extract data passed into this activity from another activity */
@@ -88,7 +85,7 @@ public class AdminActivity extends AppCompatActivity {
             id = extras.getInt("id", -1);
             messageText.setText("Welcome " + extras.getString("username"));
             usernameText.setText(extras.getString("username")); // this will come from LoginActivity
-            loginBackButton.setVisibility(View.VISIBLE);            // set new login button visible
+            activateDeacButton.setVisibility(View.VISIBLE);            // set new login button visible
             signupBackButton.setVisibility(View.VISIBLE);           // set new signup button visible
         }
 
@@ -102,7 +99,7 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        loginBackButton.setOnClickListener(new View.OnClickListener() {
+        activateDeacButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

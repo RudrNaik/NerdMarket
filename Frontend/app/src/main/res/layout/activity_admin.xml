@@ -41,35 +41,255 @@
         android:textColor="#ffffff">
     </TextView>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
     <Button
-        android:id="@+id/admin_back_to_login_btn"
+        android:id="@+id/admin_activate_deactivate_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
-        android:text="Back to login"
+        android:text="Activate/Deactivate Account"
         android:textSize="20sp"
         android:textColor="#ffffff">
     </Button>
 
+    <LinearLayout
+        android:layout_width="250dp"
+        android:id = "@+id/admin_activate_deactivate_container"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
+
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/admin_activate_deactivate_searchBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SRC:"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/card_search_field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/admin_activate_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:text="Activate"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/admin_deactivate_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="Deactivate"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
     <Button
-        android:id="@+id/admin_back_to_signup_btn"
+        android:id="@+id/admin_promote_demote_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Back to signup"
+        android:text="Promote/Demote Account"
         android:textSize="20sp"
         android:textColor="#ffffff">
     </Button>
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:id = "@+id/admin_promote_demote_container"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
+
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/admin_promote_demote_searchBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SRC:"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/admin_promote_demote_field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/admin_promote_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:text="Promote"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/admin_demote_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="Demote"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/admin_delete_other_account_btn"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Delete Accounts"
+        android:textSize="20sp"
+        android:textColor="#ffffff">
+    </Button>
+
+            <LinearLayout
+                android:layout_width="250dp"
+                android:id = "@+id/admin_delete_container"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
+
+                <LinearLayout
+                    android:layout_width="220dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/admin_delete_searchBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SRC:"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/admin_delete_field"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:text=""
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="220dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/admin_delete_btn"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_gravity="center"
+                        android:text="Delete Account"
+                        android:textColor="#ffffff"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
 
     <Button
         android:id="@+id/admin_to_carddetails_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="To Card Details"
+        android:text="Show All Accounts"
         android:textColor="#ffffff"
         android:textSize="20sp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/account_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:layout_marginTop="24dp"
+                        android:visibility="gone"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="#0B1f3a">
+                        <LinearLayout
+                            android:id="@+id/admin_account_cardDetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <TextView
+                                android:id="@+id/admin_account_cardDetail_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF"
+                                android:layout_marginBottom="6dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </ScrollView>
 
     <Button
         android:id="@+id/admin_to_main_btn"
@@ -80,17 +300,8 @@
         android:textColor="#ffffff"
         android:textSize="20sp" />
 
-
-    <Button
-        android:id="@+id/admin_delete_account_btn"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="75dp"
-        android:text="Delete Account"
-        android:textSize="20sp"
-        android:textColor="#ffffff">
-    </Button>
+        </LinearLayout>
+    </ScrollView>
 
 
 
