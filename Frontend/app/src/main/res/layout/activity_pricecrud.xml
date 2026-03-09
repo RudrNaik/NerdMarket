@@ -146,6 +146,15 @@
             android:layout_marginTop="0dp"/>
 
         <Button
+            android:id="@+id/pricecrud_deleteONE_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Delete Most Recent Record From Card ID"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B00020"
+            android:layout_marginTop="0dp"/>
+
+        <Button
             android:id="@+id/pricecrud_home_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"

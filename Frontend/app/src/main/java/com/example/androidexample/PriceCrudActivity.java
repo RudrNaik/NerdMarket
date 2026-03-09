@@ -30,6 +30,7 @@ public class PriceCrudActivity extends AppCompatActivity {
     private Button createButton;
     private Button updateButton;
     private Button deleteButton;
+    private Button deleteOneButton;
     private Button homeButton;
     int currentID = -1;
     int priceIndex = -1;
@@ -47,6 +48,7 @@ public class PriceCrudActivity extends AppCompatActivity {
         createButton = findViewById(R.id.pricecrud_create_btn);
         updateButton = findViewById(R.id.pricecrud_update_btn);
         deleteButton = findViewById(R.id.pricecrud_deleteALL_btn);
+        deleteOneButton = findViewById(R.id.pricecrud_deleteONE_btn);
         homeButton = findViewById(R.id.pricecrud_home_btn);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +96,18 @@ public class PriceCrudActivity extends AppCompatActivity {
                     currentID = -1;
                 }
                 DeleteAllRecords();
+            }
+        });
+
+        deleteOneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    currentID = Integer.parseInt(searchEditText.getText().toString());
+                } catch (NumberFormatException e){
+                    currentID = -1;
+                }
+                DeleteRecentRecord();
             }
         });
 
@@ -249,6 +263,32 @@ public class PriceCrudActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         priceText.setText("Deleted all ID no." + currentID + " entries.");
+                        currentID = -1;
+                        priceIndex = -1;
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                });
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+    }
+
+    void DeleteRecentRecord(){
+        if (priceIndex == -1){
+            return;
+        }
+        String url = PRICES_URL + "/" + priceIndex;
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.DELETE,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        FindPriceByID();
                         currentID = -1;
                         priceIndex = -1;
                     }
