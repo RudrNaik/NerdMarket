@@ -21,99 +21,85 @@ public class PriceTrackingService {
     private MarketRepository marketRepository;
 
     public String populatePriceData() {
-        List<Market> topCards = marketRepository.findTop100ByOrderByPriceDesc();
-
-        if (topCards.isEmpty()) {
-            return "No cards found";
+        List<Market> cards = marketRepository.findByPriceGreaterThan(3.0);
+        if (cards.isEmpty()) {
+            return "No cards found above $3";
         }
 
         int count = 0;
-        for (Market card : topCards) {
-            double currentPrice = card.getPrice();
-
-            //Price tracking for last week (7 days ago)
-            PriceTracking record1 = new PriceTracking();
-            record1.setCard(card);
-            record1.setPrice(priceChange(currentPrice, 0.05, 0.15));
-            record1.setRecordedAt(LocalDateTime.now().minusDays(7));
-            priceTrackingRepository.save(record1);
-            count++;
-
-            //Price tracking for 3 days ago
-            PriceTracking record2 = new PriceTracking();
-            record2.setCard(card);
-            record2.setPrice(priceChange(currentPrice, 0.02, 0.08));
-            record2.setRecordedAt(LocalDateTime.now().minusDays(3));
-            priceTrackingRepository.save(record2);
-            count++;
-
-            //Price tracking for current price today
-            PriceTracking record3 = new PriceTracking();
-            record3.setCard(card);
-            record3.setPrice(currentPrice);
-            record3.setRecordedAt(LocalDateTime.now());
-            priceTrackingRepository.save(record3);
+        for (Market card : cards) {
+            PriceTracking record = new PriceTracking();
+            record.setCard(card);
+            record.setPrice(card.getPrice());
+            record.setRecordedAt(LocalDateTime.now());
+            priceTrackingRepository.save(record);
             count++;
         }
-        return "Added " + count + " price records for " + topCards.size() + " cards";
-    }
-
-    private double priceChange(double price, double minChange, double maxChange) {
-        double changePercent = minChange + (Math.random() * (maxChange - minChange));
-        boolean increase = Math.random() > 0.5;
-        if (increase) {
-            return Math.round((price * (1 + changePercent)) * 100.0) / 100.0;
-        } else {
-            return Math.round((price * (1 - changePercent)) * 100.0) / 100.0;
-        }
+        return "Added " + count + " price records";
     }
 
     public List<Map<String, Object>> getBiggestMovers() {
-      List<PriceTracking> allRecords = priceTrackingRepository.findAll();
+        return calculateBiggestMovers(priceTrackingRepository.findAll());
+    }
 
-      //Group by cardId
-      Map<Long, List<PriceTracking>> cardPrices = new HashMap<>();
-      for (PriceTracking record : allRecords) {
-          Long cardId = record.getCardId();
-          if (!cardPrices.containsKey(cardId)) {
-              cardPrices.put(cardId, new ArrayList<>());
-          }
-          cardPrices.get(cardId).add(record);
-      }
+    public List<Map<String, Object>> getBiggestMoversLastDay() {
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(oneDayAgo));
+    }
 
-      //This calculates price change for each card
-      List<Map<String, Object>> movers = new ArrayList<>();
-      for (Long cardId : cardPrices.keySet()) {
-          List<PriceTracking> prices = cardPrices.get(cardId);
-          if (prices.size() < 2) {
-              continue;
-          }
+    public List<Map<String, Object>> getBiggestMoversLast3Days() {
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(threeDaysAgo));
+    }
 
-          //Sorts by date to get oldest and newest
-          prices.sort(Comparator.comparing(PriceTracking::getRecordedAt));
-          double oldPrice = prices.get(0).getPrice();
-          double newPrice = prices.get(prices.size() - 1).getPrice();
+    public List<Map<String, Object>> getBiggestMoversLastWeek() {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(oneWeekAgo));
+    }
 
-          if (oldPrice == 0) {
-              continue;
-          }
+    //Calculates biggest movers from a list of records
+    private List<Map<String, Object>> calculateBiggestMovers(List<PriceTracking> records) {
+        //Grouping by cardId
+        Map<Long, List<PriceTracking>> cardPrices = new HashMap<>();
+        for (PriceTracking record : records) {
+            Long cardId = record.getCardId();
+            if (!cardPrices.containsKey(cardId)) {
+                cardPrices.put(cardId, new ArrayList<>());
+            }
+            cardPrices.get(cardId).add(record);
+        }
 
-          double changePercent = ((newPrice - oldPrice) / oldPrice) * 100;
-          changePercent = Math.round(changePercent * 100.0) / 100.0;
+        //Calculate price change for each individual card
+        List<Map<String, Object>> movers = new ArrayList<>();
+        for (Long cardId : cardPrices.keySet()) {
+            List<PriceTracking> prices = cardPrices.get(cardId);
+            if (prices.size() < 2) {
+                continue;
+            }
 
-          Map<String, Object> mover = new HashMap<>();
-          mover.put("cardId", cardId);
-          mover.put("oldPrice", oldPrice);
-          mover.put("newPrice", newPrice);
-          mover.put("changePercent", changePercent);
-          movers.add(mover);
-      }
+            //Sorts by date to get oldest and newest
+            prices.sort(Comparator.comparing(PriceTracking::getRecordedAt));
+            double oldPrice = prices.get(0).getPrice();
+            double newPrice = prices.get(prices.size() - 1).getPrice();
 
-      //Sort by change percentage to get the top 10 biggest changed cards
-      movers.sort((a, b) -> Double.compare(Math.abs((Double) b.get("changePercent")), Math.abs((Double) a.get("changePercent"))));
-      if (movers.size() > 10) {
-          return movers.subList(0, 10);
-      }
-      return movers;
+            if (oldPrice == 0) {
+                continue;
+            }
+
+            double changePercent = ((newPrice - oldPrice) / oldPrice) * 100;
+            changePercent = Math.round(changePercent * 100.0) / 100.0;
+            Map<String, Object> mover = new HashMap<>();
+            mover.put("cardId", cardId);
+            mover.put("oldPrice", oldPrice);
+            mover.put("newPrice", newPrice);
+            mover.put("changePercent", changePercent);
+            movers.add(mover);
+        }
+        //Sorts by change percentage to get the top 10 biggest movers
+        movers.sort((a, b) -> Double.compare(Math.abs((Double) b.get("changePercent")), Math.abs((Double) a.get("changePercent"))));
+        if (movers.size() > 10) {
+            return movers.subList(0, 10);
+        }
+        return movers;
     }
 }
