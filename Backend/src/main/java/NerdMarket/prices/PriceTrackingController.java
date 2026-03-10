@@ -48,12 +48,29 @@ public class PriceTrackingController {
         return priceTrackingService.populatePriceData();
     }
 
-    //GET top 10 biggest Movers
+    //GET top 10 biggest Movers all
     @GetMapping(path = "/api/prices/biggest-movers")
     List<Map<String, Object>> getBiggestMovers() {
         return priceTrackingService.getBiggestMovers();
     }
 
+    //GET top 10 biggest movers for last 1 day
+    @GetMapping(path = "/api/prices/biggest-movers/1day")
+    List<Map<String, Object>> getBiggestMoversLastDay() {
+        return priceTrackingService.getBiggestMoversLastDay();
+    }
+
+    //GET top 10 biggest movers last 3 days
+    @GetMapping(path = "/api/prices/biggest-movers/3days")
+    List<Map<String, Object>> getBiggestMoversLast3Days() {
+        return priceTrackingService.getBiggestMoversLast3Days();
+    }
+
+    //GET top 10 biggest movers last 7 days (last week)
+    @GetMapping(path = "/api/prices/biggest-movers/7days")
+    List<Map<String, Object>> getBiggestMoversLastWeek() {
+        return priceTrackingService.getBiggestMoversLastWeek();
+    }
 
     // POST to create a new price record
     @PostMapping(path = "/api/prices")

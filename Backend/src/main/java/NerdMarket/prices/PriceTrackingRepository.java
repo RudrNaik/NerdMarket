@@ -2,6 +2,7 @@ package NerdMarket.prices;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -13,6 +14,6 @@ public interface PriceTrackingRepository extends JpaRepository<PriceTracking, Lo
 
     PriceTracking findFirstByCardIdOrderByRecordedAtDesc(Long cardId);
 
-    List<PriceTracking> findByCardIdIn(List<Long> cardIds);
+    List<PriceTracking> findByRecordedAtAfter(LocalDateTime date);
 
 }
