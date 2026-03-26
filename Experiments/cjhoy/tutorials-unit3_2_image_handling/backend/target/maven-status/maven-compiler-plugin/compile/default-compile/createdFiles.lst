@@ -1,0 +1,4 @@
+com\example\demo\Image.class
+com\example\demo\DemoApplication.class
+com\example\demo\ImageController.class
+com\example\demo\ImageRepository.class
