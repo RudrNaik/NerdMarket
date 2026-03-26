@@ -16,4 +16,8 @@ public interface PriceTrackingRepository extends JpaRepository<PriceTracking, Lo
 
     List<PriceTracking> findByRecordedAtAfter(LocalDateTime date);
 
+    List<PriceTracking> findByCard_CardType(String cardType);
+
+    List<PriceTracking> findByCard_CardTypeAndRecordedAtAfter(String cardType, LocalDateTime date);
+
 }
