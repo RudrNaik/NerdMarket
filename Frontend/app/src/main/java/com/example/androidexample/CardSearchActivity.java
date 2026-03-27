@@ -38,6 +38,7 @@ public class CardSearchActivity extends AppCompatActivity {
 
     private CardView cardView;
     private ImageView cardImage;
+    private ImageView cameraSearch;
     private String cardUrl;
     private TextView cardName, cardType, cardSet, cardRarity, cardPrice;
 
@@ -65,6 +66,7 @@ public class CardSearchActivity extends AppCompatActivity {
         //Search
         btnSearch      = findViewById(R.id.card_search_btn);
         searchEditText = findViewById(R.id.card_search_field);
+        cameraSearch   = findViewById(R.id.Search_camera_btn);
 
         //Card information
         cardView            = findViewById(R.id.card_view);
@@ -98,6 +100,10 @@ public class CardSearchActivity extends AppCompatActivity {
             isAdmin = extras.getBoolean("isAdmin", false);
             username = extras.getString("username"); // used when moving back to the main view.
         }
+        cameraSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(CardSearchActivity.this, CameraSearchActivity.class);
+            startActivity(intent);
+        });
 
         btnSearch.setOnClickListener(v -> handleSearch());
 

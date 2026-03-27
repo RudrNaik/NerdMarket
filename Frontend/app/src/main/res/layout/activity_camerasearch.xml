@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.camera.view.PreviewView
-        android:id="@+id/previewView"
+        android:id="@+id/cameraSearch_previewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <ImageButton
-        android:id="@+id/camera_capture_btn"
+        android:id="@+id/cameraSearch_camera_capture_btn"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/photo_capture_button"
