@@ -104,7 +104,6 @@ public class ScanningService {
     }
 
     private List<ScanningMatch> findBestMatches(Mat queryImage, List<Market> cards) {
-        // Each scan gets its own ORB + matcher instance for thread safety
         ORB orb = ORB.create(ORB_FEATURES);
         BFMatcher matcher = BFMatcher.create(Core.NORM_HAMMING, false);
 
@@ -158,7 +157,6 @@ public class ScanningService {
 
         double topScore = Collections.max(scores.values());
 
-        // Return cards within 70% of the top score, capped at 5 results
         return scores.entrySet().stream()
                 .filter(e -> e.getValue() >= topScore * 0.1)
                 .sorted(Map.Entry.<Market, Double>comparingByValue().reversed())
