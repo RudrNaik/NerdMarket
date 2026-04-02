@@ -26,7 +26,8 @@ public class ScanningWebSocketConfig implements WebSocketMessageBrokerConfigurer
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(2 * 1024 * 1024);   // 2MB max message
-        registration.setSendBufferSizeLimit(2 * 1024 * 1024); // 2MB send buffer
+        registration.setMessageSizeLimit(10 * 1024 * 1024);   // 10MB max message
+        registration.setSendBufferSizeLimit(10 * 1024 * 1024); // 10MB send buffer
+        registration.setSendTimeLimit(30 * 1000);              // 30s send timeout
     }
 }
