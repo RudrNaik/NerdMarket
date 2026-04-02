@@ -24,13 +24,6 @@ public class ScanningController {
 
     @CrossOrigin(origins = "*")
     @ResponseBody
-    @PostMapping("/scan")
-    public ScanningResponse scan(@RequestBody ScanningRequest request) {
-        return scanningService.processCardScan(request);
-    }
-
-    @CrossOrigin(origins = "*")
-    @ResponseBody
     @PostMapping("/scan/debug")
     public Map<String, Object> debugScan(@RequestBody ScanningRequest request) {
         return scanningService.debugScan(request);
