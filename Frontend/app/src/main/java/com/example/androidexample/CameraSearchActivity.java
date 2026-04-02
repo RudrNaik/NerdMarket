@@ -25,6 +25,7 @@ import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
 
 import android.os.Environment;
+import android.util.Base64;
 import android.view.Surface;
 import android.view.View;
 import android.widget.ImageButton;
@@ -34,11 +35,20 @@ import android.util.Log;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import okhttp3.OkHttpClient;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
 
 
 public class CameraSearchActivity extends AppCompatActivity {
@@ -46,6 +56,8 @@ public class CameraSearchActivity extends AppCompatActivity {
     private ImageButton captureButton;
     private ImageCapture imageCapture;
     private static final int CAMERA_PERMISSION_CODE = 309;
+    private String WEBSOCKET_URL = "ws://coms-3090-022.class.las.iastate.edu:8080/ws/scanning";
+    private StompClient stompClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +75,76 @@ public class CameraSearchActivity extends AppCompatActivity {
                 takePhoto();
             }
         });
+
+        WebSocketInit();
+    }
+
+    private void WebSocketInit() {
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WEBSOCKET_URL);
+
+        stompClient.lifecycle().subscribe(lifecycleEvent -> {
+            switch (lifecycleEvent.getType()) {
+                case OPENED:
+                    Log.d("STOMP", "Stomp connection opened");
+                    break;
+                case ERROR:
+                    Log.e("STOMP", "Error", lifecycleEvent.getException());
+                    break;
+                case CLOSED:
+                    Log.d("STOMP", "Stomp connection closed");
+                    break;
+            }
+        });
+
+        stompClient.topic("/topic/scan-result").subscribe(message -> {
+            try{
+                JSONObject jsonObject = new JSONObject(message.getPayload());
+
+                boolean success = jsonObject.getBoolean("success");
+                String msg = jsonObject.getString("message");
+
+                if (success == true){
+                    JSONArray cards = jsonObject.getJSONArray("cards");
+                    JSONObject topCard = cards.getJSONObject(0);
+                    int confidence = topCard.getInt("confidence");
+                    JSONObject card = topCard.getJSONObject("card");
+                    String returnedCardName = card.getString("cardName");
+
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Match: " + returnedCardName +
+                            "Confidence: " + confidence, Toast.LENGTH_LONG).show());
+                    Log.d("STOMP", "Match: " + returnedCardName + "Confidence: " + confidence);
+                } else {
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "No match" + msg, Toast.LENGTH_LONG).show());
+                    Log.d("STOMP", "No match " + msg);
+                }
+            } catch (JSONException e){
+                Log.e("STOMP", String.valueOf(e));
+            }
+        });
+
+        stompClient.connect();
+    }
+
+    private void sendScanAndName(Bitmap bitmap, String cardName){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        String base64Image = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP);
+        String payload = "{\"imageBase64\":\"" + base64Image + "\"," + "\"cardNameOcr\":\"" + cardName + "\"}";
+        Log.d("STOMP", "Payload size: " + payload.getBytes().length + " bytes");
+        Log.d("STOMP", "Text sent: " + cardName);
+        stompClient.send("/app/scan", payload).subscribe(
+                () -> Log.d("STOMP", "Scan sent"),
+                error -> Log.e("STOMP", "Send failed", error)
+        );
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (stompClient != null){
+            stompClient.disconnect();
+        }
     }
 
     @Override
@@ -112,6 +194,7 @@ public class CameraSearchActivity extends AppCompatActivity {
                     Log.d("OCR", "Tessy got: " + cardName);
                     debugSaveBitmap(processedForTessy, "tessy_input");
                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Card Name: " + cardName, Toast.LENGTH_LONG).show());
+                    sendScanAndName(bitmap, cardName);
                 }).start();
             }
 
