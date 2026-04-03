@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "NerdMarket")
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
