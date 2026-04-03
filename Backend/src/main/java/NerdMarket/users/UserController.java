@@ -5,6 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Users", description = "User account management and authentication endpoints")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -12,6 +16,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "Register a new user account")
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody Users user) {
         try {
@@ -22,6 +27,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Login with username/email and password")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         try {
@@ -34,6 +40,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Get a user by ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
@@ -44,6 +51,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Change a user's password")
     @PutMapping("/{id}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody Map<String, String> body) {
         try {
@@ -57,6 +65,7 @@ public class UserController {
     }
 
     //Changing EMAIL added
+    @Operation(summary = "Change a user's email address")
     @PutMapping("/{id}/change-email")
     public ResponseEntity<?> changeEmail(@PathVariable Long id, @RequestBody Map<String, String> body) {
         try {
@@ -69,6 +78,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Reset a user's password using email and old password")
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> body) {
         try {
@@ -79,6 +89,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Delete the authenticated user's own account")
     @DeleteMapping("/{id}/delete-account")
     public ResponseEntity<?> deleteOwnAccount(@PathVariable Long id, @RequestHeader("X-Password") String password) {
         try {
