@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Notifications", description = "Create, retrieve, and manage user notifications")
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -16,6 +20,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     //Admin creates notification - they can set a scheduled time to send in future
+    @Operation(summary = "Create a notification and optionally scheduled notifications for future delivery")
     @PostMapping
     public ResponseEntity<?> createNotification(@RequestBody Map<String, Object> body) {
         try {
@@ -36,6 +41,7 @@ public class NotificationController {
     }
 
     //Get all notification for a user
+    @Operation(summary = "Get all notifications for a user")
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserNotifications(@PathVariable Long userId) {
         try {
@@ -47,6 +53,7 @@ public class NotificationController {
     }
 
     //Get unread notification count for a user
+    @Operation(summary = "Get all unread notification for a user")
     @GetMapping("/unread/{userId}")
     public ResponseEntity<?> getUnreadCount(@PathVariable Long userId) {
         try {
@@ -58,6 +65,7 @@ public class NotificationController {
     }
 
     //Mark a notification as read
+    @Operation(summary = "Update an user notification as read")
     @PutMapping("/{id}/read")
     public ResponseEntity<?> markAsRead(@PathVariable Long id) {
         try {
@@ -69,6 +77,7 @@ public class NotificationController {
     }
 
     //Delete a notification for user
+    @Operation(summary = "Delete a notification for a user")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNotification(@PathVariable Long id) {
         try {

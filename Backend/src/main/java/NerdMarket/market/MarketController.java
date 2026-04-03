@@ -1,5 +1,3 @@
-//CRUD REST endpoints - will handle GET, POST, PUT, DELETE requests.
-
 package NerdMarket.market;
 
 import org.springframework.beans.factory.annotation.Autowired;
