@@ -39,7 +39,7 @@ deploy:
 
     # Copy built jar to app directory
     - mkdir -p ~/app
-    - mkdir -p ~/app/logs
+    - mkdir -p ~/logs
     - cp Backend/target/demo-0.0.1-SNAPSHOT.jar ~/app/demo-0.0.1-SNAPSHOT.jar
 
     # Restart application
@@ -49,7 +49,7 @@ deploy:
       pkill -f demo-0.0.1-SNAPSHOT.jar 2>/dev/null || true
       sleep 3
 
-      screen -dmS nerdmarket java -jar ~/app/demo-0.0.1-SNAPSHOT.jar
+      screen -dmS nerdmarket java -jar ~/app/demo-0.0.1-SNAPSHOT.jar --logging.file.name=/home/gitlab-runner/logs/backend.log
       sleep 5
 
       if screen -list | grep -q nerdmarket && pgrep -f demo-0.0.1-SNAPSHOT.jar > /dev/null; then
