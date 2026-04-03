@@ -130,7 +130,11 @@ public class CardSearchActivity extends AppCompatActivity {
         cardView.setVisibility(View.INVISIBLE);
 
         currentCardId = query;
-        fetchCardByName(query);
+        if (Character.isDigit(query.charAt(0))){
+            fetchCardById(query);
+        } else{
+            fetchCardByName(query);
+        }
     }
 
     private void handlePercolate(JSONArray response) throws JSONException {
@@ -213,6 +217,36 @@ public class CardSearchActivity extends AppCompatActivity {
                 error -> {
                     Log.e("GET by name error", error.toString());
                     Toast.makeText(this, "No card found with name " + name, Toast.LENGTH_SHORT).show();
+                }
+        ) {
+            @Override public Map<String, String> getHeaders() throws AuthFailureError { return new HashMap<>(); }
+        };
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
+    }
+
+    //GET /api/cards/{id}
+    private void fetchCardById(String id) {
+        String url = BASE_URL + "/" + id;
+
+        JsonObjectRequest req = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                response -> {
+                    Log.d("GET by id", response.toString());
+                    JSONArray cards = new JSONArray();
+                    cards.put(response);
+                    try { currentCardId = String.valueOf(cards.getJSONObject(0).getLong("id")); }
+                    catch (JSONException e) { Log.e("GET error", e.getMessage()); }
+                    try {
+                        cards.toString();
+                        handlePercolate(cards);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    Log.e("GET by name error", error.toString());
+                    Toast.makeText(this, "No card found with id of:" + id, Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override public Map<String, String> getHeaders() throws AuthFailureError { return new HashMap<>(); }

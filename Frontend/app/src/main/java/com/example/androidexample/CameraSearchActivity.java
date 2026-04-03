@@ -191,15 +191,22 @@ public class CameraSearchActivity extends AppCompatActivity {
                     Matrix matrix = new Matrix();
                     matrix.postRotate(90);
                     Bitmap portraitImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    bitmap.recycle();
 
                     Bitmap fullCardRegion = cropImageForCard(portraitImage);
                     Bitmap nameRegion = cropCardForNameOnly(portraitImage);
+                    portraitImage.recycle();
+
                     Bitmap processedForTessy = processImageForTessy(nameRegion);
+                    nameRegion.recycle();
+
                     String cardName = OCRCroppedName(processedForTessy);
                     Log.d("OCR", "Tessy got: " + cardName);
                     debugSaveBitmap(processedForTessy, "tessy_input");
+                    processedForTessy.recycle();
                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Card Name: " + cardName, Toast.LENGTH_LONG).show());
                     sendScanAndName(fullCardRegion, cardName);
+                    fullCardRegion.recycle();
                 }).start();
             }
 
