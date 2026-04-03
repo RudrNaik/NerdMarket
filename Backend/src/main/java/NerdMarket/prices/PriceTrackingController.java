@@ -8,6 +8,10 @@ import NerdMarket.market.Market;
 import NerdMarket.market.MarketRepository;
 import org.springframework.http.ResponseEntity;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Price Tracking", description = "Price history, biggest movers, and price analytics endpoints")
 @RestController
 public class PriceTrackingController {
 
@@ -24,25 +28,27 @@ public class PriceTrackingController {
     private final String error = "{\"message\":\"error\"}";
 
 
-    // GET all price records
+    @Operation(summary = "Get all price records")
     @GetMapping(path = "/api/prices")
     List<PriceTracking> getAllPriceRecords() {
         return priceTrackingRepository.findAll();
     }
 
-    // GET price history for one specific card
+    @Operation(summary = "Get price history for one specific card")
     @GetMapping(path = "/api/prices/card/{cardId}")
     List<PriceTracking> getPriceHistory(@PathVariable Long cardId) {
         return priceTrackingRepository.findByCardIdOrderByRecordedAtDesc(cardId);
     }
 
     // GET most recent price of a specific card
+    @Operation(summary = "Get the most recent price record for a card")
     @GetMapping(path = "/api/prices/card/{cardId}/latest")
     PriceTracking getLatestPriceByCard(@PathVariable Long cardId) {
         return priceTrackingRepository.findFirstByCardIdOrderByRecordedAtDesc(cardId);
     }
 
     //GET to populate price tracking table with top 100 most valued cards.
+    @Operation(summary = "Populate price tracking table with top 100 most valuable cards")
     @GetMapping(path = "/api/prices/populate")
     String populatePriceData() {
         return priceTrackingService.populatePriceData();
