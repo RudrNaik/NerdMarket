@@ -11,6 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Binder", description = "User card binder management endpoints")
 @RestController
 @RequestMapping("/api/users")
 public class BinderController {
@@ -18,6 +22,7 @@ public class BinderController {
     @Autowired
     private BinderService binderService;
 
+    @Operation(summary = "Get all cards in a user's binder")
     @GetMapping("/{username}/binder")
     public ResponseEntity<?> getBinder(@PathVariable String username) {
         try {
@@ -46,6 +51,7 @@ public class BinderController {
         }
     }
 
+    @Operation(summary = "Add a card to a user's binder")
     @PostMapping("/{username}/binder")
     public ResponseEntity<?> addCard(@PathVariable String username, @RequestBody Map<String, Object> body) {
         if (body == null || !body.containsKey("card_id")) {
@@ -69,6 +75,7 @@ public class BinderController {
         }
     }
 
+    @Operation(summary = "Remove a card from a user's binder")
     @DeleteMapping("/{username}/binder/{cardId}")
     public ResponseEntity<?> removeCard(@PathVariable String username, @PathVariable Long cardId) {
         try {
