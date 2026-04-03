@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Register Spring Boot's %clr color converter -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+
+    <!-- ============================================================
+         Properties
+    ============================================================ -->
+    <property name="LOG_DIR"  value="logs"/>
+
+    <!-- Console pattern  (ANSI colors via Spring's %clr converter)
+         10:23:45.123  INFO  [nio-8080-exec-3     ] n.d.StartupLogger          - message -->
+    <property name="CONSOLE_PATTERN"
+              value="%clr(%d{HH:mm:ss.SSS}){faint}  %clr(%-5level)  %clr([%20.20t]){faint}  %clr(%-45.45logger{44}){cyan}  %msg%n%xEx"/>
+
+    <!-- File pattern  (plain, no ANSI) -->
+    <property name="FILE_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level  [%20.20t]  %-45.45logger{44}  %msg%n%xEx"/>
+
+
+    <!-- ============================================================
+         Appenders
+    ============================================================ -->
+
+    <!-- Console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Scan / WS / debug rolling file -->
+    <appender name="SCAN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/scanning-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/scanning-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>200MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- General app rolling file -->
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- ============================================================
+         Package loggers
+    ============================================================ -->
+
+    <!-- Our packages: scanning, notifications, debugging → DEBUG, routed to scan file -->
+    <logger name="NerdMarket.scanning"      level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SCAN_FILE"/>
+    </logger>
+    <logger name="NerdMarket.notifications" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SCAN_FILE"/>
+    </logger>
+    <logger name="NerdMarket.debugging"     level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SCAN_FILE"/>
+    </logger>
+
+    <!-- Request logging filter activated by our RequestLoggingConfig bean -->
+    <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SCAN_FILE"/>
+    </logger>
+
+    <!-- Quiet down noisy frameworks -->
+    <logger name="org.hibernate.SQL"                      level="WARN"/>
+    <logger name="org.hibernate.orm.jdbc.bind"            level="WARN"/>
+    <logger name="org.springframework.web.socket"         level="INFO"/>
+    <logger name="org.springframework.messaging"          level="INFO"/>
+    <logger name="org.springframework.web"                level="INFO"/>
+
+
+    <!-- ============================================================
+         Root
+    ============================================================ -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APP_FILE"/>
+    </root>
+
+</configuration>
