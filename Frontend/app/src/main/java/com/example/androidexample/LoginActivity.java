@@ -42,12 +42,12 @@ public class LoginActivity extends AppCompatActivity {
         //tracks if the user is an admin.
 
 
-        /* click listener on login button pressed */
+        //Login listener
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                /* grab strings from user inputs */
+                //grab username and pass
                 String usernameOrEmail = usernameEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
 
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
 
         });
 
-        /* click listener on signup button pressed */
+        //Listener for signup
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -64,7 +64,7 @@ public class CardBinderActivity extends AppCompatActivity {
     private String username;
     private boolean isAdmin;
 
-    private static final String BASE_URL = "http://coms-3090-022.class.las.iastate.edu:8080/api/cards";
+    private static final String BASE_URL = "http://coms-3090-022.class.las.iastate.edu:8080/api/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,8 @@ public class CardBinderActivity extends AppCompatActivity {
             intent.putExtra("username", username);
             startActivity(intent);
         });
+
+        fetchCards();
     }
 
 
@@ -133,7 +135,6 @@ public class CardBinderActivity extends AppCompatActivity {
         cardView.setVisibility(View.INVISIBLE);
 
         currentCardId = query;
-        fetchCardByName(query);
     }
 
     private void handlePercolate(JSONArray response) throws JSONException {
@@ -200,25 +201,36 @@ public class CardBinderActivity extends AppCompatActivity {
     }
 
     // GET /api/cards/search/{name}
-    private void fetchCardByName(String name) {
-        String url = BASE_URL + "/search/" + name;
+    private void fetchCards() {
+        String url = BASE_URL + username + "/binder";
 
-        JsonArrayRequest req = new JsonArrayRequest(
+        JsonObjectRequest req = new JsonObjectRequest(
                 Request.Method.GET, url, null,
                 response -> {
-                    Log.d("GET by name", response.toString());
-                    cards = response;
-                    try { currentCardId = String.valueOf(cards.getJSONObject(0).getLong("id")); }
-                    catch (JSONException e) { Log.e("GET error", e.getMessage()); }
+                    Log.d("GET all Binder Cards", response.toString());
                     try {
+                        JSONArray binderArray = response.getJSONArray("binder");
+                        JSONArray cards = new JSONArray();
+
+                        for (int i = 0; i < binderArray.length(); i++) {
+                            JSONObject binderEntry = binderArray.getJSONObject(i);
+                            JSONObject card = binderEntry.getJSONObject("card");
+                            cards.put(card);
+                        }
+
+                        if (cards.length() > 0) {
+                            currentCardId = String.valueOf(cards.getJSONObject(0).getLong("id"));
+                        }
+
                         handlePercolate(cards);
+
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.e("BINDER fetch error", e.getMessage());
                     }
                 },
                 error -> {
-                    Log.e("GET by name error", error.toString());
-                    Toast.makeText(this, "No card found with name " + name, Toast.LENGTH_SHORT).show();
+                    Log.e("BINDER fetch error", error.toString());
+                    Toast.makeText(this, "No cards found", Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override public Map<String, String> getHeaders() throws AuthFailureError { return new HashMap<>(); }
