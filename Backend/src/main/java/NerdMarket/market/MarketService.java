@@ -16,6 +16,16 @@ public class MarketService {
     private MarketRepository marketRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private Market findOrCreate(String name, String set, String type) {
+        Market existing = marketRepository.findByCardNameAndCardSetAndCardType(name, set, type);
+        if (existing != null) return existing;
+        Market card = new Market();
+        card.setCardName(name);
+        card.setCardSet(set);
+        card.setCardType(type);
+        return card;
+    }
+
     //Fetch all pokemon cards from TCGDex
     public String fetchAllPokemonCards() {
         try {
@@ -50,17 +60,12 @@ public class MarketService {
                             String cardUrl = "https://api.tcgdex.net/v2/en/cards/" + cardId;
                             Map cardResponse = restTemplate.getForObject(cardUrl, Map.class);
                             if (cardResponse != null) {
-                                Market marketCard = new Market();
-                                marketCard.setCardType("POKEMON");
-                                marketCard.setCardName((String) cardResponse.get("name"));
-                                marketCard.setCardRarity((String) cardResponse.get("rarity"));
-                                // Get set name
+                                String name = (String) cardResponse.get("name");
+                                String rarity = (String) cardResponse.get("rarity");
                                 Map set = (Map) cardResponse.get("set");
-                                if (set != null) {
-                                    marketCard.setCardSet((String) set.get("name"));
-                                } else {
-                                    marketCard.setCardSet("Unknown");
-                                }
+                                String setName = (set != null) ? (String) set.get("name") : "Unknown";
+                                Market marketCard = findOrCreate(name, setName, "POKEMON");
+                                marketCard.setCardRarity(rarity);
                                 // Get price from TCGPlayer
                                 double price = 0.0;
                                 Map pricing = (Map) cardResponse.get("pricing");
@@ -146,12 +151,8 @@ public class MarketService {
                         if (cards != null) {
                             for (Map card : cards) {
                                 try {
-                                    Market marketCard = new Market();
-                                    marketCard.setCardType("MTG");
-                                    marketCard.setCardName((String) card.get("name"));
-                                    marketCard.setCardSet((String) card.get("set_name"));
+                                    Market marketCard = findOrCreate((String) card.get("name"), (String) card.get("set_name"), "MTG");
                                     marketCard.setCardRarity((String) card.get("rarity"));
-
                                     //Get price of card
                                     double price = 0.0;
                                     Map prices = (Map) card.get("prices");
@@ -211,21 +212,23 @@ public class MarketService {
 
             for (Map card : cards) {
                 try {
-                    Market marketCard = new Market();
-                    marketCard.setCardType("YU-Gi-Oh");
-                    marketCard.setCardName((String) card.get("name"));
+                    String name = (String) card.get("name");
 
                     //Grab Set and Rarity if Available in the API.
+                    String setName;
+                    String rarity;
                     List<Map> cardSets = (List<Map>) card.get("card_sets");
                     if (cardSets != null && !cardSets.isEmpty()) {
                         Map firstSet = cardSets.get(0);
-                        marketCard.setCardSet((String) firstSet.get("set_name"));
-                        String rarity = (String) firstSet.get("set_rarity");
-                        marketCard.setCardRarity(rarity != null ? rarity: "Unknown");
+                        setName = (String) firstSet.get("set_name");
+                        rarity = (String) firstSet.get("set_rarity");
                     } else {
-                        marketCard.setCardSet("unknown");
-                        marketCard.setCardRarity("unknown");
+                        setName = "unknown";
+                        rarity = "unknown";
                     }
+
+                    Market marketCard = findOrCreate(name, setName, "YU-Gi-Oh");
+                    marketCard.setCardRarity(rarity != null ? rarity : "Unknown");
                     //Grab prices from api.
                     double price = 0.0;
                     List<Map> cardPrices = (List<Map>) card.get("card_prices");

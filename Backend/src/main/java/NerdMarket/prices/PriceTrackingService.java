@@ -39,26 +39,53 @@ public class PriceTrackingService {
     }
 
     public List<Map<String, Object>> getBiggestMovers() {
-        return calculateBiggestMovers(priceTrackingRepository.findAll());
+        return calculateBiggestMovers(priceTrackingRepository.findAll(), null);
     }
 
-    public List<Map<String, Object>> getBiggestMoversLastDay() {
-        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
-        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(oneDayAgo));
+    public List<Map<String, Object>> getBiggestMoversLast2Days() {
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(twoDaysAgo), null);
     }
 
-    public List<Map<String, Object>> getBiggestMoversLast3Days() {
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
-        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(threeDaysAgo));
+    public List<Map<String, Object>> getBiggestMoversLast7Days() {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(sevenDaysAgo), null);
     }
 
-    public List<Map<String, Object>> getBiggestMoversLastWeek() {
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
-        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(oneWeekAgo));
+    public List<Map<String, Object>> getBiggestMoversLast21Days() {
+        LocalDateTime twentyOneDaysAgo = LocalDateTime.now().minusDays(21);
+        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(twentyOneDaysAgo), null);
+    }
+
+    public List<Map<String, Object>> getBiggestMoversByCardType(String cardType) {
+        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardType(cardType), null);
+    }
+
+    public List<Map<String, Object>> getBiggestMoversByCardTypeLast2Days(String cardType) {
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, twoDaysAgo), null);
+    }
+
+    public List<Map<String, Object>> getBiggestMoversByCardTypeLast7Days(String cardType) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, sevenDaysAgo), null);
+    }
+
+    public List<Map<String, Object>> getBiggestMoversByCardTypeLast21Days(String cardType) {
+        LocalDateTime twentyOneDaysAgo = LocalDateTime.now().minusDays(21);
+        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, twentyOneDaysAgo), null);
+    }
+
+    public List<Map<String, Object>> getBiggestGainers() {
+        return calculateBiggestMovers(priceTrackingRepository.findAll(), "gainers");
+    }
+
+    public List<Map<String, Object>> getBiggestLosers() {
+        return calculateBiggestMovers(priceTrackingRepository.findAll(), "losers");
     }
 
     //Calculates biggest movers from a list of records
-    private List<Map<String, Object>> calculateBiggestMovers(List<PriceTracking> records) {
+    private List<Map<String, Object>> calculateBiggestMovers(List<PriceTracking> records, String direction) {
         //Grouping by cardId
         Map<Long, List<PriceTracking>> cardPrices = new HashMap<>();
         for (PriceTracking record : records) {
@@ -95,6 +122,13 @@ public class PriceTrackingService {
             mover.put("changePercent", changePercent);
             movers.add(mover);
         }
+
+        if ("gainers".equals(direction)) {
+            movers.removeIf(m -> (Double) m.get("changePercent") <= 0);
+        } else if ("losers".equals(direction)) {
+            movers.removeIf(m -> (Double) m.get("changePercent") >= 0);
+        }
+
         //Sorts by change percentage to get the top 10 biggest movers
         movers.sort((a, b) -> Double.compare(Math.abs((Double) b.get("changePercent")), Math.abs((Double) a.get("changePercent"))));
         if (movers.size() > 10) {

@@ -38,6 +38,7 @@ public class CardSearchActivity extends AppCompatActivity {
 
     private CardView cardView;
     private ImageView cardImage;
+    private ImageView cameraSearch;
     private String cardUrl;
     private TextView cardName, cardType, cardSet, cardRarity, cardPrice;
 
@@ -50,8 +51,9 @@ public class CardSearchActivity extends AppCompatActivity {
     private String currentCardId;
 
     private Button returnToMain;
-
     private int id;
+    private int bundleCardID;
+    private String bundleCardIDString;
     private String username;
     private boolean isAdmin;
 
@@ -65,6 +67,7 @@ public class CardSearchActivity extends AppCompatActivity {
         //Search
         btnSearch      = findViewById(R.id.card_search_btn);
         searchEditText = findViewById(R.id.card_search_field);
+        cameraSearch   = findViewById(R.id.Search_camera_btn);
 
         //Card information
         cardView            = findViewById(R.id.card_view);
@@ -90,6 +93,7 @@ public class CardSearchActivity extends AppCompatActivity {
         returnToMain = findViewById(R.id.cardlookup_to_main_button);
 
         Bundle extras = getIntent().getExtras();
+
         if (extras == null) {
             id = -1;
             isAdmin = false;
@@ -97,7 +101,13 @@ public class CardSearchActivity extends AppCompatActivity {
             id = extras.getInt("id", -1);
             isAdmin = extras.getBoolean("isAdmin", false);
             username = extras.getString("username"); // used when moving back to the main view.
+            bundleCardID = extras.getInt("bundleCardID");
+            bundleCardIDString = String.valueOf(bundleCardID);
         }
+        cameraSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(CardSearchActivity.this, CameraSearchActivity.class);
+            startActivity(intent);
+        });
 
         btnSearch.setOnClickListener(v -> handleSearch());
 
@@ -110,6 +120,11 @@ public class CardSearchActivity extends AppCompatActivity {
             intent.putExtra("username", username);
             startActivity(intent);
         });
+
+        if (!bundleCardIDString.isEmpty()) {
+            fetchCardById(bundleCardIDString);
+            bundleCardIDString = null;
+        }
     }
 
 
@@ -124,7 +139,11 @@ public class CardSearchActivity extends AppCompatActivity {
         cardView.setVisibility(View.INVISIBLE);
 
         currentCardId = query;
-        fetchCardByName(query);
+        if (Character.isDigit(query.charAt(0))){
+            fetchCardById(query);
+        } else{
+            fetchCardByName(query);
+        }
     }
 
     private void handlePercolate(JSONArray response) throws JSONException {
@@ -207,6 +226,36 @@ public class CardSearchActivity extends AppCompatActivity {
                 error -> {
                     Log.e("GET by name error", error.toString());
                     Toast.makeText(this, "No card found with name " + name, Toast.LENGTH_SHORT).show();
+                }
+        ) {
+            @Override public Map<String, String> getHeaders() throws AuthFailureError { return new HashMap<>(); }
+        };
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
+    }
+
+    //GET /api/cards/{id}
+    private void fetchCardById(String id) {
+        String url = BASE_URL + "/" + id;
+
+        JsonObjectRequest req = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                response -> {
+                    Log.d("GET by id", response.toString());
+                    JSONArray cards = new JSONArray();
+                    cards.put(response);
+                    try { currentCardId = String.valueOf(cards.getJSONObject(0).getLong("id")); }
+                    catch (JSONException e) { Log.e("GET error", e.getMessage()); }
+                    try {
+                        cards.toString();
+                        handlePercolate(cards);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    Log.e("GET by name error", error.toString());
+                    Toast.makeText(this, "No card found with id of:" + id, Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override public Map<String, String> getHeaders() throws AuthFailureError { return new HashMap<>(); }

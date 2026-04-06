@@ -8,6 +8,10 @@ import NerdMarket.market.Market;
 import NerdMarket.market.MarketRepository;
 import org.springframework.http.ResponseEntity;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Price Tracking", description = "Price history, biggest movers, and price analytics endpoints")
 @RestController
 public class PriceTrackingController {
 
@@ -24,55 +28,91 @@ public class PriceTrackingController {
     private final String error = "{\"message\":\"error\"}";
 
 
-    // GET all price records
+    @Operation(summary = "Get all price records")
     @GetMapping(path = "/api/prices")
     List<PriceTracking> getAllPriceRecords() {
         return priceTrackingRepository.findAll();
     }
 
-    // GET price history for one specific card
+    @Operation(summary = "Get price history for one specific card")
     @GetMapping(path = "/api/prices/card/{cardId}")
     List<PriceTracking> getPriceHistory(@PathVariable Long cardId) {
         return priceTrackingRepository.findByCardIdOrderByRecordedAtDesc(cardId);
     }
 
-    // GET most recent price of a specific card
+    @Operation(summary = "Get the most recent price record for a card")
     @GetMapping(path = "/api/prices/card/{cardId}/latest")
     PriceTracking getLatestPriceByCard(@PathVariable Long cardId) {
         return priceTrackingRepository.findFirstByCardIdOrderByRecordedAtDesc(cardId);
     }
 
-    //GET to populate price tracking table with top 100 most valued cards.
+    @Operation(summary = "Populate price tracking table with top 100 most valuable cards")
     @GetMapping(path = "/api/prices/populate")
     String populatePriceData() {
         return priceTrackingService.populatePriceData();
     }
 
-    //GET top 10 biggest Movers all
+    @Operation(summary = "Get top 10 biggest movers for all card types")
     @GetMapping(path = "/api/prices/biggest-movers")
     List<Map<String, Object>> getBiggestMovers() {
         return priceTrackingService.getBiggestMovers();
     }
 
-    //GET top 10 biggest movers for last 1 day
-    @GetMapping(path = "/api/prices/biggest-movers/1day")
-    List<Map<String, Object>> getBiggestMoversLastDay() {
-        return priceTrackingService.getBiggestMoversLastDay();
+    @Operation(summary = "Get top 10 biggest movers for all card types in the last 2 days")
+    @GetMapping(path = "/api/prices/biggest-movers/2days")
+    List<Map<String, Object>> getBiggestMoversLast2Days() {
+        return priceTrackingService.getBiggestMoversLast2Days();
     }
 
-    //GET top 10 biggest movers last 3 days
-    @GetMapping(path = "/api/prices/biggest-movers/3days")
-    List<Map<String, Object>> getBiggestMoversLast3Days() {
-        return priceTrackingService.getBiggestMoversLast3Days();
-    }
-
-    //GET top 10 biggest movers last 7 days (last week)
+    @Operation(summary = "Get top 10 biggest movers for all card types in the last 7 days (1 week)")
     @GetMapping(path = "/api/prices/biggest-movers/7days")
-    List<Map<String, Object>> getBiggestMoversLastWeek() {
-        return priceTrackingService.getBiggestMoversLastWeek();
+    List<Map<String, Object>> getBiggestMoversLast7Days() {
+        return priceTrackingService.getBiggestMoversLast7Days();
     }
 
-    // POST to create a new price record
+    @Operation(summary = "Get top 10 biggest movers for all card types in the last 21 days (3 weeks)")
+    @GetMapping(path = "/api/prices/biggest-movers/21days")
+    List<Map<String, Object>> getBiggestMoversLast21Days() {
+        return priceTrackingService.getBiggestMoversLast21Days();
+    }
+
+    @Operation(summary = "Get top 10 biggest movers for a specific card type (POKEMON, MTG, YU-GI-OH) all time")
+    @GetMapping(path = "/api/prices/biggest-movers/type/{cardType}")
+    List<Map<String, Object>> getBiggestMoversByCardType(@PathVariable String cardType) {
+        return priceTrackingService.getBiggestMoversByCardType(cardType);
+    }
+
+    @Operation(summary = "Get top 10 biggest movers for a specific card type (POKEMON, MTG, YU-GI-OH) in the last 2 days")
+    @GetMapping(path = "/api/prices/biggest-movers/type/{cardType}/2days")
+    List<Map<String, Object>> getBiggestMoversByCardTypeLast2Days(@PathVariable String cardType) {
+        return priceTrackingService.getBiggestMoversByCardTypeLast2Days(cardType);
+    }
+
+    @Operation(summary = "Get top 10 biggest movers for a specific card type (POKEMON, MTG, YU-GI-OH) in the last 7 days (1 week)")
+    @GetMapping(path = "/api/prices/biggest-movers/type/{cardType}/7days")
+    List<Map<String, Object>> getBiggestMoversByCardTypeLast7Days(@PathVariable String cardType) {
+        return priceTrackingService.getBiggestMoversByCardTypeLast7Days(cardType);
+    }
+
+    @Operation(summary = "Get top 10 biggest movers for a specific card type (POKEMON, MTG, YU-GI-OH) in the last 21 days (3 weeks)")
+    @GetMapping(path = "/api/prices/biggest-movers/type/{cardType}/21days")
+    List<Map<String, Object>> getBiggestMoversByCardTypeLast21Days(@PathVariable String cardType) {
+        return priceTrackingService.getBiggestMoversByCardTypeLast21Days(cardType);
+    }
+
+    @Operation(summary = "Get biggest gainers only (positive price changes)")
+    @GetMapping(path = "/api/prices/biggest-movers/gainers")
+    List<Map<String, Object>> getBiggestGainers() {
+        return priceTrackingService.getBiggestGainers();
+    }
+
+    @Operation(summary = "Get biggest losers only (negative price changes)")
+    @GetMapping(path = "/api/prices/biggest-movers/losers")
+    List<Map<String, Object>> getBiggestLosers() {
+        return priceTrackingService.getBiggestLosers();
+    }
+
+    @Operation(summary = "Create a new price record in price tracking table")
     @PostMapping(path = "/api/prices")
     String createPriceRecord(@RequestBody Map<String, Object> request) {
         if (!request.containsKey("cardId") || !request.containsKey("price")) {
@@ -96,7 +136,7 @@ public class PriceTrackingController {
         return success;
     }
 
-    // PUT to update price record by ID
+    @Operation(summary = "Update price record for a single card in price tracking table")
     @PutMapping(path = "/api/prices/{id}")
     PriceTracking updatePriceRecord(@PathVariable Long id, @RequestBody Map<String, Object> request) {
         PriceTracking priceRecord = priceTrackingRepository.findById(id).orElse(null);
@@ -114,7 +154,7 @@ public class PriceTrackingController {
         return priceTrackingRepository.findById(id).orElse(null);
     }
 
-    // DELETE price record by table index for one specific entry.
+    @Operation(summary = "Delete a single price record by table Id in price tracking table")
     @DeleteMapping(path = "/api/prices/{id}")
     public ResponseEntity<?> deletePriceRecord(@PathVariable Long id) {
         if (!priceTrackingRepository.existsById(id)) {
@@ -124,7 +164,7 @@ public class PriceTrackingController {
         return ResponseEntity.ok().build();
     }
 
-    //DELETE by cardID so all 3 records for one card in price table.
+    @Operation(summary = "Delete all price records for a card in price tracking table by cardID")
     @DeleteMapping(path = "/api/prices/card/{cardId}")
     String deletePriceRecordsByCardId(@PathVariable Long cardId) {
         List<PriceTracking> records = priceTrackingRepository.findByCardId(cardId);

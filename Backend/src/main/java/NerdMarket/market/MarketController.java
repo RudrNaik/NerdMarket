@@ -1,15 +1,16 @@
-//CRUD REST endpoints - will handle GET, POST, PUT, DELETE requests.
-
 package NerdMarket.market;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
-
+@Tag(name = "Market", description = "Trading card CRUD and external API fetch endpoints")
 @RestController
 public class MarketController {
 
@@ -22,43 +23,43 @@ public class MarketController {
     private final String success = "{\"message\":\"success\"}";
     private final String error = "{\"message\":\"error\"}";
 
-    // GET all cards
+    @Operation(summary = "Get all cards")
     @GetMapping(path = "/api/cards")
     List<Market> getAllCards() {
         return marketRepository.findAll();
     }
 
-    // GET specific card by ID
+    @Operation(summary = "Get a card by its ID")
     @GetMapping(path = "/api/cards/{id}")
     Market getCardById(@PathVariable Long id) {
         return marketRepository.findCardById(id);
     }
 
-    // GET cards by type of trading card > Pokemon, MTG, Yu-Gi-Oh, Baseball, etc..
+    @Operation(summary = "Get cards by type (POKEMON, MTG, Yu-GI-OH)")
     @GetMapping(path = "/api/cards/type/{cardType}")
     List<Market> getCardsByCardType(@PathVariable String cardType) {
         return marketRepository.findByCardType(cardType);
     }
 
-    //GET top 10 most expensive cards in the entire DB
+    @Operation(summary = "Get top 10 most expensive cards across all three types")
     @GetMapping(path ="/api/cards/top10")
     List<Market> getTop10MostExpensiveCards() {
         return marketRepository.findTop10ByOrderByPriceDesc();
     }
 
-    //GET top 10 most expensive cards by card type
+    @Operation(summary = "Get top 10 most expensive cards for a specific card type")
     @GetMapping(path = "/api/cards/top10/{cardType}")
     List<Market> getTop10MostExpensiveCardsByCardType(@PathVariable String cardType) {
         return marketRepository.findTop10ByCardTypeOrderByPriceDesc(cardType);
     }
 
-    //GET search by card name
+    @Operation(summary = "Search cards by name, case-insensitive")
     @GetMapping(path = "/api/cards/search/{cardName}")
     List<Market> getCardsByCardName(@PathVariable String cardName) {
         return marketRepository.findByCardNameContainingIgnoreCase(cardName);
     }
 
-    // POST creating new card
+    @Operation(summary = "Create a new card")
     @PostMapping(path = "/api/cards")
     String createCard(@RequestBody Market card) {
         if (card == null) {
@@ -68,7 +69,7 @@ public class MarketController {
         return success;
     }
 
-    // PUT update card by ID
+    @Operation(summary = "Update a card by its ID")
     @PutMapping(path = "/api/cards/{id}")
     Market updateCard(@PathVariable Long id, @RequestBody Market request) {
         Market card = marketRepository.findCardById(id);
@@ -80,7 +81,7 @@ public class MarketController {
         return marketRepository.findCardById(id);
     }
 
-    // DELETE card by ID
+    @Operation(summary = "Delete card by its ID")
     @DeleteMapping(path = "/api/cards/{id}")
     String deleteCard(@PathVariable Long id) {
         if (!marketRepository.existsById(id)) {
@@ -90,7 +91,7 @@ public class MarketController {
         return success;
     }
 
-    //DELETE by Card Type
+    @Operation(summary = "Delete all cards of a specific type")
     @DeleteMapping(path = "/api/cards/type/{cardType}")
     String deleteCardsByCardType(@PathVariable String cardType) {
         List<Market> cards = marketRepository.findByCardType(cardType);
@@ -101,19 +102,19 @@ public class MarketController {
         return success;
     }
 
-    //FETCH ALL pokemon cards from API tcgdex
+    @Operation(summary = "Fetch all POKEMON cards from the external API and store in Market database")
     @GetMapping(path = "/api/cards/pokemon/fetch-all")
     String fetchAllPokemonCards() {
         return marketService.fetchAllPokemonCards();
     }
 
-    //FETCH ALL MTG cards from API scryfall
+    @Operation(summary = "Fetch all MTG cards from external API and store in Market database")
     @GetMapping(path = "/api/cards/mtg/fetch-all")
     String fetchAllMtgCards() {
         return marketService.fetchAllMTGCards();
     }
 
-    //FETCH all Yugioh cards
+    @Operation(summary = "Fetch all YU-GI-OH cards from the external API and store in Market database")
     @GetMapping(path = "/api/cards/yugioh/fetch-all")
     String fetchAllYugiohCards() {
         return marketService.fetchAllYugiohCards();

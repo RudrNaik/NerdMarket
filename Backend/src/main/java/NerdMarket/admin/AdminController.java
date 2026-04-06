@@ -6,6 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Admin", description = "Admin-only user management endpoints")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -13,6 +17,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @Operation(summary = "Get all users (admin only)")
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers(@RequestParam Long userId) {
         try {
@@ -23,6 +28,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "Delete a user by ID (admin only)")
     @DeleteMapping("/users/{targetId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
@@ -33,6 +39,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "Promote a user to admin (admin only)")
     @PutMapping("/users/{targetId}/promote")
     public ResponseEntity<?> promoteUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
@@ -42,6 +49,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "Demote a user from admin (admin only)")
     @PutMapping("/users/{targetId}/demote")
     public ResponseEntity<?> demoteUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
@@ -51,6 +59,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "Unlock a locked user account (admin only)")
     @PostMapping("/users/{targetId}/unlock")
     public ResponseEntity<?> unlockUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
@@ -60,6 +69,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "Activate a deactivated user account (admin only)")
     @PutMapping("/users/{targetId}/activate")
     public ResponseEntity<?> activateUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
@@ -69,6 +79,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "Deactivate a user account (admin only)")
     @PutMapping("/users/{targetId}/deactivate")
     public ResponseEntity<?> deactivateUser(@PathVariable Long targetId, @RequestParam Long userId) {
         try {
