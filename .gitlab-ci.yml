@@ -3,6 +3,7 @@ stages:
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  DISCORD_WEBHOOK: "https://discord.com/api/webhooks/1470458727512412212/cE_zJ4I3ZIHMem0OwyLhig6wPhT9XJLgSkx_vxKa2-U3OpXiIirLzLBOhjE4FmX_Rd-7"
 
 cache:
   paths:
@@ -10,20 +11,18 @@ cache:
 
 deploy:
   stage: deploy
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   script:
     # Build backend
-    - cd Backend
-    - mvn clean package -DskipTests
-    - cd ..
+    - cd Backend && mvn clean package -DskipTests && cd ..
 
     # Grab commit message
     - COMMIT_MSG=$(echo "$CI_COMMIT_MESSAGE" | head -n 1)
 
     # Send Discord notification - Starting
     - |
-      curl -H "Content-Type: application/json" -X POST -d "{
+      curl -s -H "Content-Type: application/json" -X POST -d "{
         \"embeds\": [{
           \"title\": \"Deployment Started\",
           \"description\": \"Deploying Backend to production server...\",
@@ -36,24 +35,24 @@ deploy:
           \"footer\": {\"text\": \"$COMMIT_MSG\"},
           \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
         }]
-      }" "$DISCORD_WEBHOOK"
+      }" "$DISCORD_WEBHOOK" || true
 
     # Copy built jar to app directory
     - mkdir -p ~/app
+    - mkdir -p ~/logs
     - cp Backend/target/demo-0.0.1-SNAPSHOT.jar ~/app/demo-0.0.1-SNAPSHOT.jar
 
     # Restart application
     - |
-      cd ~/app
-
+      # Kill screen session first (brings down the java process with it), then pkill as backup
+      screen -S nerdmarket -X quit 2>/dev/null || true
       pkill -f demo-0.0.1-SNAPSHOT.jar 2>/dev/null || true
       sleep 3
 
-      screen -S nerdmarket -X quit 2>/dev/null || true
-      screen -dmS nerdmarket java -jar demo-0.0.1-SNAPSHOT.jar
-      sleep 2
+      screen -dmS nerdmarket java -jar ~/app/demo-0.0.1-SNAPSHOT.jar --logging.file.name=/home/gitlab-runner/logs/backend.log
+      sleep 5
 
-      if screen -list | grep -q nerdmarket; then
+      if screen -list | grep -q nerdmarket && pgrep -f demo-0.0.1-SNAPSHOT.jar > /dev/null; then
         echo "Application started successfully in screen session 'nerdmarket'"
       else
         echo "Failed to start application"
@@ -62,7 +61,7 @@ deploy:
 
     # Send Discord notification - Success
     - |
-      curl -H "Content-Type: application/json" -X POST -d "{
+      curl -s -H "Content-Type: application/json" -X POST -d "{
         \"embeds\": [{
           \"title\": \"Deployment Successful\",
           \"description\": \"Backend deployed and running successfully!\n\n**Server:** http://coms-3090-022.class.las.iastate.edu:8080\n**Location:** ~/app/\n**Screen Session:** nerdmarket\",
@@ -75,12 +74,12 @@ deploy:
           \"footer\": {\"text\": \"$COMMIT_MSG\"},
           \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
         }]
-      }" "$DISCORD_WEBHOOK"
+      }" "$DISCORD_WEBHOOK" || true
 
   after_script:
     - |
       if [ "$CI_JOB_STATUS" = "failed" ]; then
-        curl -H "Content-Type: application/json" -X POST -d "{
+        curl -s -H "Content-Type: application/json" -X POST -d "{
           \"embeds\": [{
             \"title\": \"Deployment Failed\",
             \"description\": \"Backend deployment failed. Check pipeline logs.\n\n**Pipeline:** $CI_PIPELINE_URL\",
@@ -92,5 +91,5 @@ deploy:
             ],
             \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
           }]
-        }" "$DISCORD_WEBHOOK"
+        }" "$DISCORD_WEBHOOK" || true
       fi
