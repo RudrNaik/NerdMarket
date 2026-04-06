@@ -172,12 +172,10 @@ public class MarketService {
                                     Market marketCard = findOrCreate((String) card.get("name"), (String) card.get("set_name"), "MTG");
                                     marketCard.setCardRarity((String) card.get("rarity"));
                                     //Get price of card
-                                    double price = 0.0;
                                     Map prices = (Map) card.get("prices");
                                     if (prices != null && prices.get("usd") != null) {
-                                        price = Double.parseDouble((String) prices.get("usd"));
+                                        marketCard.setPrice(Double.parseDouble((String) prices.get("usd")));
                                     }
-                                    marketCard.setPrice(price);
 
                                     //Get image URL of card
                                     Map imageUris = (Map) card.get("image_uris");
@@ -186,7 +184,9 @@ public class MarketService {
                                     }
                                     marketRepository.save(marketCard);
                                     totalCards++;
-                                } catch (Exception e) {}
+                                } catch (Exception e) {
+                                    System.out.println("Failed to fetch MTG card: " + card.get("name") + " | " + e.getClass().getSimpleName() + " | " + e.getMessage());
+                                }
                             }
                         }
                         //Checks next page in the API
