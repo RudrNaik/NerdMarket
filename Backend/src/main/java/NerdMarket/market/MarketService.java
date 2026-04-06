@@ -14,7 +14,15 @@ public class MarketService {
 
     @Autowired
     private MarketRepository marketRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public MarketService() {
+        org.springframework.http.client.SimpleClientHttpRequestFactory factory =
+            new org.springframework.http.client.SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(10000);
+        factory.setReadTimeout(15000);
+        this.restTemplate = new RestTemplate(factory);
+    }
 
     private Market findOrCreate(String name, String set, String type) {
         Market existing = marketRepository.findByCardNameAndCardSetAndCardType(name, set, type);
@@ -108,6 +116,9 @@ public class MarketService {
                                 }
                                 marketRepository.save(marketCard);
                                 totalCards++;
+                                if (totalCards % 1000 == 0 && totalCards > 0) {
+                                    System.out.println("Pokemon progress: " + totalCards + " cards processed (set " + currentSet + "/" + totalSets + ")");
+                                }
                             }
                             // Small delay to avoid skipping cards
                             Thread.sleep(50);
