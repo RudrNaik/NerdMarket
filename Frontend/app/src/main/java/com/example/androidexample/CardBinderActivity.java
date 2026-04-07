@@ -22,6 +22,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.data.CandleData;
@@ -69,7 +70,7 @@ public class CardBinderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cardlookup);
+        setContentView(R.layout.activity_cardbinder);
 
         //Search
         btnSearch      = findViewById(R.id.card_search_btn);
@@ -93,8 +94,6 @@ public class CardBinderActivity extends AppCompatActivity {
         cardSetEdit    = findViewById(R.id.card_set_edit);
         cardRarityEdit = findViewById(R.id.card_rarity_edit);
         cardPriceEdit  = findViewById(R.id.card_price_edit);
-        cardEditBtn    = findViewById(R.id.card_edit_btn);
-        cardSaveBtn    = findViewById(R.id.card_save_btn);
 
         returnToMain = findViewById(R.id.cardlookup_to_main_button);
 
@@ -109,8 +108,6 @@ public class CardBinderActivity extends AppCompatActivity {
         }
 
         btnSearch.setOnClickListener(v -> handleSearch());
-
-        cardEditBtn.setOnClickListener(v -> toggleEditMode(true));
 
         returnToMain.setOnClickListener(v -> {
             Intent intent = new Intent(CardBinderActivity.this, MainActivity.class);
@@ -144,7 +141,7 @@ public class CardBinderActivity extends AppCompatActivity {
             JSONObject c = response.getJSONObject(i);
 
             View inflated = LayoutInflater.from(this)
-                    .inflate(R.layout.activity_cardlookup, null, false);
+                    .inflate(R.layout.activity_cardbinder, null, false);
 
             CardView clonedCard = inflated.findViewById(R.id.card_view);
 
@@ -167,33 +164,10 @@ public class CardBinderActivity extends AppCompatActivity {
             CandleStickChart chart = clonedCard.findViewById(R.id.candleStick);
             fetchAndRenderChart(cardId, chart);
 
-            Button btnEdit = clonedCard.findViewById(R.id.card_edit_btn);
+            Button btnBinderRemove = clonedCard.findViewById(R.id.card_removeFromBinder_btn);
 
-            //blocks the button from ever being visible if not an admin
-            if(!isAdmin){
-                btnEdit.setVisibility(View.GONE);
-            }
-
-            Button btnSave = clonedCard.findViewById(R.id.card_save_btn);
-
-            btnEdit.setOnClickListener(v -> {
-                // Copy current info into the edit fields
-                ((EditText) clonedCard.findViewById(R.id.card_name_edit)).setText(((TextView) clonedCard.findViewById(R.id.card_name)).getText().toString().replace("Name: ", ""));
-                ((EditText) clonedCard.findViewById(R.id.card_type_edit)).setText(((TextView) clonedCard.findViewById(R.id.card_type)).getText().toString().replace("Type: ", ""));
-                ((EditText) clonedCard.findViewById(R.id.card_set_edit)).setText(((TextView) clonedCard.findViewById(R.id.card_set)).getText().toString().replace("Set: ", ""));
-                ((EditText) clonedCard.findViewById(R.id.card_rarity_edit)).setText(((TextView) clonedCard.findViewById(R.id.card_rarity)).getText().toString().replace("Rarity: ", ""));
-                ((EditText) clonedCard.findViewById(R.id.card_price_edit)).setText(((TextView) clonedCard.findViewById(R.id.card_price)).getText().toString().replace("Price: $", ""));
-
-                clonedCard.findViewById(R.id.card_name).setVisibility(View.GONE);    clonedCard.findViewById(R.id.card_name_edit).setVisibility(View.VISIBLE);
-                clonedCard.findViewById(R.id.card_type).setVisibility(View.GONE);    clonedCard.findViewById(R.id.card_type_edit).setVisibility(View.VISIBLE);
-                clonedCard.findViewById(R.id.card_set).setVisibility(View.GONE);     clonedCard.findViewById(R.id.card_set_edit).setVisibility(View.VISIBLE);
-                clonedCard.findViewById(R.id.card_rarity).setVisibility(View.GONE);  clonedCard.findViewById(R.id.card_rarity_edit).setVisibility(View.VISIBLE);
-                clonedCard.findViewById(R.id.card_price).setVisibility(View.GONE);   clonedCard.findViewById(R.id.card_price_edit).setVisibility(View.VISIBLE);
-                btnEdit.setVisibility(View.GONE);
-                btnSave.setVisibility(View.VISIBLE);
-            });
-
-            btnSave.setOnClickListener(v -> makeJsonObjPutReq(cardId, imgUrl, clonedCard));
+            btnBinderRemove.setVisibility(View.VISIBLE);
+            btnBinderRemove.setOnClickListener(v-> deleteCard(cardId));
 
             ((ViewGroup) clonedCard.getParent()).removeView(clonedCard);
             cardListContainer.addView(clonedCard);
@@ -237,6 +211,33 @@ public class CardBinderActivity extends AppCompatActivity {
         };
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
+    }
+
+    private void deleteCard(String id) {
+        String url = BASE_URL + username + "/binder/" + id;
+
+        StringRequest request = new StringRequest(
+                Request.Method.DELETE, url,
+                response -> {
+                    Toast.makeText(this, "card removed from binder", Toast.LENGTH_SHORT).show();
+                    fetchCards();
+                }, error -> {
+                    String msg = "remove failed.";
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        msg = new String(error.networkResponse.data);
+                    }
+                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
     // PUT /api/cards/{id}

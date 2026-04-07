@@ -103,7 +103,6 @@ public class CardSearchActivity extends AppCompatActivity {
         cardSaveBtn    = findViewById(R.id.card_save_btn);
 
         //Saving cards to binder
-        cardBinderRemovebtn = findViewById(R.id.card_removeFromBinder_btn);
         cardBinderSavebtn = findViewById(R.id.card_addTobinder_btn);
 
         //Nav to main.
@@ -203,7 +202,6 @@ public class CardSearchActivity extends AppCompatActivity {
             Button btnSave = clonedCard.findViewById(R.id.card_save_btn);
 
             Button btnBinderSave   = clonedCard.findViewById(R.id.card_addTobinder_btn);
-            Button btnBinderRemove = clonedCard.findViewById(R.id.card_removeFromBinder_btn);
 
             btnBinderSave.setOnClickListener(v -> addCardToBinder(cardId));
 
@@ -222,7 +220,6 @@ public class CardSearchActivity extends AppCompatActivity {
                 clonedCard.findViewById(R.id.card_price).setVisibility(View.GONE);   clonedCard.findViewById(R.id.card_price_edit).setVisibility(View.VISIBLE);
                 btnEdit.setVisibility(View.GONE);
                 btnSave.setVisibility(View.VISIBLE);
-                cardBinderSavebtn.setVisibility(View.GONE);
             });
 
             btnSave.setOnClickListener(v -> makeJsonObjPutReq(cardId, imgUrl, clonedCard));

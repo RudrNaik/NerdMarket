@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Card Lookup"
+        android:text="Card Binder"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="20dp"
@@ -227,57 +227,16 @@
                         android:layout_marginTop="12dp">
 
                         <Button
-                            android:id="@+id/card_edit_btn"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Edit"
-                            android:textColor="#ffffff"
-                            android:backgroundTint="#1565C0"
-                            android:layout_marginEnd="4dp"/>
-
-                        <Button
-                            android:id="@+id/card_save_btn"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Save"
-                            android:textColor="#ffffff"
-                            android:backgroundTint="#2e7d32"
-                            android:visibility="gone"
-                            android:layout_marginStart="4dp"/>
-
-                    </LinearLayout>
-
-                    <!--            Add and remove from binder button-->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="12dp">
-
-                        <Button
-                            android:id="@+id/card_addTobinder_btn"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Add To Binder"
-                            android:textColor="#ffffff"
-                            android:backgroundTint="#1565C0"
-                            android:layout_marginEnd="4dp"/>
-
-                        <Button
                             android:id="@+id/card_removeFromBinder_btn"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Remove From Binder"
                             android:textColor="#ffffff"
-                            android:backgroundTint="#2e7d32"
-                            android:visibility="gone"
                             android:layout_marginStart="4dp"/>
 
                     </LinearLayout>
+
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
