@@ -42,7 +42,7 @@ public class NotificationScheduler {
             notification.setSentAt(LocalDateTime.now());
             notificationRepository.save(notification);
             notificationService.deliverToAllUsers(notification);
-            NotificationSocket.broadcast("[" + notification.getType() + "] " + notification.getTitle() + ": " + notification.getMessage());
+            notificationService.broadcastScheduledNotification(notification);
         }
     }
 

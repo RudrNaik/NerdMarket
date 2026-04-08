@@ -3,6 +3,7 @@ package NerdMarket.notifications;
 import NerdMarket.users.UserRepository;
 import NerdMarket.users.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class NotificationService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     //Admin creates notification (broadcasted to all users)
     //If scheduledAt is set, it will be sent later by the schedular.
@@ -46,7 +50,7 @@ public class NotificationService {
         if (scheduledAt == null) {
             deliverToAllUsers(notification);
             //push to all connected users via WebSocket
-            NotificationSocket.broadcast("[" + type + "] " + title + ": " + message);
+            messagingTemplate.convertAndSend("/topic/notifications", "[" + type + "] " + title + ": " + message);
         }
 
         return notification;
@@ -72,9 +76,15 @@ public class NotificationService {
         userNotificationRepository.save(userNotification);
 
         //Push to the specific user via WebSocket if they're connected
-        NotificationSocket.sendMessageToUser(recipient.getUsername(), "[CARD_UPDATE] " + title + ": " + message);
+        messagingTemplate.convertAndSend("/topic/notifications/" + recipient.getUsername(), "[CARD_UPDATE] " + title + ": " + message);
 
         return notification;
+    }
+
+    //Push a scheduled notification to all connected users via WebSocket
+    public void broadcastScheduledNotification(Notification notification) {
+        messagingTemplate.convertAndSend("/topic/notifications",
+                "[" + notification.getType() + "] " + notification.getTitle() + ": " + notification.getMessage());
     }
 
     //Deliver a notification to all active users

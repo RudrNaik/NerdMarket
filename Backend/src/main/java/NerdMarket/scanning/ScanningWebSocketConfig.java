@@ -15,13 +15,15 @@ public class ScanningWebSocketConfig implements WebSocketMessageBrokerConfigurer
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue");
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/scanning")
+                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws/notifications")
                 .setAllowedOriginPatterns("*");
     }
 
