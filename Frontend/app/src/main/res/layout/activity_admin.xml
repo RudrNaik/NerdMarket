@@ -299,7 +299,105 @@
             </LinearLayout>
 
             <Button
-        android:id="@+id/admin_to_carddetails_btn"
+                android:id="@+id/admin_create_notif_btn"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Create Notification"
+                android:textSize="20sp"
+                android:textColor="#ffffff"/>
+
+            <LinearLayout
+                android:id="@+id/admin_create_notif_container"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Type (e.g. GENERAL):"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/admin_notif_type_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="GENERAL"
+                    android:inputType="text"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#888888"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Title:"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/admin_notif_title_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Notification title"
+                    android:inputType="text"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#888888"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Message:"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/admin_notif_message_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Notification message"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:gravity="top"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#888888"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Schedule (optional // year-month-day-Hours:Mins:Secs):"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/admin_notif_scheduledat_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="2026-04-10T08:00:00"
+                    android:inputType="text"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#888888"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:id="@+id/admin_send_notif_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Send Notification"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"/>
+
+            </LinearLayout>
+
+            <Button
+        android:id="@+id/admin_showAllAccounts_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

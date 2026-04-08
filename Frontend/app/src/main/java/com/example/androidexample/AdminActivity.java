@@ -2,6 +2,7 @@ package com.example.androidexample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,9 +23,19 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+
 public class AdminActivity extends AppCompatActivity {
 
     private static final String API_URL = "http://coms-3090-022.class.las.iastate.edu:8080/admin";
+    private static final String WS_BASE_URL = "ws://coms-3090-022.class.las.iastate.edu:8080/notifications/";
+    private WebSocket webSocket;
+    private OkHttpClient client;
+
+
 
     // Activate/Deactivate
     private Button activateDeacButton;
@@ -60,6 +71,12 @@ public class AdminActivity extends AppCompatActivity {
 
     // Back to Main
     private Button toMainButton;
+
+    // Notifications
+    private Button createNotificationButton;
+    private LinearLayout createNotificationContainer;
+    private EditText notifTitleField, notifMessageField, notifTypeField, notifScheduledAtField;
+    private Button sendNotifBtn;
 
     private int id;
 
@@ -102,13 +119,24 @@ public class AdminActivity extends AppCompatActivity {
         deleteBtn            = findViewById(R.id.admin_delete_btn);
 
         // ShowAllAccounts button.
-        cardDetailsButton    = findViewById(R.id.admin_to_carddetails_btn);
+        cardDetailsButton    = findViewById(R.id.admin_showAllAccounts_btn);
         accountCard          = findViewById(R.id.account_card);
         accountCardDetail    = findViewById(R.id.admin_account_cardDetail);
         accountCardDetailName= findViewById(R.id.admin_account_cardDetail_name);
 
         // Back to main
         toMainButton         = findViewById(R.id.admin_to_main_btn);
+
+        // notifications
+        createNotificationButton   = findViewById(R.id.admin_create_notif_btn);
+        createNotificationContainer= findViewById(R.id.admin_create_notif_container);
+        notifTitleField            = findViewById(R.id.admin_notif_title_field);
+        notifMessageField          = findViewById(R.id.admin_notif_message_field);
+        notifTypeField             = findViewById(R.id.admin_notif_type_field);
+        notifScheduledAtField      = findViewById(R.id.admin_notif_scheduledat_field);
+        sendNotifBtn               = findViewById(R.id.admin_send_notif_btn);
+
+        createNotificationContainer.setVisibility(View.GONE);
 
         activateDeacContainer.setVisibility(View.GONE);
         promoteDemoteContainer.setVisibility(View.GONE);
@@ -193,6 +221,21 @@ public class AdminActivity extends AppCompatActivity {
 
         cardDetailsButton.setOnClickListener(v -> getAllUsersRequest());
 
+        createNotificationButton.setOnClickListener(v -> toggle(createNotificationContainer));
+
+        sendNotifBtn.setOnClickListener(v -> {
+            String title     = notifTitleField.getText().toString().trim();
+            String message   = notifMessageField.getText().toString().trim();
+            String type      = notifTypeField.getText().toString().trim();
+            String scheduled = notifScheduledAtField.getText().toString().trim();
+
+            if (title.isEmpty() || message.isEmpty()) {
+                Toast.makeText(this, "Title and message are required", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            createNotificationRequest(title, message, type.isEmpty() ? "GENERAL" : type, scheduled.isEmpty() ? null : scheduled);
+        });
+
 
         toMainButton.setOnClickListener(v -> {
             Intent intent = new Intent(AdminActivity.this, MainActivity.class);
@@ -201,6 +244,8 @@ public class AdminActivity extends AppCompatActivity {
             intent.putExtra("username", username);
             startActivity(intent);
         });
+
+        WebSocketInit();
     }
 
     //Toggle helper to switch between views toggled on or off.
@@ -391,6 +436,96 @@ public class AdminActivity extends AppCompatActivity {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 return headers;
+            }
+        };
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    // Websocket stuff:
+
+    //Websocket init
+    private void WebSocketInit() {
+        client = new OkHttpClient();
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(WS_BASE_URL + username)
+                .build();
+
+        webSocket = client.newWebSocket(request, new WebSocketListener() {
+
+            @Override
+            public void onOpen(WebSocket ws, Response response) {
+                Log.d("WS_NOTIF", "Connected: " + username);
+            }
+
+            @Override
+            public void onClosing(WebSocket ws, int code, String reason) {
+                ws.close(1000, null);
+                Log.d("WS_NOTIF", "Closing: " + reason);
+            }
+
+            @Override
+            public void onFailure(WebSocket ws, Throwable t, Response response) {
+                Log.e("WS_NOTIF", "Error: " + t.getMessage());
+                runOnUiThread(() ->
+                        Toast.makeText(AdminActivity.this, "Connection failed", Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
+    }
+
+    // POST /notifications
+    private void createNotificationRequest(String title, String message, String type, String scheduledAt) {
+        if (id == -1) {
+            Toast.makeText(this, "Bad user session", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = "http://coms-3090-022.class.las.iastate.edu:8080/notifications";
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST, url,
+                response -> {
+                    Toast.makeText(this,
+                            scheduledAt != null ? "Notification scheduled!" : "Notification sent!",
+                            Toast.LENGTH_SHORT).show();
+                    // Clear fields after send
+                    notifTitleField.setText("");
+                    notifMessageField.setText("");
+                    notifTypeField.setText("");
+                    notifScheduledAtField.setText("");
+                },
+                error -> {
+                    String msg = "Failed to create notification.";
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        msg = new String(error.networkResponse.data);
+                    }
+                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            public byte[] getBody() {
+                try {
+                    JSONObject body = new JSONObject();
+                    body.put("senderId", id);
+                    body.put("title", title);
+                    body.put("message", message);
+                    body.put("type", type);
+                    if (scheduledAt != null) {
+                        body.put("scheduledAt", scheduledAt);
+                    }
+                    return body.toString().getBytes("utf-8");
+                } catch (Exception e) {
+                    return null;
+                }
             }
         };
 
