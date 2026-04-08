@@ -93,9 +93,9 @@
                 app:layout_constraintTop_toTopOf="@id/cardBox"
                 app:layout_constraintStart_toStartOf="@id/cardBox"
                 app:layout_constraintEnd_toEndOf="@id/cardBox"
-                app:layout_constraintWidth_percent="0.35"
+                app:layout_constraintWidth_percent="0.38"
                 app:layout_constraintHeight_percent="0.048"
-                android:layout_marginEnd="57dp"/>
+                android:layout_marginEnd="47dp"/>
 
             <ImageButton
                 android:id="@+id/cameraSearch_back_btn"

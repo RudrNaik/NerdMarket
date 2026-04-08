@@ -238,16 +238,16 @@ public class CameraSearchActivity extends AppCompatActivity {
         Log.d("CropDebug", "Image: " + screenWidth + "x" + screenHeight);
 
         int cardLeft   = (int) (screenWidth  * 0.27);
-        int cardTop    = (int) (screenHeight * 0.26);
+        int cardTop    = (int) (screenHeight * 0.29);
         int cardWidth  = (int) (screenWidth  * 0.45);
         int cardHeight = (int) (screenHeight * 0.48);
 
         Log.d("CropDebug", "cardLeft=" + cardLeft + " cardTop=" + cardTop + " cardWidth=" + cardWidth + " nameHeight=" + cardHeight);
 
-        int nameLeft   = cardLeft + (int) (cardWidth * 0.05);
+        int nameLeft   = cardLeft + (int) (cardWidth * 0.13);
         int nameTop    = cardTop;
-        int nameWidth  = (int) (cardWidth * 0.60);
-        int nameHeight = (int) (cardHeight * 0.08);
+        int nameWidth  = (int) (cardWidth * 0.40);
+        int nameHeight = (int) (cardHeight * 0.06);
 
         return Bitmap.createBitmap(portraitImage, nameLeft, nameTop, nameWidth, nameHeight);
     //    return Bitmap.createBitmap(portraitImage, cardLeft, cardTop, cardWidth, cardHeight);
@@ -262,7 +262,7 @@ public class CameraSearchActivity extends AppCompatActivity {
         Log.d("CropDebug", "Image: " + screenWidth + "x" + screenHeight);
 
         int cardLeft   = (int) (screenWidth  * 0.27);
-        int cardTop    = (int) (screenHeight * 0.26);
+        int cardTop    = (int) (screenHeight * 0.29);
         int cardWidth  = (int) (screenWidth  * 0.45);
         int cardHeight = (int) (screenHeight * 0.48);
 
@@ -278,6 +278,8 @@ public class CameraSearchActivity extends AppCompatActivity {
             dir.mkdirs();
             copyTessDataFiles(dir);
         }
+        dir.mkdirs();
+        copyTessDataFiles(dir);
         tess.init(getFilesDir().getAbsolutePath(), "eng");
         tess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -");
 
@@ -287,6 +289,7 @@ public class CameraSearchActivity extends AppCompatActivity {
 
         return result;
     }
+
 
     //Helper method based on: https://stackoverflow.com/questions/3373860/convert-a-bitmap-to-grayscale-in-android
     public Bitmap toGrayscale(Bitmap bmpOriginal)
