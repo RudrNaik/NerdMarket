@@ -53,6 +53,15 @@
     </Button>
 
     <Button
+        android:id="@+id/to_notifs_btn"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="To Notifications"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
+    <Button
         android:id="@+id/back_to_signup_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"

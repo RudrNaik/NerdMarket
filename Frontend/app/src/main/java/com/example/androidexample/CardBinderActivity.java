@@ -72,10 +72,6 @@ public class CardBinderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cardbinder);
 
-        //Search
-        btnSearch      = findViewById(R.id.card_search_btn);
-        searchEditText = findViewById(R.id.card_search_field);
-
         //Card information
         cardView            = findViewById(R.id.card_view);
         cardImage           = findViewById(R.id.card_image);
@@ -107,8 +103,6 @@ public class CardBinderActivity extends AppCompatActivity {
             username = extras.getString("username"); // used when moving back to the main view.
         }
 
-        btnSearch.setOnClickListener(v -> handleSearch());
-
         returnToMain.setOnClickListener(v -> {
             Intent intent = new Intent(CardBinderActivity.this, MainActivity.class);
             intent.putExtra("id", id);
@@ -118,20 +112,6 @@ public class CardBinderActivity extends AppCompatActivity {
         });
 
         fetchCards();
-    }
-
-
-    private void handleSearch() {
-        String query = searchEditText.getText().toString();
-
-        if (query.isEmpty()) {
-            Toast.makeText(this, "Enter a card name", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        cardView.setVisibility(View.INVISIBLE);
-
-        currentCardId = query;
     }
 
     private void handlePercolate(JSONArray response) throws JSONException {

@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Button deleteAccountButton;
     private Button toAdminButton;
     private Button cardBinderButton;
+    private Button toNotificationsButton;
     private int id;
 
     private String username;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         priceCRUDButton = findViewById(R.id.to_pricecrud_btn);
         biggestMoversButton = findViewById(R.id.to_biggestmovers_btn);
         cardBinderButton = findViewById(R.id.to_cardbinder_btn);
+        toNotificationsButton = findViewById(R.id.to_notifs_btn);
 
 
 
@@ -168,6 +170,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this, CardSearchActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        toNotificationsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("isAdmin", isAdmin);
                 intent.putExtra("username", username);
