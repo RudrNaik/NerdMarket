@@ -6,24 +6,20 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.AuthFailureError;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private Button loginBackButton;
     private Button cardDetailsButton;
     private Button priceCRUDButton;
+    private Button biggestMoversButton;
     private Button signupBackButton;
     private Button deleteAccountButton;
     private Button toAdminButton;
@@ -88,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
         loginBackButton.setVisibility(View.INVISIBLE);
         deleteAccountButton = findViewById(R.id.delete_account_btn);
         priceCRUDButton = findViewById(R.id.to_pricecrud_btn);
+        biggestMoversButton = findViewById(R.id.to_biggestmovers_btn);
         cardBinderButton = findViewById(R.id.to_cardbinder_btn);
+
 
 
         /* extract data passed into this activity from another activity */
@@ -129,6 +128,18 @@ public class MainActivity extends AppCompatActivity {
 
                 /* when signup button is pressed, use intent to switch to Signup Activity */
                 Intent intent = new Intent(MainActivity.this, PriceCrudActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        biggestMoversButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* when signup button is pressed, use intent to switch to Signup Activity */
+                Intent intent = new Intent(MainActivity.this, MoversActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("isAdmin", isAdmin);
                 intent.putExtra("username", username);
