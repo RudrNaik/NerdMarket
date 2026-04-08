@@ -23,7 +23,7 @@
         android:text="{{username}}"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="1dp"
         android:textSize="30dp"
         android:textColor="#ffffff">
     </TextView>
@@ -46,7 +46,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:text="Sign out"
         android:textSize="20sp"
         android:textColor="#ffffff">
@@ -89,6 +89,15 @@
         android:text="To Price Crud"
         android:textColor="#ffffff"
         android:textSize="20sp" />
+    <Button
+        android:id="@+id/to_biggestmovers_btn"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="To Biggest Movers"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
 
     <Button
         android:id="@+id/delete_account_btn"

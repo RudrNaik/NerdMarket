@@ -37,7 +37,7 @@
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".BiggestMoversActivity"
+            android:name=".MoversActivity"
             android:exported="false" />
         <activity
             android:name=".CardSearchActivity"
