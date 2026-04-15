@@ -50,10 +50,15 @@ import java.io.OutputStream;
 import okhttp3.OkHttpClient;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
+import android.os.Bundle;
+
 
 
 public class CameraSearchActivity extends AppCompatActivity {
     private PreviewView previewView;
+    private String  username;
+    private int  id;
+    private boolean isAdmin;
     private ImageButton captureButton;
     private ImageButton backtoSearchButton;
     private ImageCapture imageCapture;
@@ -69,6 +74,13 @@ public class CameraSearchActivity extends AppCompatActivity {
         previewView = findViewById(R.id.cameraSearch_previewView);
         captureButton = findViewById(R.id.cameraSearch_camera_capture_btn);
         backtoSearchButton = findViewById(R.id.cameraSearch_back_btn);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            username = extras.getString("username");
+            id       = extras.getInt("id", -1);
+            isAdmin  = extras.getBoolean("isAdmin", false);
+        }
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
 
@@ -118,14 +130,19 @@ public class CameraSearchActivity extends AppCompatActivity {
                     JSONObject card = topCard.getJSONObject("card");
                     int bundleCardID = card.getInt("id");
                     String returnedCardName = card.getString("cardName");
-                    Intent intent = new Intent(CameraSearchActivity.this, CardSearchActivity.class);
-                    intent.putExtra("bundleCardID", bundleCardID);
-                    startActivity(intent);
 
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), "Match: " + returnedCardName + " Confidence: " + confidence, Toast.LENGTH_LONG).show();
 
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Match: " + returnedCardName +
-                            "Confidence: " + confidence, Toast.LENGTH_LONG).show());
-                    Log.d("STOMP", "Match: " + returnedCardName + "Confidence: " + confidence);
+                        Intent intent = new Intent(CameraSearchActivity.this, CardSearchActivity.class);
+                        intent.putExtra("bundleCardID", bundleCardID);
+                        intent.putExtra("id", id);
+                        intent.putExtra("username", username);
+                        intent.putExtra("isAdmin", isAdmin);
+                        startActivity(intent);
+
+                        Log.d("STOMP", "Match: " + returnedCardName + " Confidence: " + confidence);
+                    });
                 } else {
                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), "No match" + msg, Toast.LENGTH_LONG).show());
                     Log.d("STOMP", "No match " + msg);

@@ -122,6 +122,9 @@ public class CardSearchActivity extends AppCompatActivity {
         }
         cameraSearch.setOnClickListener(v -> {
             Intent intent = new Intent(CardSearchActivity.this, CameraSearchActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("username", username);
+            intent.putExtra("isAdmin", isAdmin);
             startActivity(intent);
         });
 
