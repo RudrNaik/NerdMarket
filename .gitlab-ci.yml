@@ -22,7 +22,7 @@ android-test:
   tags:
    - android_tag
   script:
-    - cd Frontend
+    - cd Frontend/gradlew
     - ./gradlew test
 
 android-build:
@@ -34,7 +34,7 @@ android-build:
   tags:
    - android_tag
   script:
-    - cd Frontend
+    - cd Frontend/gradlew
     - ./gradlew build
   artifacts:
     paths:
