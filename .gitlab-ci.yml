@@ -14,7 +14,7 @@ cache:
     - .m2/repository/
 
 android-test:
-  image: gjandres/android-ci:latest
+  image: afirefly/android-ci:java17
   stage: androidTest
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -26,7 +26,7 @@ android-test:
     - ./gradlew test
 
 android-build:
-  image: gjandres/android-ci:latest
+  image: afirefly/android-ci:java17
   stage: androidBuild
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
