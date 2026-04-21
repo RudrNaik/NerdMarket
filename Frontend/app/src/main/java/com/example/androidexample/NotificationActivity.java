@@ -28,16 +28,51 @@ import ua.naiksoftware.stomp.StompClient;
 
 public class NotificationActivity extends AppCompatActivity {
 
+    /**
+     * List container for the notifications
+     */
     private LinearLayout notificationListContainer;
+    /**
+     * Text field for the amount of unread notifications.
+     */
     private TextView unreadCountText;
+    /**
+     * back button
+     */
     private Button  btnBack;
+
+    /***
+     * Stomp client for websocket.
+     */
     private StompClient stompClient;
+    /**
+     * user's username
+     */
     private String  username;
+    /**
+     * user ID
+     */
     private int  id;
+    /**
+     * Boolean checking if user isadmin
+     */
     private boolean isAdmin;
+    /**
+     * Base URL for the backend
+     */
     private static final String BASE_URL    = "http://coms-3090-022.class.las.iastate.edu:8080/";
+    /**
+     * websocket url
+     */
     private static final String WS_BASE_URL = "ws://coms-3090-022.class.las.iastate.edu:8080/ws/notifications";
 
+    /**
+     * Startup onCreate when the activity is started.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +102,9 @@ public class NotificationActivity extends AppCompatActivity {
         fetchUnreadCount();
     }
 
+    /**
+     * initializes Stomp websocket.
+     */
     @SuppressLint("CheckResult")
     private void stompInit() {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WS_BASE_URL);
@@ -112,6 +150,9 @@ public class NotificationActivity extends AppCompatActivity {
         stompClient.connect();
     }
 
+    /**
+     * Fetches the notifications for the user via ws.
+     */
     private void fetchNotifications() {
         String url = BASE_URL + "notifications/user/" + id;
 
@@ -146,6 +187,9 @@ public class NotificationActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
     }
 
+    /**
+     * fetches the unread notification count.
+     */
     private void fetchUnreadCount() {
         String url = BASE_URL + "notifications/unread/" + id;
 
@@ -159,6 +203,12 @@ public class NotificationActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
     }
 
+    /**
+     * Marks specific notification as read.
+     * @param notifId notification's ID
+     * @param card the card component
+     * @param btnRead the button to mark it as read.
+     */
     private void markAsRead(Long notifId, View card, Button btnRead) {
         String url = BASE_URL + "notifications/" + notifId + "/read";
 
@@ -185,6 +235,16 @@ public class NotificationActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
     }
 
+    /**
+     * Percolates the cards into the card container via inflation
+     * @param notifId the notification ID
+     * @param type notification type
+     * @param title notification title
+     * @param message notification's message
+     * @param timestamp the timestamp for the notification
+     * @param isRead boolean to check if it is read or not
+     * @param insertIndex the index to insert it at.
+     */
     private void percolateCard(Long notifId, String type, String title, String message, String timestamp, boolean isRead, int insertIndex) {
 
         if (title == null || title.isEmpty()) return;
@@ -228,6 +288,9 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method to destroy the stomp client when the activity ends.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
