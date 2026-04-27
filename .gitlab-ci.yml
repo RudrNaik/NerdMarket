@@ -20,7 +20,7 @@ android-test:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/gradlew
   tags:
-   - android_tag
+   - RudraNaik_CICD
   script:
     - cd Frontend
     - ./gradlew test
@@ -32,7 +32,7 @@ android-build:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/gradlew
   tags:
-   - android_tag
+   - RudraNaik_CICD
   script:
     - cd Frontend
     - ./gradlew build
