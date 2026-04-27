@@ -23,7 +23,7 @@
             android:src="@drawable/pngimg_com___glasses_png54332" />
 
         <TextView
-            android:id="@+id/main_username_txt"
+            android:id="@+id/userPage_username_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="{{username}}"
@@ -36,7 +36,7 @@
         </TextView>
 
         <ImageButton
-            android:id="@+id/main_dropdown_btn"
+            android:id="@+id/userPage_dropdown_btn"
             android:layout_width="68dp"
             android:layout_height="68dp"
             android:layout_alignParentEnd="true"
@@ -46,7 +46,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/back_to_login_btn"
+        android:id="@+id/userPage_back_to_login_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -57,16 +57,16 @@
     </Button>
 
     <Button
-        android:id="@+id/to_notifs_btn"
+        android:id="@+id/userPage_to_notifs_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="To Notifications"
+        android:text="Notifications"
         android:textColor="#ffffff"
         android:textSize="20sp" />
 
     <Button
-        android:id="@+id/back_to_signup_btn"
+        android:id="@+id/userPage_back_to_signup_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -76,25 +76,7 @@
     </Button>
 
     <Button
-        android:id="@+id/to_carddetails_btn"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="To Card Details"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/to_cardbinder_btn"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="To Card Binder"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/to_admin_btn"
+        android:id="@+id/userPage_to_admin_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -102,31 +84,11 @@
         android:textColor="#ffffff"
         android:textSize="20sp" />
 
-
     <Button
-        android:id="@+id/to_pricecrud_btn"
+        android:id="@+id/userPage_delete_account_btn"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="To Price Crud"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
-    <Button
-        android:id="@+id/to_biggestmovers_btn"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="To Biggest Movers"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
-
-
-    <Button
-        android:id="@+id/delete_account_btn"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="75dp"
         android:text="Delete Account"
         android:textSize="20sp"
         android:textColor="#ffffff">
@@ -135,10 +97,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="280dp">
 
         <ImageButton
-            android:id="@+id/main_toPortfolio_image"
+            android:id="@+id/userPage_toPortfolio_image"
             android:layout_width="68dp"
             android:layout_height="68dp"
             android:layout_alignParentStart="true"
@@ -146,19 +108,18 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/business_center_24px" />
 
-        <ImageView
-            android:id="@+id/main_home_image"
-            android:layout_width="75dp"
-            android:layout_height="65dp"
+        <ImageButton
+            android:id="@+id/userPage_home_image"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_marginStart="10dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginBottom="1dp"
-            android:src="@drawable/baseline_home_24"
-            android:textColor="#ffffff"
-            android:textSize="30dp" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/baseline_home_24" />
 
         <ImageButton
-            android:id="@+id/main_toSearch_image"
+            android:id="@+id/userPage_toSearch_image"
             android:layout_width="68dp"
             android:layout_height="68dp"
             android:layout_alignParentEnd="true"
@@ -167,6 +128,5 @@
             android:src="@drawable/search_24px" />
 
     </RelativeLayout>
-
 
 </androidx.appcompat.widget.LinearLayoutCompat>
