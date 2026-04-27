@@ -103,6 +103,84 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
+        toNotificationsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(UserActivity.this, NotificationActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        cardBinderButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(UserActivity.this, CardBinderActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        cardDetailsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(UserActivity.this, CardSearchActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        toHomeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        hamburgerDropdownButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                PopupMenu popupMenu = new PopupMenu(UserActivity.this, v);
+                popupMenu.getMenu().add(0, 1, 0, "User Page");
+                popupMenu.getMenu().add(0, 2, 1, "Notifications");
+                if (isAdmin) {
+                    popupMenu.getMenu().add(0, 3, 2, "Admin View");
+                }
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == 1) {
+                            //Go to user page, but we're already there
+                        } else if (item.getItemId() == 2) {
+                            Intent intent = new Intent(UserActivity.this, NotificationActivity.class);
+                            intent.putExtra("id", id);
+                            intent.putExtra("isAdmin", isAdmin);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
+                        } else if (item.getItemId() == 3) {
+                            Intent intent = new Intent(UserActivity.this, AdminActivity.class);
+                            intent.putExtra("id", id);
+                            intent.putExtra("username", extras.getString("username"));
+                            intent.putExtra("isAdmin", isAdmin);
+                            startActivity(intent);
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
     }
 
     void deleteAccountRequest(String password){

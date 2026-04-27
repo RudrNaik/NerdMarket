@@ -46,6 +46,15 @@
                 android:textSize="20sp" />
 
             <Button
+                android:id="@+id/admin_to_priceCrud_btn"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Price CRUD"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <Button
                 android:id="@+id/admin_unlock_btn"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"

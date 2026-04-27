@@ -63,6 +63,9 @@ public class AdminActivity extends AppCompatActivity {
     // Back to Main
     private Button toMainButton;
 
+    // To Price Crud
+    private Button toPriceCrud;
+
     // Notifications
     private Button createNotificationButton;
     private LinearLayout createNotificationContainer;
@@ -116,6 +119,9 @@ public class AdminActivity extends AppCompatActivity {
 
         // Back to main
         toMainButton         = findViewById(R.id.admin_to_main_btn);
+
+        //To Price Crud
+        toPriceCrud          = findViewById(R.id.admin_to_priceCrud_btn);
 
         // notifications
         createNotificationButton   = findViewById(R.id.admin_create_notif_btn);
@@ -229,6 +235,14 @@ public class AdminActivity extends AppCompatActivity {
 
         toMainButton.setOnClickListener(v -> {
             Intent intent = new Intent(AdminActivity.this, MainActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", admin);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        toPriceCrud.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminActivity.this, PriceCrudActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("isAdmin", admin);
             intent.putExtra("username", username);

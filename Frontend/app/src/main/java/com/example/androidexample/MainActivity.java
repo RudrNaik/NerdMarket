@@ -82,17 +82,17 @@ public class MainActivity extends AppCompatActivity {
 
         /* initialize UI elements */
         usernameText = findViewById(R.id.main_username_txt);// link to username textview in the Main activity XML
-        signupBackButton = findViewById(R.id.back_to_signup_btn);
+//        signupBackButton = findViewById(R.id.back_to_signup_btn);
         cardDetailsButton = findViewById(R.id.main_toSearch_image);
-        toAdminButton = findViewById(R.id.to_admin_btn);
-        loginBackButton = findViewById(R.id.back_to_login_btn);
-        signupBackButton.setVisibility(View.INVISIBLE);
-        loginBackButton.setVisibility(View.INVISIBLE);
-        deleteAccountButton = findViewById(R.id.delete_account_btn);
-        priceCRUDButton = findViewById(R.id.to_pricecrud_btn);
-        biggestMoversButton = findViewById(R.id.to_biggestmovers_btn);
+//        toAdminButton = findViewById(R.id.to_admin_btn);
+//        loginBackButton = findViewById(R.id.back_to_login_btn);
+//        signupBackButton.setVisibility(View.INVISIBLE);
+//        loginBackButton.setVisibility(View.INVISIBLE);
+//        deleteAccountButton = findViewById(R.id.delete_account_btn);
+//        priceCRUDButton = findViewById(R.id.to_pricecrud_btn);
+//        biggestMoversButton = findViewById(R.id.to_biggestmovers_btn);
         cardBinderButton = findViewById(R.id.main_toPortfolio_image);
-        toNotificationsButton = findViewById(R.id.to_notifs_btn);
+//        toNotificationsButton = findViewById(R.id.to_notifs_btn);
         hamburgerDropdownButton = findViewById(R.id.main_dropdown_btn);
 
 
@@ -106,85 +106,22 @@ public class MainActivity extends AppCompatActivity {
             isAdmin = extras.getBoolean("isAdmin", false);
             username = extras.getString("username", "Please log out and back in");
             usernameText.setText(extras.getString("username")); // this will come from LoginActivity
-            loginBackButton.setVisibility(View.VISIBLE);            // set new login button visible
-            signupBackButton.setVisibility(View.VISIBLE);           // set new signup button visible
-
-            //check if the user is an admin and make the admin tab visible.
-            if (isAdmin) {
-                toAdminButton.setVisibility(View.VISIBLE);
-            } else {
-                toAdminButton.setVisibility(View.GONE);
-            }
+//            loginBackButton.setVisibility(View.VISIBLE);            // set new login button visible
+//            signupBackButton.setVisibility(View.VISIBLE);           // set new signup button visible
+//
+//            //check if the user is an admin and make the admin tab visible.
+//            if (isAdmin) {
+//                toAdminButton.setVisibility(View.VISIBLE);
+//            } else {
+//                toAdminButton.setVisibility(View.GONE);
+//            }
 
         }
-
-        signupBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when signup button is pressed, use intent to switch to Signup Activity */
-                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        priceCRUDButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when signup button is pressed, use intent to switch to Signup Activity */
-                Intent intent = new Intent(MainActivity.this, PriceCrudActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("isAdmin", isAdmin);
-                intent.putExtra("username", username);
-                startActivity(intent);
-            }
-        });
-
-        biggestMoversButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /* when signup button is pressed, use intent to switch to Signup Activity */
-                Intent intent = new Intent(MainActivity.this, MoversActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("isAdmin", isAdmin);
-                intent.putExtra("username", username);
-                startActivity(intent);
-            }
-        });
-
-        loginBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when login button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteAccountConfirm();
-            }
-        });
 
         cardDetailsButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this, CardSearchActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("isAdmin", isAdmin);
-                intent.putExtra("username", username);
-                startActivity(intent);
-            }
-        });
-
-        toNotificationsButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("isAdmin", isAdmin);
                 intent.putExtra("username", username);
@@ -203,17 +140,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        toAdminButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
-            intent.putExtra("id", id);
-            intent.putExtra("username", extras.getString("username"));
-            intent.putExtra("isAdmin", isAdmin);
-            startActivity(intent);
-            }
-        });
-
         hamburgerDropdownButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -227,7 +153,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == 1) {
-                            //GO TO PROFILE PAGE, WIP
+                            Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                            intent.putExtra("id", id);
+                            intent.putExtra("isAdmin", isAdmin);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
                         } else if (item.getItemId() == 2) {
                             Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
                             intent.putExtra("id", id);
