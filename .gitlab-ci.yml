@@ -1,5 +1,9 @@
 stages:
-  - deploy
+  - mavenDeploy
+  - mavenTests
+  - mavenBuild
+  - androidTest
+  - androidBuild
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
@@ -9,8 +13,59 @@ cache:
   paths:
     - .m2/repository/
 
+android-test:
+  image: afirefly/android-ci:java17
+  stage: androidTest
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod +x ./Frontend/gradlew
+  tags:
+   - RudraNaik_CICD
+  script:
+    - cd Frontend
+    - ./gradlew test
+
+android-build:
+  image: afirefly/android-ci:java17
+  stage: androidBuild
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod +x ./Frontend/gradlew
+  tags:
+   - RudraNaik_CICD
+  script:
+    - cd Frontend
+    - ./gradlew build
+  artifacts:
+    paths:
+    - Android_test/app/build/outputs/
+
+
+
+maven-build:
+  stage: mavenBuild
+  tags:
+    - spring_bootTag
+  script:
+    - cd Backend
+    - mvn clean package
+
+maven-tests:
+  stage: mavenTests
+  tags:
+    - spring_bootTag
+  script:
+    - cd Backend
+    - mvn test
+  artifacts:
+    paths:
+      - Backend/target/*.jar
+
+
 deploy:
-  stage: deploy
+  stage: mavenDeploy
+  tags:
+    - spring_bootTag
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   script:
