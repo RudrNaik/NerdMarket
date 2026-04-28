@@ -25,6 +25,8 @@ public class ScanningWebSocketConfig implements WebSocketMessageBrokerConfigurer
                 .setAllowedOriginPatterns("*");
         registry.addEndpoint("/ws/notifications")
                 .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws/chat")
+                .setAllowedOriginPatterns("*");
     }
 
     @Bean

@@ -12,4 +12,5 @@ public interface BinderRepository extends JpaRepository<Binders, Long> {
     List<Binders> findByUser(Users user);
     Binders findByUserAndCard(Users user, Market card);
     boolean existsByUserAndCard(Users user, Market card);
+    boolean existsByUserIdAndCard_CardType(Long userId, String cardType);
 }
