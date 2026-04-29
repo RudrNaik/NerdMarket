@@ -29,55 +29,162 @@ public class AdminActivity extends AppCompatActivity {
     private static final String API_URL = "http://coms-3090-022.class.las.iastate.edu:8080/admin";
 
     // Activate/Deactivate
+    /**
+     * Button for the activate and deactivate account button
+     */
     private Button activateDeacButton;
+
+    /**
+     * Container for the activate and deactivate account button
+     */
     private LinearLayout activateDeacContainer;
+    /**
+     * Search field for finding a card
+     */
     private EditText cardSearchField;
+    /**
+     * Activate button
+     */
     private Button activateBtn;
+    /**
+     * Deactivate button
+     */
     private Button deactivateBtn;
 
     // Unlock Account
+    /**
+     * Unlock Account button
+     */
     private Button unlockAccountButton;
+    /**
+     * Container for the unlock account UI
+     */
     private LinearLayout unlockAccountContainer;
+    /**
+     * Search field for the unlock account UI
+     */
     private EditText unlockSearchField;
+    /**
+     * request/send button for unlocking an account
+     */
     private Button unlockBtn;
 
     // Promote/Demote
+    /**
+     * Main Ui button for the promote/demote function
+     */
     private Button promoteDemoteButton;
+
     private LinearLayout promoteDemoteContainer;
+    /**
+     * field for selecting the user's ID for promotion/demotion
+     */
     private EditText promoteDemoteField;
+    /**
+     * button to promote selected user
+     */
     private Button promoteBtn;
+    /**
+     * button to demote selected user
+     */
     private Button demoteBtn;
 
     // Delete
+    /**
+     * Button to open the delete account UI
+     */
     private Button deleteAccountButton;
+    /**
+     * Container for the delete account button
+     */
     private LinearLayout deleteContainer;
+    /**
+     * Field to input account to delete
+     */
     private EditText deleteField;
+    /**
+     * Button to send request to delete.
+     */
     private Button deleteBtn;
 
     // Show All Accounts
+    /**
+     * Button to show all of the accounts
+     */
     private Button cardDetailsButton;
+    /**
+     * CardView component for the accounts
+     */
     private CardView accountCard;
+    /**
+     * Container for the account cards
+     */
     private LinearLayout accountCardDetail;
+    /**
+     * The name for said account card.
+     */
     private TextView accountCardDetailName;
 
     // Back to Main
+    /**
+     * to main button
+     */
     private Button toMainButton;
 
     // To Price Crud
     private Button toPriceCrud;
 
     // Notifications
+    /**
+     * Create new notification UI button
+     */
     private Button createNotificationButton;
+    /**
+     * Container to create a new notification
+     */
     private LinearLayout createNotificationContainer;
-    private EditText notifTitleField, notifMessageField, notifTypeField, notifScheduledAtField;
+    /**
+     * Notify Title field
+     */
+    private EditText notifTitleField;
+    /**
+     * Notification message field
+     */
+    private EditText notifMessageField;
+    /**
+     * Notification type field
+     */
+    private EditText notifTypeField;
+    /**
+     * Notification scheduled time field.
+     */
+    private EditText notifScheduledAtField;
+    /**
+     * Send notification button
+     */
     private Button sendNotifBtn;
 
+    /**
+     * user id value
+     */
     private int id;
-
+    /**
+     * value for if the useris an admin or not
+     */
     private boolean admin;
 
+    /**
+     * Value for the user's username
+     */
     private String username;
 
+    /**
+     * Runs when the activity is started
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -250,7 +357,10 @@ public class AdminActivity extends AppCompatActivity {
         });
     }
 
-    //Toggle helper to switch between views toggled on or off.
+    /**
+     * Toggle helper to help views be easier to toggle
+     * @param view Specific view to be toggled
+     */
     private void toggle(View view) {
         if(view.getVisibility() == View.VISIBLE){
             view.setVisibility(View.GONE);
@@ -261,7 +371,9 @@ public class AdminActivity extends AppCompatActivity {
     }
 
 
-    // GET /admin/users?userId={id}
+    /**
+     * handler for path GET /admin/users?userId={id}
+     */
     private void getAllUsersRequest() {
         if (id == -1) { Toast.makeText(this, "Bad user session", Toast.LENGTH_SHORT).show(); return; }
 
@@ -276,10 +388,10 @@ public class AdminActivity extends AppCompatActivity {
                         try {
                             JSONObject user = response.getJSONObject(i);
                             retString +=    "ID: "+ user.getLong("id") +
-                                            "  //  " + user.getString("username") +
-                                            "  //  Active: " + user.getBoolean("active")+
-                                            "  //  Admin: "+ user.getBoolean("admin")+
-                                            "\n";
+                                    "  //  " + user.getString("username") +
+                                    "  //  Active: " + user.getBoolean("active")+
+                                    "  //  Admin: "+ user.getBoolean("admin")+
+                                    "\n";
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -298,7 +410,10 @@ public class AdminActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-    // POST /admin/users{targetId}/unlock
+    /**
+     * Handler for POST /admin/users{targetId}/unlock
+     * @param targetId the specific user to unlock
+     */
     private void unlockRequest(long targetId) {
         if (id == -1) {
             Toast.makeText(getApplicationContext(), "Bad user session", Toast.LENGTH_SHORT).show();
@@ -331,7 +446,11 @@ public class AdminActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-    // PUT /admin/users/{targetId}/activate  OR  /deactivate
+    /**
+     * Handler for PUT /admin/users/{targetId}/activate  OR  /deactivate
+     * @param targetId User ID
+     * @param activate T/F for activation deactivation
+     */
     private void activateDeactivateRequest(long targetId, boolean activate) {
         if (id == -1) {
             Toast.makeText(getApplicationContext(), "Bad user session", Toast.LENGTH_SHORT).show();
@@ -373,7 +492,11 @@ public class AdminActivity extends AppCompatActivity {
     }
 
 
-    // PUT /admin/users/{targetId}/promote  or  /demote
+    /**
+     * handler for PUT /admin/users/{targetId}/promote  or  /demote
+     * @param targetId User ID
+     * @param promote T/F for activation deactivation
+     */
     private void promoteDemoteRequest(long targetId, boolean promote) {
         if (id == -1) {
             Toast.makeText(this, "Bad user session", Toast.LENGTH_SHORT).show();
@@ -413,7 +536,10 @@ public class AdminActivity extends AppCompatActivity {
     }
 
 
-    // DELETE /admin/users/{targetId}?userId={id}
+    /**
+     * handler for DELETE /admin/users/{targetId}?userId={id}
+     * @param targetId User Id
+     */
     private void deleteOtherAccountRequest(long targetId) {
         if (id == -1) {
             Toast.makeText(this, "Bad user session", Toast.LENGTH_SHORT).show();
@@ -444,7 +570,13 @@ public class AdminActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-    // POST /notifications
+    /**
+     * Path for POST /notifications
+     * @param title title of the notification
+     * @param message the notification's message
+     * @param type  The type of the notification
+     * @param scheduledAt   The date and time the notification is scheduled for.
+     */
     private void createNotificationRequest(String title, String message, String type, String scheduledAt) {
         if (id == -1) {
             Toast.makeText(this, "Bad user session", Toast.LENGTH_SHORT).show();

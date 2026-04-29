@@ -46,34 +46,128 @@ import java.util.Objects;
 
 public class CardSearchActivity extends AppCompatActivity {
 
+    /**
+     * search field for the card search
+     */
     private EditText searchEditText;
+    /**
+     * button to search for specific card.
+     */
     private Button btnSearch;
-
+    /**
+     * Cardview container for the cards
+     */
     private CardView cardView;
+    /**
+     * Imageview container for the card's image
+     */
     private ImageView cardImage;
+    /**
+     * Imageview container for the cameras search button
+     */
     private ImageView cameraSearch;
-    private String cardUrl;
-    private TextView cardName, cardType, cardSet, cardRarity, cardPrice;
-
-    private EditText cardNameEdit, cardTypeEdit, cardSetEdit, cardRarityEdit, cardPriceEdit;
-    private Button cardEditBtn, cardSaveBtn;
-    private Button cardBinderSavebtn, cardBinderRemovebtn;
+    /**
+     * The card's name
+     */
+    private TextView cardName;
+    /**
+     * The card's type
+     */
+    private TextView cardType;
+    /**
+     * the card's set.
+     */
+    private TextView cardSet;
+    /**
+     * The card/s rarity
+     */
+    private TextView cardRarity;
+    /**
+     * The card's price
+     */
+    private TextView cardPrice;
+    /**
+     * Card name edit field
+     */
+    private EditText cardNameEdit;
+    /**
+     * Card type edit field
+     */
+    private EditText cardTypeEdit;
+    /**
+     * Card set edit field.
+     */
+    private EditText cardSetEdit;
+    /**
+     * Card rarity edit field
+     */
+    private EditText cardRarityEdit;
+    /**
+     * Card price edit field
+     */
+    private EditText cardPriceEdit;
+    /**
+     * Card editing button
+     */
+    private Button cardEditBtn;
+    /**
+     * Card save button
+     */
+    private Button cardSaveBtn;
+    /**
+     * Save to binder button
+     */
+    private Button cardBinderSavebtn;
+    /**
+     * Card remove from binder button (unused)
+     */
+    private Button cardBinderRemovebtn;
+    /**
+     * Card list container
+     */
     private LinearLayout cardListContainer;
 
+    /**
+     * json array of the cards returned from search
+     */
     private JSONArray cards;
+    /**
+     * the current card's id
+     */
     private String currentCardId;
 
     private ImageView returnToMain;
     private ImageButton cardBinderButton;
     private Button toBiggestMovers;
     private int id;
+    /**
+     * Card's Id from bundle
+     */
     private int bundleCardID;
+    /**
+     * String for the card's iD via bundle
+     */
     private String bundleCardIDString;
+    /**
+     * User's username
+     */
     private String username;
+    /**
+     * Bool to check if user is admin.
+     */
     private boolean isAdmin;
-
+    /**
+     * Base url to the backend
+     */
     private static final String BASE_URL = "http://coms-3090-022.class.las.iastate.edu:8080/api/cards";
 
+    /**
+     * Runs on activity start.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +221,9 @@ public class CardSearchActivity extends AppCompatActivity {
         }
         cameraSearch.setOnClickListener(v -> {
             Intent intent = new Intent(CardSearchActivity.this, CameraSearchActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("username", username);
+            intent.putExtra("isAdmin", isAdmin);
             startActivity(intent);
         });
 
@@ -170,7 +267,9 @@ public class CardSearchActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Handler for searching for a card.
+     */
     private void handleSearch() {
         String query = searchEditText.getText().toString();
 
@@ -189,6 +288,11 @@ public class CardSearchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles percolating all the cards into the card container.
+     * @param response The return value from the backend's search
+     * @throws JSONException
+     */
     private void handlePercolate(JSONArray response) throws JSONException {
         cardListContainer.removeAllViews();
 
@@ -256,7 +360,10 @@ public class CardSearchActivity extends AppCompatActivity {
         }
     }
 
-    // GET /api/cards/search/{name}
+    /**
+     * Handler for GET /api/cards/search/{name}
+     * @param name name of the card.
+     */
     private void fetchCardByName(String name) {
         String url = BASE_URL + "/search/" + name;
 
@@ -284,7 +391,10 @@ public class CardSearchActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
     }
 
-    //GET /api/cards/{id}
+    /**
+     * Handler for GET /api/cards/{id}
+     * @param id id of the card
+     */
     private void fetchCardById(String id) {
         String url = BASE_URL + "/" + id;
 
@@ -314,7 +424,12 @@ public class CardSearchActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
     }
 
-    // PUT /api/cards/{id}
+    /**
+     * handler for PUT /api/cards/{id}
+     * @param cardId card's ID
+     * @param imgUrl the image URL for the card
+     * @param card the cardview component that is parent of the card.
+     */
     private void makeJsonObjPutReq(String cardId, String imgUrl, CardView card) {
 
         EditText editName = card.findViewById(R.id.card_name_edit);
@@ -384,7 +499,10 @@ public class CardSearchActivity extends AppCompatActivity {
         }
     }
 
-    //put down some requests here for the binder.
+    /**
+     * Adds a card to the user's binder
+     * @param cardId The Card's ID
+     */
     private void addCardToBinder(String cardId) {
         String url = "http://coms-3090-022.class.las.iastate.edu:8080/api/users/" + username + "/binder";
 
@@ -423,6 +541,11 @@ public class CardSearchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Fetches data related to the candlestick chart from backend, specifically prices, and then renders the chart by calling renderCandleChart.
+     * @param cardId the card's ID
+     * @param chart the chart component.
+     */
     private void fetchAndRenderChart(String cardId, CandleStickChart chart) {
         String url = "http://coms-3090-022.class.las.iastate.edu:8080/api/prices/card/" + cardId;
 
@@ -477,6 +600,11 @@ public class CardSearchActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
     }
 
+    /**
+     * Renders the candlestick chart.
+     * @param chart The chart component
+     * @param entries the entries in a list form.
+     */
     private void renderCandleChart(CandleStickChart chart, List<CandleEntry> entries) {
         if (entries.isEmpty()) {
             chart.setVisibility(View.GONE);
@@ -507,6 +635,10 @@ public class CardSearchActivity extends AppCompatActivity {
         chart.invalidate();
     }
 
+    /**
+     * Editing mode toggle.
+     * @param editing Bool to determine if you are editing it or not.
+     */
     private void toggleEditMode(boolean editing) {
         cardName.setVisibility(editing ? View.GONE : View.VISIBLE);
         cardNameEdit.setVisibility(editing ? View.VISIBLE : View.GONE);

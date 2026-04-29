@@ -59,10 +59,11 @@ public class NotificationScheduler {
             String cardName = binder.getCard().getCardName();
 
             // Get the two most recent price records for this card
-            List<PriceTracking> recentPrices = priceTrackingRepository.findTop2ByCardIdOrderByRecordedAtDesc(cardId);
+            LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+            List<PriceTracking> recentPrices = priceTrackingRepository.findByCardIdAndRecordedAtAfterOrderByRecordedAtDesc(cardId, twoDaysAgo);
 
             if (recentPrices.size() < 2) {
-                continue;
+                continue; //No new price days in last 2 days
             }
 
             double currentPrice = recentPrices.get(0).getPrice();

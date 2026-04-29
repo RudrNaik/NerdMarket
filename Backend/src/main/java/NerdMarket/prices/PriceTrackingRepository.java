@@ -22,4 +22,6 @@ public interface PriceTrackingRepository extends JpaRepository<PriceTracking, Lo
 
     List<PriceTracking> findTop2ByCardIdOrderByRecordedAtDesc(Long cardId);
 
+    List<PriceTracking> findByCardIdAndRecordedAtAfterOrderByRecordedAtDesc(Long cardId, LocalDateTime date);
+
 }

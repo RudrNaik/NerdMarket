@@ -30,6 +30,7 @@ public class Users {
 
     private boolean active = true;
     private boolean admin = false;
+    private boolean moderator = false;
     private int loginAttempts = 0;
     private boolean locked = false;
 
