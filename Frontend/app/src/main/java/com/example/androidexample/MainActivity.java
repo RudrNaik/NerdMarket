@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton cardBinderButton;
     private Button toNotificationsButton;
     private ImageButton hamburgerDropdownButton;
+
+    private Button toChatsButton;
     private int id;
 
     private String username;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         cardBinderButton = findViewById(R.id.main_toPortfolio_image);
 //        toNotificationsButton = findViewById(R.id.to_notifs_btn);
         hamburgerDropdownButton = findViewById(R.id.main_dropdown_btn);
+        toChatsButton = findViewById(R.id.main_tochats_btn);
 
 
 
@@ -133,6 +136,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this, CardBinderActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        toChatsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, LiveChatMenuActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("isAdmin", isAdmin);
                 intent.putExtra("username", username);

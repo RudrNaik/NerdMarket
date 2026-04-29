@@ -82,5 +82,12 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/main_tochats_btn"
+        android:text="to chats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Button>
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>
