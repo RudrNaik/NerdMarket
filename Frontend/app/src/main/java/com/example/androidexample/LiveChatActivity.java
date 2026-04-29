@@ -90,10 +90,30 @@ public class LiveChatActivity extends AppCompatActivity {
 
         stompClient.topic("/topic/chat/" + roomId).subscribe(message -> {
             String raw = message.getPayload();
-            runOnUiThread(() -> appendMessage(raw));
+
+            String[] parsed = parseRawMessage(raw);
+            String sender = parsed[0];
+            String content = parsed[1];
+
+            runOnUiThread(() -> appendMessage(sender, content));
         });
 
         stompClient.connect();
+    }
+
+    private String[] parseRawMessage(String raw) {
+        int splitIndex = raw.indexOf(":");
+
+        if (splitIndex == -1) {
+            return new String[]{"Unknown", raw};
+        }
+
+        String sender = raw.substring(0, splitIndex).trim();
+        String content = raw.substring(splitIndex + 1).trim();
+
+        if (sender.isEmpty()) sender = "Unknown";
+
+        return new String[]{sender, content};
     }
 
     private void fetchHistory() {
@@ -106,9 +126,14 @@ public class LiveChatActivity extends AppCompatActivity {
                         chatContainer.removeAllViews();
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject msg = response.getJSONObject(i);
-                            String sender  = msg.optString("senderUsername", "Unknown");
+                            String sender = msg.optString("username", "").trim();
                             String content = msg.optString("content", "");
-                            appendMessage(sender + ": " + content);
+
+                            if (sender.isEmpty()) {
+                                sender = "Unknown";
+                            }
+
+                            appendMessage(sender, content);
                         }
                         scrollToBottom();
                     } catch (JSONException e) {
@@ -142,13 +167,12 @@ public class LiveChatActivity extends AppCompatActivity {
         }
     }
 
-    private void appendMessage(String raw) {
+    private void appendMessage(String sender, String content) {
         View card = LayoutInflater.from(this)
                 .inflate(R.layout.chat_msg_content, chatContainer, false);
 
         TextView tvContent = card.findViewById(R.id.msg_content);
-        tvContent.setText(raw);
-
+        tvContent.setText(sender + ": " + content);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -156,9 +180,10 @@ public class LiveChatActivity extends AppCompatActivity {
         );
         params.bottomMargin = 16;
 
-        if (raw.startsWith(username + ":")) {
+        boolean isMine = sender.equalsIgnoreCase(username);
+
+        if (isMine) {
             params.gravity = Gravity.END;
-            card.setBackgroundResource(0);
             ((androidx.cardview.widget.CardView) card)
                     .setCardBackgroundColor(android.graphics.Color.parseColor("#1B4D3E"));
         } else {
@@ -169,7 +194,6 @@ public class LiveChatActivity extends AppCompatActivity {
         chatContainer.addView(card);
         scrollToBottom();
     }
-
     private void scrollToBottom() {
         chatScrollView.post(() -> chatScrollView.fullScroll(View.FOCUS_DOWN));
     }
