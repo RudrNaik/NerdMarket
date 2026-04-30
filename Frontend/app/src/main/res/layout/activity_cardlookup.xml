@@ -14,13 +14,6 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="20dp">
 
-        <ImageView
-            android:id="@+id/cardlookup_to_main_button"
-            android:layout_width="70dp"
-            android:layout_height="54dp"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/baseline_home_24" />
     <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
@@ -315,7 +308,7 @@
             android:src="@drawable/business_center_24px" />
 
         <ImageView
-            android:id="@+id/cardLookup_home_image"
+            android:id="@+id/cardlookup_to_main_button"
             android:layout_width="75dp"
             android:layout_height="65dp"
             android:layout_centerHorizontal="true"
