@@ -20,10 +20,10 @@ import org.json.JSONObject;
 public class LiveChatMenuActivity extends AppCompatActivity {
 
     private LinearLayout roomListContainer;
-    private Button       btnBack;
+    private Button btnBack;
 
-    private String  username;
-    private int     id;
+    private String username;
+    private int id;
     private boolean isAdmin;
 
     private static final String BASE_URL = "http://coms-3090-022.class.las.iastate.edu:8080/";

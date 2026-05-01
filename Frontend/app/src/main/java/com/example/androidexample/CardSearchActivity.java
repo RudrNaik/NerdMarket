@@ -578,12 +578,6 @@ public class CardSearchActivity extends AppCompatActivity {
                             float high  = Collections.max(prices).floatValue();
                             float low   = Collections.min(prices).floatValue();
 
-                            // If only 1 price that day, spread slightly so candle is visible
-                            if (high == low) {
-                                high += 0.01f;
-                                low  -= 0.01f;
-                            }
-
                             entries.add(new CandleEntry(x++, high, low, open, close));
                         }
 

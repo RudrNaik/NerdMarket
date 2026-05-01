@@ -28,17 +28,17 @@ import ua.naiksoftware.stomp.StompClient;
 public class LiveChatActivity extends AppCompatActivity {
 
     private LinearLayout chatContainer;
-    private ScrollView   chatScrollView;
-    private EditText     messageInput;
-    private Button       btnSend;
-    private Button       btnBack;
+    private ScrollView chatScrollView;
+    private EditText messageInput;
+    private Button btnSend;
+    private Button btnBack;
 
     private StompClient stompClient;
 
-    private String  username;
-    private int     id;
+    private String username;
+    private int id;
     private boolean isAdmin;
-    private long    roomId;
+    private long roomId;
 
     private static final String BASE_URL    = "http://coms-3090-022.class.las.iastate.edu:8080/";
     private static final String WS_BASE_URL = "ws://coms-3090-022.class.las.iastate.edu:8080/ws/chat";
