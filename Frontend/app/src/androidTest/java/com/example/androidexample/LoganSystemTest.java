@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
+import androidx.test.rule.GrantPermissionRule;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -33,6 +34,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.allOf;
 
+import android.Manifest;
 import android.content.Intent;
 import android.widget.EditText;
 
@@ -48,6 +50,8 @@ public class LoganSystemTest {
     @Rule
     public ActivityScenarioRule<LoginActivity> activityScenarioRule =
             new ActivityScenarioRule<>(LoginActivity.class);
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA);
 
     private static Intent sessionIntent(Class enteredClass) {
         Intent i = new Intent(ApplicationProvider.getApplicationContext(), enteredClass);
@@ -141,6 +145,20 @@ public class LoganSystemTest {
     }
 
     @Test
+    public void testPriceCrud() throws InterruptedException {
+        try (ActivityScenario<UserActivity> scenario = ActivityScenario.launch(sessionIntent(PriceCrudActivity.class))) {
+            onView(withId(R.id.pricecrud_search_txt)).perform(typeText("77"), closeSoftKeyboard());
+            Thread.sleep(SIMULATED_DELAY_MS * 2);
+            onView(withId(R.id.pricecrud_search_btn)).perform(click());
+            onView(withId(R.id.pricecrud_currentprice_txt)).check(matches(isDisplayed()));
+
+            onView(withId(R.id.pricecrud_update_txt)).perform(typeText("10"), closeSoftKeyboard());
+            onView(withId(R.id.pricecrud_update_btn)).perform(click());
+            onView(withId(R.id.pricecrud_currentprice_txt)).check(matches(isDisplayed()));
+        }
+    }
+
+    @Test
     public void testNavigateToHome() {
         try (ActivityScenario<UserActivity> scenario = ActivityScenario.launch(sessionIntent(UserActivity.class))) {
             onView(withId(R.id.userPage_home_image)).perform(click());
@@ -148,4 +166,39 @@ public class LoganSystemTest {
         }
     }
 
+    @Test
+    public void testMoversActivity() throws InterruptedException {
+        try (ActivityScenario<UserActivity> scenario = ActivityScenario.launch(sessionIntent(MoversActivity.class))) {
+
+            onView(withId(R.id.biggestmovers_pokemon_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS * 2);
+            onView(withId(R.id.biggestmovers_cardContainer)).check(matches(isDisplayed()));
+
+            onView(withId(R.id.biggestmovers_MTG_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS * 2);
+
+            onView(withId(R.id.biggestmovers_YuGiOh_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS * 2);
+
+            onView(withId(R.id.biggestmovers_home_btn)).perform(click());
+            onView(withId(R.id.main_toSearch_image)).check(matches(isDisplayed()));
+        }
+    }
+
+    @Test
+    public void testCameraSearchActivityLaunchAndBack() throws InterruptedException {
+        try (ActivityScenario<UserActivity> scenario = ActivityScenario.launch(sessionIntent(CameraSearchActivity.class))) {
+            Thread.sleep(SIMULATED_DELAY_MS * 2);
+
+            onView(withId(R.id.cameraSearch_camera_capture_btn)).check(matches(isDisplayed()));
+            onView(withId(R.id.cameraSearch_back_btn)).check(matches(isDisplayed()));
+
+            onView(withId(R.id.cameraSearch_camera_capture_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS * 3);
+            onView(withId(R.id.cameraSearch_camera_capture_btn)).check(matches(isDisplayed()));
+
+            onView(withId(R.id.cameraSearch_back_btn)).perform(click());
+            onView(withId(R.id.cardLookup_toPortfolio_image)).check(matches(isDisplayed()));
+        }
+    }
 }

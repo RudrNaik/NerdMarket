@@ -93,6 +93,9 @@ public class CameraSearchActivity extends AppCompatActivity {
 
         backtoSearchButton.setOnClickListener(v -> {
             Intent intent = new Intent(CameraSearchActivity.this, CardSearchActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("username", username);
+            intent.putExtra("isAdmin", isAdmin);
             startActivity(intent);
         });
 
