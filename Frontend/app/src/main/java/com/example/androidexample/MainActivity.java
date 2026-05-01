@@ -2,58 +2,36 @@ package com.example.androidexample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.data.CandleData;
+import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
 
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-
-/*
-
-1. To run this project, open the directory "Android Example", otherwise it may not recognize the file structure properly
-
-2. Ensure you are using a compatible version of gradle, to do so you need to check 2 files.
-
-    AndroidExample/Gradle Scripts/build.gradle
-    Here, you will have this block of code. Ensure it is set to a compatible version,
-    in this case 8.12.2 should be sufficient:
-        plugins {
-            id 'com.android.application' version '8.12.2' apply false
-        }
-
-    Gradle Scripts/gradle-wrapper.properties
-
-3. This file is what actually determines the Gradle version used, 8.13 should be sufficient.
-    "distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip" ---Edit the version if needed
-
-4. You might be instructed by the plugin manager to upgrade plugins, accept it and you may execute the default selected options.
-
-5. Press "Sync project with gradle files" located at the top right of Android Studio,
-   once this is complete you will be able to run the app
-
-   This version is compatible with both JDK 17 and 21. The Java version you want to use can be
-   altered in Android Studio->Settings->Build, Execution, Deployment->Build Tools->Gradle
-
- */
 
 
 public class MainActivity extends AppCompatActivity {
@@ -70,11 +48,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton cardBinderButton;
     private Button toNotificationsButton;
     private ImageButton hamburgerDropdownButton;
-    private int id;
 
+    private Button toChatsButton;
+    private CandleStickChart mainChart;
+
+    private int id;
     private String username;
     private boolean isAdmin;
-    private static final String DELETE_URL = "http://coms-3090-022.class.las.iastate.edu:8080/users/";
+    private static final String BINDER_URL = "http://coms-3090-022.class.las.iastate.edu:8080/api/users";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         cardBinderButton = findViewById(R.id.main_toPortfolio_image);
 //        toNotificationsButton = findViewById(R.id.to_notifs_btn);
         hamburgerDropdownButton = findViewById(R.id.main_dropdown_btn);
+        toChatsButton = findViewById(R.id.main_tochats_btn);
+        mainChart    = findViewById(R.id.candleStick);
 
 
 
@@ -118,26 +101,30 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        cardDetailsButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, CardSearchActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("isAdmin", isAdmin);
-                intent.putExtra("username", username);
-                startActivity(intent);
-            }
+        fetchBinderData(username);
+
+        cardDetailsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CardSearchActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", isAdmin);
+            intent.putExtra("username", username);
+            startActivity(intent);
         });
 
-        cardBinderButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, CardBinderActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("isAdmin", isAdmin);
-                intent.putExtra("username", username);
-                startActivity(intent);
-            }
+        cardBinderButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CardBinderActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", isAdmin);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        toChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, LiveChatMenuActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", isAdmin);
+            intent.putExtra("username", username);
+            startActivity(intent);
         });
 
         hamburgerDropdownButton.setOnClickListener(new View.OnClickListener(){
@@ -177,6 +164,176 @@ public class MainActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
+    }
 
+    private void fetchBinderData(String username) {
+        String binderUrl = BINDER_URL + "/" + username + "/binder";
+
+        JsonObjectRequest binderReq = new JsonObjectRequest(
+                Request.Method.GET, binderUrl, null,
+                response -> {
+                    try {
+                        JSONArray binder = response.getJSONArray("binder");
+                        List<JSONObject> cards = new ArrayList<>();
+
+                        for (int i = 0; i < binder.length(); i++) {
+                            JSONObject entry = binder.getJSONObject(i);
+                            JSONObject card = entry.getJSONObject("card");
+                            cards.add(card);
+                        }
+                        fetchAllCardPrices(cards);
+
+                    } catch (JSONException e) {
+                        Log.e("Binder parse error", e.getMessage());
+                    }
+                },
+                error -> Log.e("Binder fetch error", error.toString())
+        );
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(binderReq);
+    }
+
+    private void fetchAllCardPrices(List<JSONObject> cards) {
+        Map<String, List<CandleEntry>> portfolioData = new LinkedHashMap<>();
+
+        if (cards.isEmpty()) {
+            renderPortfolio(portfolioData);
+            return;
+        }
+
+        fetchNextCard(cards, 0, portfolioData);
+    }
+
+    private void fetchNextCard(List<JSONObject> cards, int index, Map<String, List<CandleEntry>> portfolioData) {
+        if (index >= cards.size()) {
+            runOnUiThread(() -> renderPortfolio(portfolioData));
+            return;
+        }
+        JSONObject card = cards.get(index);
+        String cardId;
+        String cardName;
+
+        try {
+            cardId = String.valueOf(card.getLong("id"));
+            cardName = card.optString("cardName", "Unknown Card");
+        } catch (JSONException e) {
+            Log.e("fetchNextCard", "Carddata is malformed: " + card);
+            fetchNextCard(cards, index + 1, portfolioData);
+            return;
+        }
+
+        String url = "http://coms-3090-022.class.las.iastate.edu:8080/api/prices/card/" + cardId;
+
+        JsonArrayRequest req = new JsonArrayRequest(
+                Request.Method.GET, url, null,
+                response -> {
+                    List<CandleEntry> entries = buildCandles(response);
+                    portfolioData.put(cardName, entries);
+                    fetchNextCard(cards, index + 1, portfolioData);
+                },
+                error -> {
+                    Log.d("fetchNextCard", "Failed to fetch for card: " + cardName);
+                    fetchNextCard(cards, index + 1, portfolioData);
+                }
+        );
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
+    }
+
+    private List<CandleEntry> buildCandles(JSONArray priceResponse) {
+        Map<String, List<Double>> byDay = new LinkedHashMap<>();
+        try {
+            for (int i = 0; i < priceResponse.length(); i++) {
+                JSONObject rec = priceResponse.getJSONObject(i);
+
+                double price = rec.optDouble("price", -1);
+                String recordedAt = rec.optString("recordedAt", "");
+
+                if (price < 0 || recordedAt.length() < 10) {
+                    Log.w("PARSE", "Skipping bad record: " + rec);
+                    continue;
+                }
+
+                String day = recordedAt.substring(0, 10);
+                byDay.computeIfAbsent(day, k -> new ArrayList<>()).add(price);
+            }
+
+        } catch (JSONException e) {
+            Log.e("buildCandles", "JSON data malformed, exception:", e);
+        }
+
+        List<CandleEntry> entries = new ArrayList<>();
+        int x = 0;
+
+        for (Map.Entry<String, List<Double>> entry : byDay.entrySet()) {
+            List<Double> prices = entry.getValue();
+
+            if (prices.isEmpty()) continue;
+
+            float open  = prices.get(0).floatValue();
+            float close = prices.get(prices.size() - 1).floatValue();
+            float high  = Collections.max(prices).floatValue();
+            float low   = Collections.min(prices).floatValue();
+
+            entries.add(new CandleEntry(x++, high, low, open, close));
+        }
+
+        return entries;
+    }
+
+    private void renderPortfolio(Map<String, List<CandleEntry>> portfolioData) {
+        List<CandleEntry> combined = new ArrayList<>();
+        int x = 0;
+
+        for (List<CandleEntry> entries : portfolioData.values()) {
+            if (entries.isEmpty()) continue;
+
+            for (CandleEntry e : entries) {
+                combined.add(new CandleEntry(
+                        x++,
+                        e.getHigh(),
+                        e.getLow(),
+                        e.getOpen(),
+                        e.getClose()
+                ));
+            }
+        }
+        renderCandleChart(mainChart, combined);
+    }
+
+    /**
+     * Renders the candlestick chart.
+     * @param chart The chart component
+     * @param entries the entries in a list form.
+     */
+    private void renderCandleChart(CandleStickChart chart, List<CandleEntry> entries) {
+
+        if (entries.isEmpty()) {
+            chart.setVisibility(View.GONE);
+            return;
+        }
+
+        CandleDataSet dataSet = new CandleDataSet(entries, "Price History");
+        dataSet.setShadowColor(Color.DKGRAY);
+        dataSet.setShadowWidth(0.7f);
+        dataSet.setDecreasingColor(Color.RED);
+        dataSet.setDecreasingPaintStyle(Paint.Style.FILL);
+        dataSet.setIncreasingColor(Color.rgb(40, 200, 40));
+        dataSet.setIncreasingPaintStyle(Paint.Style.FILL);
+        dataSet.setNeutralColor(Color.BLUE);
+        dataSet.setDrawValues(false);
+
+        CandleData candleData = new CandleData(dataSet);
+        chart.setData(candleData);
+
+        chart.getDescription().setEnabled(false);
+        chart.setBackgroundColor(Color.TRANSPARENT);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getAxisLeft().setTextColor(Color.WHITE);
+        chart.getAxisRight().setEnabled(false);
+        chart.getLegend().setTextColor(Color.WHITE);
+
+        chart.setVisibility(View.VISIBLE);
+        chart.invalidate();
     }
 }
