@@ -162,4 +162,75 @@ public class HrushiSystemTest {
         }
         assertTrue(foundBlackLotusInMtg, "Black Lotus should appear in MTG results");
     }
+
+    //Test 3: Verify the top 10 most expensive cards endpoint returns
+    @Test
+    public void top10MostExpensiveSortingTest() throws Exception {
+        // 1. POST 3 cards with distinctive prices that should land in the top 10 (using very high values to make sure they're not pushed out by other test data)
+        String cheap = "{"
+                + "\"cardType\":\"POKEMON\","
+                + "\"cardName\":\"TEST_HRUSHI_Cheap\","
+                + "\"cardSet\":\"Test Set\","
+                + "\"cardRarity\":\"Common\","
+                + "\"price\":50000.00"
+                + "}";
+        String medium = "{"
+                + "\"cardType\":\"POKEMON\","
+                + "\"cardName\":\"TEST_HRUSHI_Medium\","
+                + "\"cardSet\":\"Test Set\","
+                + "\"cardRarity\":\"Holo\","
+                + "\"price\":75000.00"
+                + "}";
+        String expensive = "{"
+                + "\"cardType\":\"POKEMON\","
+                + "\"cardName\":\"TEST_HRUSHI_Expensive\","
+                + "\"cardSet\":\"Test Set\","
+                + "\"cardRarity\":\"Illustration Rare\","
+                + "\"price\":99999.00"
+                + "}";
+
+        assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(cheap), String.class).getStatusCode().value());
+        assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(medium), String.class).getStatusCode().value());
+        assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(expensive), String.class).getStatusCode().value());
+
+        // 2. GET top 10
+        ResponseEntity<String> top10Response = restTemplate.getForEntity(baseUrl + "/api/cards/top10", String.class);
+        assertEquals(200, top10Response.getStatusCode().value());
+        JSONArray top10 = new JSONArray(top10Response.getBody());
+        assertTrue(top10.length() > 0, "Expected at least one card in top 10");
+        assertTrue(top10.length() <= 10, "Top 10 should return at most 10 cards");
+
+        // 3. Verify global descending order: each card's price >= the next card's price
+        for (int i = 0; i < top10.length() - 1; i++) {
+            double current = top10.getJSONObject(i).getDouble("price");
+            double next = top10.getJSONObject(i + 1).getDouble("price");
+            assertTrue(current >= next,
+                    "Top 10 should be sorted by price descending. Position " + i
+                            + " price=" + current + " is less than position " + (i + 1)
+                            + " price=" + next);
+        }
+
+        // 4. Find our 3 test cards in the top 10 and verify their relative order
+        int posCheap = -1;
+        int posMedium = -1;
+        int posExpensive = -1;
+        for (int i = 0; i < top10.length(); i++) {
+            String name = top10.getJSONObject(i).getString("cardName");
+            if ("TEST_HRUSHI_Cheap".equals(name)) posCheap = i;
+            if ("TEST_HRUSHI_Medium".equals(name)) posMedium = i;
+            if ("TEST_HRUSHI_Expensive".equals(name)) posExpensive = i;
+        }
+
+        assertTrue(posExpensive != -1, "Expensive card should be in top 10");
+        assertTrue(posMedium != -1, "Medium card should be in top 10");
+        assertTrue(posCheap != -1, "Cheap card should be in top 10");
+
+        // Expensive ($99,999) must come before Medium ($75,000), which must come before Cheap ($50,000)
+        assertTrue(posExpensive < posMedium,
+                "Expensive ($99,999) should appear before Medium ($75,000). "
+                        + "posExpensive=" + posExpensive + " posMedium=" + posMedium);
+        assertTrue(posMedium < posCheap,
+                "Medium ($75,000) should appear before Cheap ($50,000). "
+                        + "posMedium=" + posMedium + " posCheap=" + posCheap);
+    }
 }
