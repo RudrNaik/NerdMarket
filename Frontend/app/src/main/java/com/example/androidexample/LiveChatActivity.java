@@ -169,7 +169,7 @@ public class LiveChatActivity extends AppCompatActivity {
 
     private void appendMessage(String sender, String content) {
         View card = LayoutInflater.from(this)
-                .inflate(R.layout.chat_msg_content, chatContainer, false);
+                .inflate(R.layout.item_chat_msg, chatContainer, false);
 
         TextView tvContent = card.findViewById(R.id.msg_content);
         tvContent.setText(sender + ": " + content);
