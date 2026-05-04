@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button toNotificationsButton;
     private ImageButton hamburgerDropdownButton;
 
-    private Button toChatsButton;
+    private ImageButton toChatsButton;
     private CandleStickChart mainChart;
 
     private int id;
