@@ -35,32 +35,22 @@ public class HrushiSystemTest {
         baseUrl = "http://localhost:" + port;
     }
 
-    // Helper method: builds a JSON HttpEntity for POST/PUT requests
     private HttpEntity<String> jsonEntity(String body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(body, headers);
     }
 
-    //Test 1: Full CRUD lifecycle on Market endpoints.
+    //TEST 1: Full CRUD lifecycle on Market endpoints.
     @Test
     public void marketCrudLifecycleTest() throws Exception {
-        // 1. POST: create a new card
-        String cardJson = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Charizard\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Holo\","
-                + "\"price\":100.00,"
-                + "\"imageUrl\":\"http://example.com/charizard.png\""
-                + "}";
-
+        //POST: create a new card
+        String cardJson = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Charizard\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Holo\"," + "\"price\":100.00," + "\"imageUrl\":\"http://example.com/charizard.png\"" + "}";
         ResponseEntity<String> createResponse = restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(cardJson), String.class);
-
         assertEquals(200, createResponse.getStatusCode().value());
         assertTrue(createResponse.getBody().contains("success"), "POST response should contain 'success'");
 
-        // 2. GET all cards, find the one we just created
+        //GET all cards, find the one we just created
         ResponseEntity<String> getAllResponse = restTemplate.getForEntity(baseUrl + "/api/cards", String.class);
         assertEquals(200, getAllResponse.getStatusCode().value());
         JSONArray allCards = new JSONArray(getAllResponse.getBody());
@@ -76,7 +66,7 @@ public class HrushiSystemTest {
         }
         assertTrue(cardId != -1, "Could not find the card we just created");
 
-        // 3. GET by ID, verify the field values were stored correctly
+        //GET by ID, verify the field values were stored correctly
         ResponseEntity<String> getByIdResponse = restTemplate.getForEntity(baseUrl + "/api/cards/" + cardId, String.class);
         assertEquals(200, getByIdResponse.getStatusCode().value());
         assertNotNull(getByIdResponse.getBody(), "Expected a card body");
@@ -85,45 +75,26 @@ public class HrushiSystemTest {
         assertEquals("Holo", fetchedCard.getString("cardRarity"));
         assertEquals(100.00, fetchedCard.getDouble("price"), 0.001);
 
-        // 4. DELETE the card and verify success
+        //DELETE the card and verify success
         ResponseEntity<String> deleteResponse = restTemplate.exchange(baseUrl + "/api/cards/" + cardId, HttpMethod.DELETE, null, String.class);
-
         assertEquals(200, deleteResponse.getStatusCode().value());
         assertTrue(deleteResponse.getBody().contains("success"), "DELETE response should contain 'success'");
     }
 
-    //Test 2: Verify filtering cards by type returns only cards of that type.
+    //TEST 2: Verify filtering cards by type returns only cards of that type.
     @Test
     public void cardTypeFilteringTest() throws Exception {
-        // 1. POST 2 POKEMON cards
-        String pokemon1 = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Pikachu\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Common\","
-                + "\"price\":5.00"
-                + "}";
-        String pokemon2 = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Mewtwo\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Holo\","
-                + "\"price\":50.00"
-                + "}";
-        // 2. POST 1 MTG card
-        String mtg1 = "{"
-                + "\"cardType\":\"MTG\","
-                + "\"cardName\":\"TEST_HRUSHI_BlackLotus\","
-                + "\"cardSet\":\"Alpha\","
-                + "\"cardRarity\":\"Rare\","
-                + "\"price\":10000.00"
-                + "}";
+        //POST 2 POKEMON cards
+        String pokemon1 = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Pikachu\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Common\"," + "\"price\":5.00" + "}";
+        String pokemon2 = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Mewtwo\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Holo\"," + "\"price\":50.00" + "}";
+        //POST 1 MTG card
+        String mtg1 = "{" + "\"cardType\":\"MTG\"," + "\"cardName\":\"TEST_HRUSHI_BlackLotus\"," + "\"cardSet\":\"Alpha\"," + "\"cardRarity\":\"Rare\"," + "\"price\":10000.00" + "}";
 
         assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(pokemon1), String.class).getStatusCode().value());
         assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(pokemon2), String.class).getStatusCode().value());
         assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(mtg1), String.class).getStatusCode().value());
 
-        // 3. GET POKEMON cards: should contain both Pikachu and Mewtwo, but NOT Black Lotus
+        //GET POKEMON cards: should contain both Pikachu and Mewtwo, but NOT Black Lotus
         ResponseEntity<String> pokemonResponse = restTemplate.getForEntity(baseUrl + "/api/cards/type/POKEMON", String.class);
         assertEquals(200, pokemonResponse.getStatusCode().value());
         JSONArray pokemonCards = new JSONArray(pokemonResponse.getBody());
@@ -133,7 +104,7 @@ public class HrushiSystemTest {
         boolean foundBlackLotus = false;
         for (int i = 0; i < pokemonCards.length(); i++) {
             JSONObject c = pokemonCards.getJSONObject(i);
-            // Every result must actually be a POKEMON card
+            //Every result must actually be a POKEMON card
             assertEquals("POKEMON", c.getString("cardType"), "POKEMON filter returned a non-POKEMON card: " + c.getString("cardName"));
             String name = c.getString("cardName");
             if ("TEST_HRUSHI_Pikachu".equals(name)) foundPikachu = true;
@@ -144,7 +115,7 @@ public class HrushiSystemTest {
         assertTrue(foundMewtwo, "Mewtwo should appear in POKEMON results");
         assertTrue(!foundBlackLotus, "Black Lotus (MTG) should NOT appear in POKEMON results");
 
-        // 4. GET MTG cards: should contain Black Lotus, but NOT the POKEMON cards
+        //GET MTG cards: should contain Black Lotus, but NOT the POKEMON cards
         ResponseEntity<String> mtgResponse = restTemplate.getForEntity(baseUrl + "/api/cards/type/MTG", String.class);
         assertEquals(200, mtgResponse.getStatusCode().value());
         JSONArray mtgCards = new JSONArray(mtgResponse.getBody());
@@ -152,65 +123,44 @@ public class HrushiSystemTest {
         boolean foundBlackLotusInMtg = false;
         for (int i = 0; i < mtgCards.length(); i++) {
             JSONObject c = mtgCards.getJSONObject(i);
-            // Every result must actually be MTG
+            //Every result must actually be MTG
             assertEquals("MTG", c.getString("cardType"), "MTG filter returned a non-MTG card: " + c.getString("cardName"));
             String name = c.getString("cardName");
             if ("TEST_HRUSHI_BlackLotus".equals(name)) foundBlackLotusInMtg = true;
-            // Sanity check: POKEMON cards must not appear in MTG results
+            //Check: POKEMON cards must not appear in MTG results
             assertTrue(!"TEST_HRUSHI_Pikachu".equals(name), "Pikachu (POKEMON) should NOT appear in MTG results");
             assertTrue(!"TEST_HRUSHI_Mewtwo".equals(name), "Mewtwo (POKEMON) should NOT appear in MTG results");
         }
         assertTrue(foundBlackLotusInMtg, "Black Lotus should appear in MTG results");
     }
 
-    //Test 3: Verify the top 10 most expensive cards endpoint returns
+    //TEST 3: Verify the top 10 most expensive cards endpoint returns
     @Test
     public void top10MostExpensiveSortingTest() throws Exception {
-        // 1. POST 3 cards with distinctive prices that should land in the top 10 (using very high values to make sure they're not pushed out by other test data)
-        String cheap = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Cheap\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Common\","
-                + "\"price\":50000.00"
-                + "}";
-        String medium = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Medium\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Holo\","
-                + "\"price\":75000.00"
-                + "}";
-        String expensive = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Expensive\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Illustration Rare\","
-                + "\"price\":99999.00"
-                + "}";
+        //POST 3 cards with distinctive prices that should land in the top 10 (using very high values to make sure they're not pushed out by other test data)
+        String cheap = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Cheap\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Common\"," + "\"price\":50000.00" + "}";
+        String medium = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Medium\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Holo\"," + "\"price\":75000.00" + "}";
+        String expensive = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Expensive\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Illustration Rare\"," + "\"price\":99999.00" + "}";
 
         assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(cheap), String.class).getStatusCode().value());
         assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(medium), String.class).getStatusCode().value());
         assertEquals(200, restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(expensive), String.class).getStatusCode().value());
 
-        // 2. GET top 10
+        //GET top 10
         ResponseEntity<String> top10Response = restTemplate.getForEntity(baseUrl + "/api/cards/top10", String.class);
         assertEquals(200, top10Response.getStatusCode().value());
         JSONArray top10 = new JSONArray(top10Response.getBody());
         assertTrue(top10.length() > 0, "Expected at least one card in top 10");
         assertTrue(top10.length() <= 10, "Top 10 should return at most 10 cards");
 
-        // 3. Verify global descending order: each card's price >= the next card's price
+        //Verify global descending order: each card's price >= the next card's price
         for (int i = 0; i < top10.length() - 1; i++) {
             double current = top10.getJSONObject(i).getDouble("price");
             double next = top10.getJSONObject(i + 1).getDouble("price");
-            assertTrue(current >= next,
-                    "Top 10 should be sorted by price descending. Position " + i
-                            + " price=" + current + " is less than position " + (i + 1)
-                            + " price=" + next);
+            assertTrue(current >= next, "Top 10 should be sorted by price descending. Position " + i + " price=" + current + " is less than position " + (i + 1) + " price=" + next);
         }
 
-        // 4. Find our 3 test cards in the top 10 and verify their relative order
+        //Find the 3 test cards in the top 10 and verify their relative order
         int posCheap = -1;
         int posMedium = -1;
         int posExpensive = -1;
@@ -226,30 +176,19 @@ public class HrushiSystemTest {
         assertTrue(posCheap != -1, "Cheap card should be in top 10");
 
         // Expensive ($99,999) must come before Medium ($75,000), which must come before Cheap ($50,000)
-        assertTrue(posExpensive < posMedium,
-                "Expensive ($99,999) should appear before Medium ($75,000). "
-                        + "posExpensive=" + posExpensive + " posMedium=" + posMedium);
-        assertTrue(posMedium < posCheap,
-                "Medium ($75,000) should appear before Cheap ($50,000). "
-                        + "posMedium=" + posMedium + " posCheap=" + posCheap);
+        assertTrue(posExpensive < posMedium, "Expensive ($99,999) should appear before Medium ($75,000). " + "posExpensive=" + posExpensive + " posMedium=" + posMedium);
+        assertTrue(posMedium < posCheap, "Medium ($75,000) should appear before Cheap ($50,000). " + "posMedium=" + posMedium + " posCheap=" + posCheap);
     }
 
-    //Test 4: Cross-feature flow covering Market + Prices.
+    //TEST 4: Cross-feature flow covering Market + Prices.
     @Test
     public void priceTrackingBiggestMoversTest() throws Exception {
-        // 1. Create a card we'll track price history for
-        String cardJson = "{"
-                + "\"cardType\":\"POKEMON\","
-                + "\"cardName\":\"TEST_HRUSHI_Mover\","
-                + "\"cardSet\":\"Test Set\","
-                + "\"cardRarity\":\"Holo\","
-                + "\"price\":150.00"
-                + "}";
-
+        //Create a card to track price history
+        String cardJson = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"TEST_HRUSHI_Mover\"," + "\"cardSet\":\"Test Set\"," + "\"cardRarity\":\"Holo\"," + "\"price\":150.00" + "}";
         ResponseEntity<String> createResponse = restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(cardJson), String.class);
         assertEquals(200, createResponse.getStatusCode().value());
 
-        // 2. Look up the auto-generated id for the card we just made
+        //Look up the auto-generated id for the card we just made
         ResponseEntity<String> getAllResponse = restTemplate.getForEntity(baseUrl + "/api/cards", String.class);
         JSONArray allCards = new JSONArray(getAllResponse.getBody());
         long cardId = -1;
@@ -262,33 +201,25 @@ public class HrushiSystemTest {
         }
         assertTrue(cardId != -1, "Could not find the card we just created");
 
-        // 3. POST an old, low price record (10 days ago, $100)
-        String oldPriceJson = "{"
-                + "\"cardId\":" + cardId + ","
-                + "\"price\":100.00,"
-                + "\"recordedAt\":\"" + java.time.LocalDateTime.now().minusDays(10) + "\""
-                + "}";
+        //POST an old, low price record (10 days ago, $100)
+        String oldPriceJson = "{" + "\"cardId\":" + cardId + "," + "\"price\":100.00," + "\"recordedAt\":\"" + java.time.LocalDateTime.now().minusDays(10) + "\"" + "}";
         ResponseEntity<String> oldPriceResponse = restTemplate.postForEntity(baseUrl + "/api/prices", jsonEntity(oldPriceJson), String.class);
         assertEquals(200, oldPriceResponse.getStatusCode().value());
         assertTrue(oldPriceResponse.getBody().contains("success"));
 
-        // 4. POST a recent, high price record (today, $200) — that's a 100% gain
-        String newPriceJson = "{"
-                + "\"cardId\":" + cardId + ","
-                + "\"price\":200.00,"
-                + "\"recordedAt\":\"" + java.time.LocalDateTime.now() + "\""
-                + "}";
+        //POST a recent, high price record (today, $200) —> that's a 100% gain
+        String newPriceJson = "{" + "\"cardId\":" + cardId + "," + "\"price\":200.00," + "\"recordedAt\":\"" + java.time.LocalDateTime.now() + "\"" + "}";
         ResponseEntity<String> newPriceResponse = restTemplate.postForEntity(baseUrl + "/api/prices", jsonEntity(newPriceJson), String.class);
         assertEquals(200, newPriceResponse.getStatusCode().value());
         assertTrue(newPriceResponse.getBody().contains("success"));
 
-        // 5. Confirm both price records were stored by querying the price history for the card
+        //Confirm both price records were stored by querying the price history for the card
         ResponseEntity<String> historyResponse = restTemplate.getForEntity(baseUrl + "/api/prices/card/" + cardId, String.class);
         assertEquals(200, historyResponse.getStatusCode().value());
         JSONArray history = new JSONArray(historyResponse.getBody());
         assertEquals(2, history.length(), "Expected exactly 2 price records for our test card");
 
-        // 6. GET biggest movers and verify our card shows up with the correct change %
+        //GET biggest movers and verify the card shows up with the correct change %
         ResponseEntity<String> moversResponse = restTemplate.getForEntity(baseUrl + "/api/prices/biggest-movers", String.class);
         assertEquals(200, moversResponse.getStatusCode().value());
         JSONArray movers = new JSONArray(moversResponse.getBody());
@@ -306,7 +237,6 @@ public class HrushiSystemTest {
                 foundOurCard = true;
                 assertEquals(100.00, mover.getDouble("oldPrice"), 0.001, "Old price should be 100.00");
                 assertEquals(200.00, mover.getDouble("newPrice"), 0.001, "New price should be 200.00");
-                // ((200 - 100) / 100) * 100 = 100% gain
                 assertEquals(100.00, mover.getDouble("changePercent"), 0.001, "Change percent should be exactly 100% for $100 -> $200");
             }
         }
