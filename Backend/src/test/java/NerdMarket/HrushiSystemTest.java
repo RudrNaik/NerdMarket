@@ -233,4 +233,83 @@ public class HrushiSystemTest {
                 "Medium ($75,000) should appear before Cheap ($50,000). "
                         + "posMedium=" + posMedium + " posCheap=" + posCheap);
     }
+
+    //Test 4: Cross-feature flow covering Market + Prices.
+    @Test
+    public void priceTrackingBiggestMoversTest() throws Exception {
+        // 1. Create a card we'll track price history for
+        String cardJson = "{"
+                + "\"cardType\":\"POKEMON\","
+                + "\"cardName\":\"TEST_HRUSHI_Mover\","
+                + "\"cardSet\":\"Test Set\","
+                + "\"cardRarity\":\"Holo\","
+                + "\"price\":150.00"
+                + "}";
+
+        ResponseEntity<String> createResponse = restTemplate.postForEntity(baseUrl + "/api/cards", jsonEntity(cardJson), String.class);
+        assertEquals(200, createResponse.getStatusCode().value());
+
+        // 2. Look up the auto-generated id for the card we just made
+        ResponseEntity<String> getAllResponse = restTemplate.getForEntity(baseUrl + "/api/cards", String.class);
+        JSONArray allCards = new JSONArray(getAllResponse.getBody());
+        long cardId = -1;
+        for (int i = 0; i < allCards.length(); i++) {
+            JSONObject c = allCards.getJSONObject(i);
+            if ("TEST_HRUSHI_Mover".equals(c.getString("cardName"))) {
+                cardId = c.getLong("id");
+                break;
+            }
+        }
+        assertTrue(cardId != -1, "Could not find the card we just created");
+
+        // 3. POST an old, low price record (10 days ago, $100)
+        String oldPriceJson = "{"
+                + "\"cardId\":" + cardId + ","
+                + "\"price\":100.00,"
+                + "\"recordedAt\":\"" + java.time.LocalDateTime.now().minusDays(10) + "\""
+                + "}";
+        ResponseEntity<String> oldPriceResponse = restTemplate.postForEntity(baseUrl + "/api/prices", jsonEntity(oldPriceJson), String.class);
+        assertEquals(200, oldPriceResponse.getStatusCode().value());
+        assertTrue(oldPriceResponse.getBody().contains("success"));
+
+        // 4. POST a recent, high price record (today, $200) — that's a 100% gain
+        String newPriceJson = "{"
+                + "\"cardId\":" + cardId + ","
+                + "\"price\":200.00,"
+                + "\"recordedAt\":\"" + java.time.LocalDateTime.now() + "\""
+                + "}";
+        ResponseEntity<String> newPriceResponse = restTemplate.postForEntity(baseUrl + "/api/prices", jsonEntity(newPriceJson), String.class);
+        assertEquals(200, newPriceResponse.getStatusCode().value());
+        assertTrue(newPriceResponse.getBody().contains("success"));
+
+        // 5. Confirm both price records were stored by querying the price history for the card
+        ResponseEntity<String> historyResponse = restTemplate.getForEntity(baseUrl + "/api/prices/card/" + cardId, String.class);
+        assertEquals(200, historyResponse.getStatusCode().value());
+        JSONArray history = new JSONArray(historyResponse.getBody());
+        assertEquals(2, history.length(), "Expected exactly 2 price records for our test card");
+
+        // 6. GET biggest movers and verify our card shows up with the correct change %
+        ResponseEntity<String> moversResponse = restTemplate.getForEntity(baseUrl + "/api/prices/biggest-movers", String.class);
+        assertEquals(200, moversResponse.getStatusCode().value());
+        JSONArray movers = new JSONArray(moversResponse.getBody());
+        assertTrue(movers.length() > 0, "Expected at least one mover");
+        boolean foundOurCard = false;
+        for (int i = 0; i < movers.length(); i++) {
+            JSONObject mover = movers.getJSONObject(i);
+            // Each mover record must include the analytics fields
+            assertTrue(mover.has("cardId"), "Mover should have cardId field");
+            assertTrue(mover.has("oldPrice"), "Mover should have oldPrice field");
+            assertTrue(mover.has("newPrice"), "Mover should have newPrice field");
+            assertTrue(mover.has("changePercent"), "Mover should have changePercent field");
+
+            if (mover.getLong("cardId") == cardId) {
+                foundOurCard = true;
+                assertEquals(100.00, mover.getDouble("oldPrice"), 0.001, "Old price should be 100.00");
+                assertEquals(200.00, mover.getDouble("newPrice"), 0.001, "New price should be 200.00");
+                // ((200 - 100) / 100) * 100 = 100% gain
+                assertEquals(100.00, mover.getDouble("changePercent"), 0.001, "Change percent should be exactly 100% for $100 -> $200");
+            }
+        }
+        assertTrue(foundOurCard, "Our test card should appear in biggest movers results");
+    }
 }
