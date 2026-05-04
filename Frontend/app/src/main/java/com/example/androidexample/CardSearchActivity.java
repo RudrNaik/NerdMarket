@@ -138,6 +138,7 @@ public class CardSearchActivity extends AppCompatActivity {
 
     private ImageView returnToMain;
     private ImageButton cardBinderButton;
+    private ImageButton toChatsButton;
     private Button toBiggestMovers;
     /**
      * The user's ID
@@ -209,6 +210,7 @@ public class CardSearchActivity extends AppCompatActivity {
         returnToMain = findViewById(R.id.cardlookup_to_main_button);
         toBiggestMovers = findViewById(R.id.cardLookup_tobiggestmovers_btn);
         cardBinderButton = findViewById(R.id.cardLookup_toPortfolio_image);
+        toChatsButton = findViewById(R.id.cardLookup_tochats_btn);
 
         Bundle extras = getIntent().getExtras();
 
@@ -258,6 +260,14 @@ public class CardSearchActivity extends AppCompatActivity {
 
         returnToMain.setOnClickListener(v -> {
             Intent intent = new Intent(CardSearchActivity.this, MainActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", isAdmin);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        toChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CardSearchActivity.this, LiveChatMenuActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("isAdmin", isAdmin);
             intent.putExtra("username", username);
