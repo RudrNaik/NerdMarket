@@ -1,0 +1,247 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">NerdMarket.users</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (NerdMarket.users)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.1%
+  </span>
+  <span class="absValue">
+    (2/65)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package NerdMarket.users;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class UserService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+<b class="fc">&nbsp;    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();</b>
+&nbsp;    private static final int MAX_ATTEMPTS = 3;
+&nbsp;
+&nbsp;    public Users signup(Users user) {
+<b class="nc">&nbsp;        if (userRepository.existsByUsername(user.getUsername())) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Username is already taken&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (userRepository.existsByEmail(user.getEmail())) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Email is already in use&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        user.setPassword(encoder.encode(user.getPassword()));</b>
+<b class="nc">&nbsp;        user.setActive(true);</b>
+<b class="nc">&nbsp;        user.setAdmin(false);</b>
+<b class="nc">&nbsp;        user.setLoginAttempts(0);</b>
+<b class="nc">&nbsp;        user.setLocked(false);</b>
+&nbsp;
+<b class="nc">&nbsp;        return userRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Users login(String usernameOrEmail, String password) {
+<b class="nc">&nbsp;        Users user = userRepository.findByUsername(usernameOrEmail);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            user = userRepository.findByEmail(usernameOrEmail);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Invalid username or email&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!user.isActive()) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Account Deactivated&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user.isLocked()) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Account is locked due to too many failed attempts. Reset your password to unlock.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!encoder.matches(password, user.getPassword())) {</b>
+<b class="nc">&nbsp;            user.setLoginAttempts(user.getLoginAttempts() + 1);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (user.getLoginAttempts() &gt;= MAX_ATTEMPTS) {</b>
+<b class="nc">&nbsp;                user.setLocked(true);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            userRepository.save(user);</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Wrong password. Attempt &quot; + user.getLoginAttempts() + &quot; of &quot; + MAX_ATTEMPTS);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        user.setLoginAttempts(0);</b>
+<b class="nc">&nbsp;        userRepository.save(user);</b>
+&nbsp;
+<b class="nc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Users getUserById(Long id) {
+<b class="nc">&nbsp;        Users user = userRepository.findUsersById(id);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;User not found&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Users changePassword(Long id, String oldPassword, String newPassword) {
+<b class="nc">&nbsp;        Users user = userRepository.findUsersById(id);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;User not found&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!encoder.matches(oldPassword, user.getPassword())) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Old password is incorrect&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        user.setPassword(encoder.encode(newPassword));</b>
+<b class="nc">&nbsp;        return userRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Users changeEmail (Long id, String password, String email ) {
+<b class="nc">&nbsp;        Users user = userRepository.findUsersById(id);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;User not found&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (!encoder.matches(password, user.getPassword())) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Password is incorrect&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (userRepository.existsByEmail(email)) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Email is already in use&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        user.setEmail(email);</b>
+<b class="nc">&nbsp;        return userRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Users resetPassword(String email, String oldPassword, String newPassword) {
+<b class="nc">&nbsp;        Users user = userRepository.findByEmail(email);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;No account with that email&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!encoder.matches(oldPassword, user.getPassword())) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Old password is incorrect&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        user.setPassword(encoder.encode(newPassword));</b>
+<b class="nc">&nbsp;        user.setLocked(false);</b>
+<b class="nc">&nbsp;        user.setLoginAttempts(0);</b>
+<b class="nc">&nbsp;        return userRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void deleteOwnAccount(Long id, String password) {
+<b class="nc">&nbsp;        Users user = userRepository.findUsersById(id);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;User not found&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (!encoder.matches(password, user.getPassword())) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Incorrect password&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        userRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-04 20:20</div>
+</div>
+</body>
+</html>
