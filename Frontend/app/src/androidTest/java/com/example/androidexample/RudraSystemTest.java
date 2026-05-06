@@ -25,6 +25,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 import android.content.Intent;
 
@@ -154,4 +155,100 @@ public class RudraSystemTest {
             onView(withId(R.id.admin_account_cardDetail_name)).check(matches(withText(containsString("ID: 12  //  FakeUser!!  //  Active: true  //  Admin: false"))));
         }
     }
+
+    @Test
+    public void testToggleVisibility() {
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(sessionIntent(AdminActivity.class))) {
+
+            onView(withId(R.id.admin_activate_deactivate_btn)).perform(scrollTo(), click());
+
+            onView(withId(R.id.admin_activate_deactivate_container)).check(matches(isDisplayed()));
+
+            onView(withId(R.id.admin_activate_deactivate_btn)).perform(scrollTo(), click());
+
+            onView(withId(R.id.admin_activate_deactivate_container)).check(matches(not(isDisplayed())));
+        }
+    }
+
+    @Test
+    public void testEmptyNotif() {
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(sessionIntent(AdminActivity.class))) {
+
+            onView(withId(R.id.admin_create_notif_btn)).perform(scrollTo(), click());
+
+            onView(withId(R.id.admin_send_notif_btn)).perform(scrollTo(), click());
+        }
+    }
+
+    @Test
+    public void testSendNotif() {
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(sessionIntent(AdminActivity.class))) {
+
+            onView(withId(R.id.admin_create_notif_btn)).perform(scrollTo(), click());
+
+            onView(withId(R.id.admin_notif_title_field)).perform(replaceText("Test"), closeSoftKeyboard());
+
+            onView(withId(R.id.admin_notif_message_field)).perform(replaceText("Hello"), closeSoftKeyboard());
+
+            onView(withId(R.id.admin_send_notif_btn)).perform(scrollTo(), click());
+        }
+    }
+
+    @Test
+    public void testToMain() {
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(sessionIntent(AdminActivity.class))) {
+
+            onView(withId(R.id.admin_to_main_btn)).perform(click());
+        }
+    }
+
+    @Test
+    public void testToPriceCrud() {
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(sessionIntent(AdminActivity.class))) {
+
+            onView(withId(R.id.admin_to_priceCrud_btn)).perform(click());
+        }
+    }
+
+    @Test
+    public void testUnlockAccountFlow() {
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(sessionIntent(AdminActivity.class))) {
+
+            onView(withId(R.id.admin_unlock_btn))
+                    .perform(scrollTo(), click());
+
+            onView(withId(R.id.admin_unlock_ID_searchField))
+                    .perform(replaceText("12"), closeSoftKeyboard());
+
+            onView(withId(R.id.admin_unlockAccount_btn))
+                    .perform(scrollTo(), click());
+        }
+    }
+
+    @Test
+    public void testBadSession() {
+        Intent badIntent = new Intent(
+                ApplicationProvider.getApplicationContext(),
+                AdminActivity.class
+        );
+
+        try (ActivityScenario<AdminActivity> scenario =
+                     ActivityScenario.launch(badIntent)) {
+
+            onView(withId(R.id.admin_showAllAccounts_btn))
+                    .perform(scrollTo(), click());
+        }
+    }
+
+
+
+
+
+
 }
