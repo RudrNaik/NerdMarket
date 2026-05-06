@@ -34,7 +34,8 @@ public class UserActivity extends AppCompatActivity {
     private ImageButton hamburgerDropdownButton;
     private ImageButton cardBinderButton;
     private ImageButton cardDetailsButton;
-    private ImageButton toHomeButton;
+    private ImageButton toChatsButton;
+    private ImageView toHomeButton;
     private TextView usernameText;
     private int id;
     private String username;
@@ -56,6 +57,7 @@ public class UserActivity extends AppCompatActivity {
         cardDetailsButton = findViewById(R.id.userPage_toSearch_image);
         toHomeButton = findViewById(R.id.userPage_home_image);
         usernameText = findViewById(R.id.userPage_username_txt);
+        toChatsButton = findViewById(R.id.userPage_tochats_btn);
 
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -140,6 +142,25 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("isAdmin", isAdmin);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
+        toChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserActivity.this, LiveChatMenuActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", isAdmin);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        toAdminButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(UserActivity.this, AdminActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("isAdmin", isAdmin);
                 intent.putExtra("username", username);

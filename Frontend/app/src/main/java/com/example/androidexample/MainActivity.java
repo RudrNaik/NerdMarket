@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView messageText;   // define message textview variable
     private TextView usernameText;  // define username textview variable
+    private TextView portfolioValueText;
     private Button loginBackButton;
     private ImageButton cardDetailsButton;
     private Button priceCRUDButton;
@@ -49,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
     private Button toNotificationsButton;
     private ImageButton hamburgerDropdownButton;
 
-    private Button toChatsButton;
+    private ImageButton toChatsButton;
     private CandleStickChart mainChart;
 
     private int id;
     private String username;
     private boolean isAdmin;
+    private double totalPortfolioValue = 0;
     private static final String BINDER_URL = "http://coms-3090-022.class.las.iastate.edu:8080/api/users";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         hamburgerDropdownButton = findViewById(R.id.main_dropdown_btn);
         toChatsButton = findViewById(R.id.main_tochats_btn);
         mainChart    = findViewById(R.id.candleStick);
+        portfolioValueText = findViewById(R.id.main_portfolio_value_txt);
 
 
 
@@ -194,9 +198,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchAllCardPrices(List<JSONObject> cards) {
+        totalPortfolioValue = 0;
         Map<String, List<CandleEntry>> portfolioData = new LinkedHashMap<>();
 
         if (cards.isEmpty()) {
+            portfolioValueText.setText(String.format("$%.2f", totalPortfolioValue));
             renderPortfolio(portfolioData);
             return;
         }
@@ -206,7 +212,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void fetchNextCard(List<JSONObject> cards, int index, Map<String, List<CandleEntry>> portfolioData) {
         if (index >= cards.size()) {
-            runOnUiThread(() -> renderPortfolio(portfolioData));
+            runOnUiThread(() -> {
+                renderPortfolio(portfolioData);
+                portfolioValueText.setText(String.format("$%.2f", totalPortfolioValue));
+            });
             return;
         }
         JSONObject card = cards.get(index);
@@ -227,6 +236,18 @@ public class MainActivity extends AppCompatActivity {
         JsonArrayRequest req = new JsonArrayRequest(
                 Request.Method.GET, url, null,
                 response -> {
+                    //Get total prices
+                    if (response.length() > 0) {
+                        try {
+                            JSONObject price = response.getJSONObject(response.length() - 1);
+                            totalPortfolioValue += price.getDouble("price");
+                        } catch (JSONException e) {
+                            Log.e("totalPortfolioValue", e.getMessage());
+                        }
+                    } else {
+                        Log.d("totalPortfolioValue", "No price log for " + cardName);
+                    }
+
                     List<CandleEntry> entries = buildCandles(response);
                     portfolioData.put(cardName, entries);
                     fetchNextCard(cards, index + 1, portfolioData);

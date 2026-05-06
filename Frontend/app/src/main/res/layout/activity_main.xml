@@ -2,7 +2,7 @@
 <androidx.appcompat.widget.LinearLayoutCompat
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#2A1B3D"
+    android:background="@drawable/gradient_background"
     tools:context=".MainActivity"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="25dp">
 
         <ImageView
             android:id="@+id/logo_image_main"
@@ -46,9 +46,47 @@
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        app:cardBackgroundColor="#1d0d3b">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Portfolio Value"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/main_portfolio_value_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0.00"
+                android:textColor="#FFFFFF"
+                android:textSize="29sp"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginTop="24dp"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -59,55 +97,52 @@
         <com.github.mikephil.charting.charts.CandleStickChart
             android:id="@+id/candleStick"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="510dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"/>
 
     </androidx.cardview.widget.CardView>
 
-
-    <Button
-        android:id="@+id/main_tochats_btn"
-        android:text="to chats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </Button>
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/main_toPortfolio_image"
             android:layout_width="68dp"
             android:layout_height="68dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
+            android:layout_margin="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/business_center_24px" />
 
+        <ImageButton
+            android:id="@+id/main_tochats_btn"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/chat_bubble_24" />
+
         <ImageView
             android:id="@+id/main_home_image"
-            android:layout_width="75dp"
-            android:layout_height="65dp"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="1dp"
-            android:src="@drawable/baseline_home_24"
-            android:textColor="#ffffff"
-            android:textSize="30dp" />
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/baseline_home_24" />
 
         <ImageButton
             android:id="@+id/main_toSearch_image"
             android:layout_width="68dp"
             android:layout_height="68dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
+            android:paddingHorizontal="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/search_24px" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

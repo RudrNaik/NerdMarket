@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".PriceCrudActivity"
-    android:background="#0B1F3A">
+    android:background="@drawable/gradient_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter Card ID: "
+                android:text="Card ID:"
                 android:textSize="20dp"
                 android:textColor="#ffffff">
             </TextView>
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:textColor="#ffffff"
                 android:layout_height="50dp"
-                android:hint="ID Number here">
+                android:hint="Enter ID">
             </EditText>
 
             <Button
@@ -78,7 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update Price: "
+                android:text="Update Price:"
                 android:textSize="20dp"
                 android:textColor="#ffffff">
             </TextView>
@@ -88,14 +88,14 @@
                 android:layout_width="wrap_content"
                 android:textColor="#ffffff"
                 android:layout_height="50dp"
-                android:hint="New price here">
+                android:hint="New price">
             </EditText>
 
             <Button
                 android:id="@+id/pricecrud_update_btn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Update"
+                android:text="Go"
                 android:textColor="#0B1F3A"
                 android:backgroundTint="#FFFFFF"
                 />
@@ -112,7 +112,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create Record: "
+                android:text="New Record:"
                 android:textSize="20dp"
                 android:textColor="#ffffff">
             </TextView>
@@ -122,14 +122,14 @@
                 android:layout_width="wrap_content"
                 android:textColor="#ffffff"
                 android:layout_height="50dp"
-                android:hint="Enter price here">
+                android:hint="New Price">
             </EditText>
 
             <Button
                 android:id="@+id/pricecrud_create_btn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Create"
+                android:text="Go"
                 android:textColor="#0B1F3A"
                 android:backgroundTint="#FFFFFF"
                 />
@@ -149,7 +149,7 @@
             android:id="@+id/pricecrud_deleteONE_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Delete Most Recent Record From Card ID"
+            android:text="Delete Most Recent Record"
             android:textColor="#FFFFFF"
             android:backgroundTint="#B00020"
             android:layout_marginTop="0dp"/>
@@ -161,7 +161,7 @@
             android:text="Home"
             android:textColor="#000000"
             android:backgroundTint="#FFFFFF"
-            android:layout_marginTop="190dp"/>
+            android:layout_marginTop="290dp"/>
 
 
     </LinearLayout>

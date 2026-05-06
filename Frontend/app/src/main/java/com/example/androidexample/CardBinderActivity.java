@@ -130,6 +130,7 @@ public class CardBinderActivity extends AppCompatActivity {
 
     private ImageView returnToMain;
     private ImageButton cardDetailsButton;
+    private ImageButton toChatsButton;
 
     private int id;
     /**
@@ -178,6 +179,7 @@ public class CardBinderActivity extends AppCompatActivity {
 
         returnToMain = findViewById(R.id.cardBinder_home_image);
         cardDetailsButton = findViewById(R.id.cardBinder_toSearch_image);
+        toChatsButton = findViewById(R.id.cardBinder_tochats_btn);
 
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -191,6 +193,14 @@ public class CardBinderActivity extends AppCompatActivity {
 
         returnToMain.setOnClickListener(v -> {
             Intent intent = new Intent(CardBinderActivity.this, MainActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("isAdmin", isAdmin);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        toChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CardBinderActivity.this, LiveChatMenuActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("isAdmin", isAdmin);
             intent.putExtra("username", username);
