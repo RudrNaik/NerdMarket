@@ -462,4 +462,49 @@ public class HrushiSystemTest {
         }
         return false;
     }
+
+    //TEST 10: Market controller error paths and edge cases.
+    @Test
+    public void marketErrorPathsAndEdgeCasesTest() throws Exception {
+        //GET card by non-existent ID - exercises the not-found path in getCardById
+        ResponseEntity<String> missingCardResponse = restTemplate.getForEntity(baseUrl + "/api/cards/9999999", String.class);
+        assertEquals(200, missingCardResponse.getStatusCode().value(), "Endpoint responds even for missing card");
+
+        //PUT update on non-existent card - exercises the null branch in updateCard
+        String updateJson = "{" + "\"cardType\":\"POKEMON\"," + "\"cardName\":\"Ghost\"," + "\"cardSet\":\"Fake\"," + "\"cardRarity\":\"Common\"," + "\"price\":1.00" + "}";
+        ResponseEntity<String> badUpdateResponse = restTemplate.exchange(baseUrl + "/api/cards/9999999", HttpMethod.PUT, jsonEntity(updateJson), String.class);
+        assertEquals(200, badUpdateResponse.getStatusCode().value(), "Update endpoint responds even for missing card");
+
+        //DELETE on non-existent card - exercises the not-found path in deleteCard
+        ResponseEntity<String> badDeleteResponse = restTemplate.exchange(baseUrl + "/api/cards/9999999", HttpMethod.DELETE, null, String.class);
+        assertEquals(200, badDeleteResponse.getStatusCode().value(), "Delete endpoint responds even for missing card");
+
+        //DELETE all cards of a non-existent type - exercises the empty-list branch
+        ResponseEntity<String> badTypeDeleteResponse = restTemplate.exchange(baseUrl + "/api/cards/type/NONEXISTENT_TYPE_XYZ", HttpMethod.DELETE, null, String.class);
+        assertEquals(200, badTypeDeleteResponse.getStatusCode().value(), "Delete by type responds even for unknown type");
+
+        //GET cards by type - exercises findByCardType repository method
+        ResponseEntity<String> typeResponse = restTemplate.getForEntity(baseUrl + "/api/cards/type/POKEMON", String.class);
+        assertEquals(200, typeResponse.getStatusCode().value());
+        JSONArray pokemonCards = new JSONArray(typeResponse.getBody());
+        assertNotNull(pokemonCards, "Pokemon cards list should not be null");
+
+        //GET top10 across all types - exercises findTop10ByOrderByPriceDesc
+        ResponseEntity<String> top10Response = restTemplate.getForEntity(baseUrl + "/api/cards/top10", String.class);
+        assertEquals(200, top10Response.getStatusCode().value());
+        JSONArray top10 = new JSONArray(top10Response.getBody());
+        assertTrue(top10.length() <= 10, "Top 10 should return at most 10 cards");
+
+        //Iterate top 10 to exercise Market entity getters during JSON serialization
+        for (int i = 0; i < top10.length(); i++) {
+            JSONObject card = top10.getJSONObject(i);
+            card.optString("cardName");
+            card.optString("cardType");
+            card.optString("cardSet");
+            card.optString("cardRarity");
+            card.optDouble("price");
+            card.optString("imageUrl");
+            card.optLong("id");
+        }
+    }
 }
