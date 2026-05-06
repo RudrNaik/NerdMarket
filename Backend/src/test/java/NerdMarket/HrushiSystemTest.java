@@ -351,4 +351,26 @@ public class HrushiSystemTest {
         ResponseEntity<String> deleteByCardResponse = restTemplate.exchange(baseUrl + "/api/prices/card/" + cardId, HttpMethod.DELETE, null, String.class);
         assertEquals(200, deleteByCardResponse.getStatusCode().value());
     }
+
+    //TEST 7: Notification retrieval endpoints for an existing user.
+    @Test
+    public void notificationRetrievalTest() throws Exception {
+        //Use existing admin user (hbhatt10, id=3)
+        long adminId = 3;
+
+        //Get all notifications for the user - should return 200 even if list is empty
+        ResponseEntity<String> userNotifsResponse = restTemplate.getForEntity(baseUrl + "/notifications/user/" + adminId, String.class);
+        assertEquals(200, userNotifsResponse.getStatusCode().value());
+        JSONArray userNotifs = new JSONArray(userNotifsResponse.getBody());
+        assertNotNull(userNotifs, "User notifications list should not be null");
+
+        //Get unread count for the user - should return a non-negative number
+        ResponseEntity<String> unreadResponse = restTemplate.getForEntity(baseUrl + "/notifications/unread/" + adminId, String.class);
+        assertEquals(200, unreadResponse.getStatusCode().value());
+        long unreadCount = Long.parseLong(unreadResponse.getBody());
+        assertTrue(unreadCount >= 0, "Unread count should be non-negative");
+
+        //Verify the unread count never exceeds the total count
+        assertTrue(unreadCount <= userNotifs.length(), "Unread count should not exceed total notifications");
+    }
 }
