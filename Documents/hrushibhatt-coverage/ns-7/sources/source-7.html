@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > UserNotificationRepository</title>
+  <title>Coverage Report > NotificationRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,14 +22,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">NerdMarket.notifications</a>
 </div>
 
-<h1>Coverage Summary for Class: UserNotificationRepository (NerdMarket.notifications)</h1>
+<h1>Coverage Summary for Class: NotificationRepository (NerdMarket.notifications)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">UserNotificationRepository</td>
+  <td class="name">NotificationRepository</td>
 </tr>
 
 </table>
@@ -42,14 +42,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <code class="sourceCode" id="sourceCode">&nbsp;package NerdMarket.notifications;
 &nbsp;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
 &nbsp;import java.util.List;
 &nbsp;
-&nbsp;public interface UserNotificationRepository extends JpaRepository&lt;UserNotification, Long&gt; {
+&nbsp;public interface NotificationRepository extends JpaRepository&lt;Notification, Long&gt; {
 &nbsp;
-&nbsp;    List&lt;UserNotification&gt; findByUserIdOrderByIdDesc(Long userId);
-&nbsp;    List&lt;UserNotification&gt; findByUserIdAndIsReadFalse(Long userId);
-&nbsp;
-&nbsp;    long countByUserIdAndIsReadFalse(Long userId);
+&nbsp;    List&lt;Notification&gt; findByScheduledAtBeforeAndSentAtIsNull(LocalDateTime time);
 &nbsp;}
 </code>
 </pre>
@@ -74,7 +73,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    12.5%
+    100%
   </span>
   <span class="absValue">
-    (1/8)
+    (8/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.6%
+    96.4%
   </span>
   <span class="absValue">
-    (1/28)
+    (27/28)
   </span>
 </td>
 </tr>
@@ -97,10 +97,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PostMapping(&quot;/signup&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; signup(@RequestBody Users user) {
 &nbsp;        try {
-<b class="nc">&nbsp;            Users created = userService.signup(user);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(created);</b>
+<b class="fc">&nbsp;            Users created = userService.signup(user);</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(created);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -108,12 +108,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PostMapping(&quot;/login&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; login(@RequestBody Map&lt;String, String&gt; body) {
 &nbsp;        try {
-<b class="nc">&nbsp;            String usernameOrEmail = body.get(&quot;usernameOrEmail&quot;);</b>
-<b class="nc">&nbsp;            String password = body.get(&quot;password&quot;);</b>
-<b class="nc">&nbsp;            Users user = userService.login(usernameOrEmail, password);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(user);</b>
+<b class="fc">&nbsp;            String usernameOrEmail = body.get(&quot;usernameOrEmail&quot;);</b>
+<b class="fc">&nbsp;            String password = body.get(&quot;password&quot;);</b>
+<b class="fc">&nbsp;            Users user = userService.login(usernameOrEmail, password);</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(user);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -121,10 +121,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @GetMapping(&quot;/{id}&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; getUserById(@PathVariable Long id) {
 &nbsp;        try {
-<b class="nc">&nbsp;            Users user = userService.getUserById(id);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(user);</b>
+<b class="fc">&nbsp;            Users user = userService.getUserById(id);</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(user);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -132,12 +132,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PutMapping(&quot;/{id}/change-password&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; changePassword(@PathVariable Long id, @RequestBody Map&lt;String, String&gt; body) {
 &nbsp;        try {
-<b class="nc">&nbsp;            String oldPassword = body.get(&quot;oldPassword&quot;);</b>
-<b class="nc">&nbsp;            String newPassword = body.get(&quot;newPassword&quot;);</b>
-<b class="nc">&nbsp;            Users user = userService.changePassword(id, oldPassword, newPassword);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(user);</b>
+<b class="fc">&nbsp;            String oldPassword = body.get(&quot;oldPassword&quot;);</b>
+<b class="fc">&nbsp;            String newPassword = body.get(&quot;newPassword&quot;);</b>
+<b class="fc">&nbsp;            Users user = userService.changePassword(id, oldPassword, newPassword);</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(user);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -146,10 +146,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PutMapping(&quot;/{id}/change-email&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; changeEmail(@PathVariable Long id, @RequestBody Map&lt;String, String&gt; body) {
 &nbsp;        try {
-<b class="nc">&nbsp;            String password = body.get(&quot;password&quot;);</b>
-<b class="nc">&nbsp;            String newEmail = body.get(&quot;newEmail&quot;);</b>
-<b class="nc">&nbsp;            Users user = userService.changeEmail(id, password, newEmail);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(user);</b>
+<b class="fc">&nbsp;            String password = body.get(&quot;password&quot;);</b>
+<b class="fc">&nbsp;            String newEmail = body.get(&quot;newEmail&quot;);</b>
+<b class="fc">&nbsp;            Users user = userService.changeEmail(id, password, newEmail);</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(user);</b>
 &nbsp;        } catch (RuntimeException e) {
 <b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
@@ -159,10 +159,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PostMapping(&quot;/reset-password&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; resetPassword(@RequestBody Map&lt;String, String&gt; body) {
 &nbsp;        try {
-<b class="nc">&nbsp;            Users user = userService.resetPassword(body.get(&quot;email&quot;), body.get(&quot;oldPassword&quot;), body.get(&quot;newPassword&quot;));</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(user);</b>
+<b class="fc">&nbsp;            Users user = userService.resetPassword(body.get(&quot;email&quot;), body.get(&quot;oldPassword&quot;), body.get(&quot;newPassword&quot;));</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(user);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -170,10 +170,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @DeleteMapping(&quot;/{id}/delete-account&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; deleteOwnAccount(@PathVariable Long id, @RequestHeader(&quot;X-Password&quot;) String password) {
 &nbsp;        try {
-<b class="nc">&nbsp;            userService.deleteOwnAccount(id, password);</b>
-<b class="nc">&nbsp;            return ResponseEntity.noContent().build();</b>
+<b class="fc">&nbsp;            userService.deleteOwnAccount(id, password);</b>
+<b class="fc">&nbsp;            return ResponseEntity.noContent().build();</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;}
@@ -200,7 +200,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

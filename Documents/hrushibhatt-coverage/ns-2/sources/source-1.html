@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    10%
+    100%
   </span>
   <span class="absValue">
-    (1/10)
+    (10/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/4)
+    (4/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.4%
+    93.1%
   </span>
   <span class="absValue">
-    (1/29)
+    (27/29)
   </span>
 </td>
 </tr>
@@ -114,10 +114,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @GetMapping(&quot;/users&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; getAllUsers(@RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            List&lt;Users&gt; users = adminService.getAllUsers(userId);</b>
+<b class="fc">&nbsp;            List&lt;Users&gt; users = adminService.getAllUsers(userId);</b>
 <b class="nc">&nbsp;            return ResponseEntity.ok(users);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -125,10 +125,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @DeleteMapping(&quot;/users/{targetId}&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; deleteUser(@PathVariable Long targetId, @RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            adminService.deleteUserAccount(userId, targetId);</b>
+<b class="fc">&nbsp;            adminService.deleteUserAccount(userId, targetId);</b>
 <b class="nc">&nbsp;            return ResponseEntity.ok(&quot;User deleted successfully&quot;);</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -136,9 +136,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PutMapping(&quot;/users/{targetId}/promote&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; promoteUser(@PathVariable Long targetId, @RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, true, null));</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, true, null));</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -146,9 +146,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PutMapping(&quot;/users/{targetId}/demote&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; demoteUser(@PathVariable Long targetId, @RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, false, null));</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, false, null));</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -156,9 +156,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PostMapping(&quot;/users/{targetId}/unlock&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; unlockUser(@PathVariable Long targetId, @RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            return ResponseEntity.ok(adminService.unlockUser(userId, targetId));</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(adminService.unlockUser(userId, targetId));</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -166,9 +166,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PutMapping(&quot;/users/{targetId}/activate&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; activateUser(@PathVariable Long targetId, @RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, null, true));</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, null, true));</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
@@ -176,34 +176,34 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @PutMapping(&quot;/users/{targetId}/deactivate&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; deactivateUser(@PathVariable Long targetId, @RequestParam Long userId) {
 &nbsp;        try {
-<b class="nc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, null, false));</b>
+<b class="fc">&nbsp;            return ResponseEntity.ok(adminService.updateUser(userId, targetId, null, false));</b>
 &nbsp;        } catch (RuntimeException e) {
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
 &nbsp;    @Operation(summary = &quot;Promote a user to moderator&quot;)
 &nbsp;    @PutMapping(&quot;/admin/users/{targetId}/promote-moderator&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; promoteModerator(@PathVariable Long targetId) {
-<b class="nc">&nbsp;        Users target = userRepository.findById(targetId).orElse(null);</b>
-<b class="nc">&nbsp;        if (target == null) {</b>
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User not found&quot;);</b>
+<b class="fc">&nbsp;        Users target = userRepository.findById(targetId).orElse(null);</b>
+<b class="fc">&nbsp;        if (target == null) {</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User not found&quot;);</b>
 &nbsp;        }
-<b class="nc">&nbsp;        target.setModerator(true);</b>
-<b class="nc">&nbsp;        userRepository.save(target);</b>
-<b class="nc">&nbsp;        return ResponseEntity.ok(target);</b>
+<b class="fc">&nbsp;        target.setModerator(true);</b>
+<b class="fc">&nbsp;        userRepository.save(target);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(target);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Operation(summary = &quot;Demote a user from moderator&quot;)
 &nbsp;    @PutMapping(&quot;/admin/users/{targetId}/demote-moderator&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; demoteModerator(@PathVariable Long targetId) {
-<b class="nc">&nbsp;        Users target = userRepository.findById(targetId).orElse(null);</b>
-<b class="nc">&nbsp;        if (target == null) {</b>
-<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User not found&quot;);</b>
+<b class="fc">&nbsp;        Users target = userRepository.findById(targetId).orElse(null);</b>
+<b class="fc">&nbsp;        if (target == null) {</b>
+<b class="fc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User not found&quot;);</b>
 &nbsp;        }
-<b class="nc">&nbsp;        target.setModerator(false);</b>
-<b class="nc">&nbsp;        userRepository.save(target);</b>
-<b class="nc">&nbsp;        return ResponseEntity.ok(target);</b>
+<b class="fc">&nbsp;        target.setModerator(false);</b>
+<b class="fc">&nbsp;        userRepository.save(target);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(target);</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -229,7 +229,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

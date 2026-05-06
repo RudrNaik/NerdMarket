@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > ScanningMatch</title>
+  <title>Coverage Report > ScanningRequest</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,14 +22,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">NerdMarket.scanning</a>
 </div>
 
-<h1>Coverage Summary for Class: ScanningMatch (NerdMarket.scanning)</h1>
+<h1>Coverage Summary for Class: ScanningRequest (NerdMarket.scanning)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">ScanningMatch</td>
+  <td class="name">ScanningRequest</td>
 </tr>
 
 </table>
@@ -41,7 +41,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package NerdMarket.scanning;
 &nbsp;
-&nbsp;import NerdMarket.market.Market;
 &nbsp;import lombok.AllArgsConstructor;
 &nbsp;import lombok.Data;
 &nbsp;import lombok.NoArgsConstructor;
@@ -49,9 +48,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;@Data
 &nbsp;@NoArgsConstructor
 &nbsp;@AllArgsConstructor
-&nbsp;public class ScanningMatch {
-&nbsp;    private Market card;
-&nbsp;    private int confidence; // 0-100
+&nbsp;public class ScanningRequest {
+&nbsp;    private String imageBase64;   // base64-encoded card image from the frontend
+&nbsp;    private String cardNameOcr;   // card name extracted by frontend OCR (Tesseract)
 &nbsp;}
 </code>
 </pre>
@@ -76,7 +75,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

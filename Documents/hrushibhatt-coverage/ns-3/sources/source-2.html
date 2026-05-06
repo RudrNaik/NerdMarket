@@ -45,26 +45,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">BinderService</td>
 <td class="coverageStat">
   <span class="percent">
-    14.3%
+    85.7%
   </span>
   <span class="absValue">
-    (1/7)
+    (6/7)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    87.5%
   </span>
   <span class="absValue">
-    (0/8)
+    (7/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.8%
+    88.5%
   </span>
   <span class="absValue">
-    (1/26)
+    (23/26)
   </span>
 </td>
 </tr>
@@ -72,18 +72,18 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">BinderService$BinderEntryNotFoundException</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
   </tr>
@@ -91,18 +91,18 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">BinderService$CardAlreadyInBinderException</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
   </tr>
@@ -129,18 +129,18 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">BinderService$UserNotFoundException</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
   </tr>
@@ -148,26 +148,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    9.1%
+    81.8%
   </span>
   <span class="absValue">
-    (1/11)
+    (9/11)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    87.5%
   </span>
   <span class="absValue">
-    (0/8)
+    (7/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.3%
+    86.7%
   </span>
   <span class="absValue">
-    (1/30)
+    (26/30)
   </span>
 </td>
 </tr>
@@ -202,19 +202,19 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private MarketRepository marketRepository;
 &nbsp;
 &nbsp;    public Users requireUser(String username) {
-<b class="nc">&nbsp;        Users user = userRepository.findByUsername(username);</b>
-<b class="nc">&nbsp;        if (user == null) {</b>
-<b class="nc">&nbsp;            throw new UserNotFoundException(&quot;User not found: &quot; + username);</b>
+<b class="fc">&nbsp;        Users user = userRepository.findByUsername(username);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            throw new UserNotFoundException(&quot;User not found: &quot; + username);</b>
 &nbsp;        }
-<b class="nc">&nbsp;        return user;</b>
+<b class="fc">&nbsp;        return user;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Market requireCard(Long cardId) {
-<b class="nc">&nbsp;        Market card = marketRepository.findCardById(cardId);</b>
-<b class="nc">&nbsp;        if (card == null) {</b>
+<b class="fc">&nbsp;        Market card = marketRepository.findCardById(cardId);</b>
+<b class="pc">&nbsp;        if (card == null) {</b>
 <b class="nc">&nbsp;            throw new CardNotFoundException(&quot;Card not found: &quot; + cardId);</b>
 &nbsp;        }
-<b class="nc">&nbsp;        return card;</b>
+<b class="fc">&nbsp;        return card;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Binders&gt; getBinder(String username) {
@@ -223,38 +223,38 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Binders&gt; getBinderForUser(Users user) {
-<b class="nc">&nbsp;        return binderRepository.findByUser(user);</b>
+<b class="fc">&nbsp;        return binderRepository.findByUser(user);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Binders addCard(String username, Long cardId) {
-<b class="nc">&nbsp;        Users user = requireUser(username);</b>
-<b class="nc">&nbsp;        Market card = requireCard(cardId);</b>
+<b class="fc">&nbsp;        Users user = requireUser(username);</b>
+<b class="fc">&nbsp;        Market card = requireCard(cardId);</b>
 &nbsp;
-<b class="nc">&nbsp;        if (binderRepository.existsByUserAndCard(user, card)) {</b>
-<b class="nc">&nbsp;            throw new CardAlreadyInBinderException(&quot;Card already in binder&quot;);</b>
+<b class="fc">&nbsp;        if (binderRepository.existsByUserAndCard(user, card)) {</b>
+<b class="fc">&nbsp;            throw new CardAlreadyInBinderException(&quot;Card already in binder&quot;);</b>
 &nbsp;        }
 &nbsp;
-<b class="nc">&nbsp;        Binders entry = new Binders();</b>
-<b class="nc">&nbsp;        entry.setUser(user);</b>
-<b class="nc">&nbsp;        entry.setCard(card);</b>
-<b class="nc">&nbsp;        return binderRepository.save(entry);</b>
+<b class="fc">&nbsp;        Binders entry = new Binders();</b>
+<b class="fc">&nbsp;        entry.setUser(user);</b>
+<b class="fc">&nbsp;        entry.setCard(card);</b>
+<b class="fc">&nbsp;        return binderRepository.save(entry);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void removeCard(String username, Long cardId) {
-<b class="nc">&nbsp;        Users user = requireUser(username);</b>
-<b class="nc">&nbsp;        Market card = requireCard(cardId);</b>
+<b class="fc">&nbsp;        Users user = requireUser(username);</b>
+<b class="fc">&nbsp;        Market card = requireCard(cardId);</b>
 &nbsp;
-<b class="nc">&nbsp;        Binders entry = binderRepository.findByUserAndCard(user, card);</b>
-<b class="nc">&nbsp;        if (entry == null) {</b>
-<b class="nc">&nbsp;            throw new BinderEntryNotFoundException(&quot;Card not in binder&quot;);</b>
+<b class="fc">&nbsp;        Binders entry = binderRepository.findByUserAndCard(user, card);</b>
+<b class="fc">&nbsp;        if (entry == null) {</b>
+<b class="fc">&nbsp;            throw new BinderEntryNotFoundException(&quot;Card not in binder&quot;);</b>
 &nbsp;        }
-<b class="nc">&nbsp;        binderRepository.delete(entry);</b>
+<b class="fc">&nbsp;        binderRepository.delete(entry);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    // --- Exceptions ---
 &nbsp;
 &nbsp;    public static class UserNotFoundException extends RuntimeException {
-<b class="nc">&nbsp;        public UserNotFoundException(String message) { super(message); }</b>
+<b class="fc">&nbsp;        public UserNotFoundException(String message) { super(message); }</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public static class CardNotFoundException extends RuntimeException {
@@ -262,11 +262,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public static class CardAlreadyInBinderException extends RuntimeException {
-<b class="nc">&nbsp;        public CardAlreadyInBinderException(String message) { super(message); }</b>
+<b class="fc">&nbsp;        public CardAlreadyInBinderException(String message) { super(message); }</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public static class BinderEntryNotFoundException extends RuntimeException {
-<b class="nc">&nbsp;        public BinderEntryNotFoundException(String message) { super(message); }</b>
+<b class="fc">&nbsp;        public BinderEntryNotFoundException(String message) { super(message); }</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -292,7 +292,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

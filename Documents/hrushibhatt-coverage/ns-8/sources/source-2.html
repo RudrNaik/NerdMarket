@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    23.1%
+    100%
   </span>
   <span class="absValue">
-    (3/13)
+    (13/13)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    45.8%
+    79.2%
   </span>
   <span class="absValue">
-    (11/24)
+    (19/24)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    49.2%
+    96.6%
   </span>
   <span class="absValue">
-    (29/59)
+    (57/59)
   </span>
 </td>
 </tr>
@@ -110,21 +110,21 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private MarketRepository marketRepository;
 &nbsp;
 &nbsp;    public String populatePriceData() {
-<b class="nc">&nbsp;        List&lt;Market&gt; cards = marketRepository.findByPriceGreaterThan(3.0);</b>
-<b class="nc">&nbsp;        if (cards.isEmpty()) {</b>
+<b class="fc">&nbsp;        List&lt;Market&gt; cards = marketRepository.findByPriceGreaterThan(3.0);</b>
+<b class="pc">&nbsp;        if (cards.isEmpty()) {</b>
 <b class="nc">&nbsp;            return &quot;No cards found above $3&quot;;</b>
 &nbsp;        }
 &nbsp;
-<b class="nc">&nbsp;        int count = 0;</b>
-<b class="nc">&nbsp;        for (Market card : cards) {</b>
-<b class="nc">&nbsp;            PriceTracking record = new PriceTracking();</b>
-<b class="nc">&nbsp;            record.setCard(card);</b>
-<b class="nc">&nbsp;            record.setPrice(card.getPrice());</b>
-<b class="nc">&nbsp;            record.setRecordedAt(LocalDateTime.now());</b>
-<b class="nc">&nbsp;            priceTrackingRepository.save(record);</b>
-<b class="nc">&nbsp;            count++;</b>
+<b class="fc">&nbsp;        int count = 0;</b>
+<b class="fc">&nbsp;        for (Market card : cards) {</b>
+<b class="fc">&nbsp;            PriceTracking record = new PriceTracking();</b>
+<b class="fc">&nbsp;            record.setCard(card);</b>
+<b class="fc">&nbsp;            record.setPrice(card.getPrice());</b>
+<b class="fc">&nbsp;            record.setRecordedAt(LocalDateTime.now());</b>
+<b class="fc">&nbsp;            priceTrackingRepository.save(record);</b>
+<b class="fc">&nbsp;            count++;</b>
 &nbsp;        }
-<b class="nc">&nbsp;        return &quot;Added &quot; + count + &quot; price records&quot;;</b>
+<b class="fc">&nbsp;        return &quot;Added &quot; + count + &quot; price records&quot;;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMovers() {
@@ -132,45 +132,45 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversLast2Days() {
-<b class="nc">&nbsp;        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);</b>
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(twoDaysAgo), null);</b>
+<b class="fc">&nbsp;        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(twoDaysAgo), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversLast7Days() {
-<b class="nc">&nbsp;        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);</b>
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(sevenDaysAgo), null);</b>
+<b class="fc">&nbsp;        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(sevenDaysAgo), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversLast21Days() {
-<b class="nc">&nbsp;        LocalDateTime twentyOneDaysAgo = LocalDateTime.now().minusDays(21);</b>
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(twentyOneDaysAgo), null);</b>
+<b class="fc">&nbsp;        LocalDateTime twentyOneDaysAgo = LocalDateTime.now().minusDays(21);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByRecordedAtAfter(twentyOneDaysAgo), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversByCardType(String cardType) {
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardType(cardType), null);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardType(cardType), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversByCardTypeLast2Days(String cardType) {
-<b class="nc">&nbsp;        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);</b>
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, twoDaysAgo), null);</b>
+<b class="fc">&nbsp;        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, twoDaysAgo), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversByCardTypeLast7Days(String cardType) {
-<b class="nc">&nbsp;        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);</b>
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, sevenDaysAgo), null);</b>
+<b class="fc">&nbsp;        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, sevenDaysAgo), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestMoversByCardTypeLast21Days(String cardType) {
-<b class="nc">&nbsp;        LocalDateTime twentyOneDaysAgo = LocalDateTime.now().minusDays(21);</b>
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, twentyOneDaysAgo), null);</b>
+<b class="fc">&nbsp;        LocalDateTime twentyOneDaysAgo = LocalDateTime.now().minusDays(21);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findByCard_CardTypeAndRecordedAtAfter(cardType, twentyOneDaysAgo), null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestGainers() {
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findAll(), &quot;gainers&quot;);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findAll(), &quot;gainers&quot;);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Map&lt;String, Object&gt;&gt; getBiggestLosers() {
-<b class="nc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findAll(), &quot;losers&quot;);</b>
+<b class="fc">&nbsp;        return calculateBiggestMovers(priceTrackingRepository.findAll(), &quot;losers&quot;);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    //Calculates biggest movers from a list of records
@@ -189,7 +189,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        List&lt;Map&lt;String, Object&gt;&gt; movers = new ArrayList&lt;&gt;();</b>
 <b class="fc">&nbsp;        for (Long cardId : cardPrices.keySet()) {</b>
 <b class="fc">&nbsp;            List&lt;PriceTracking&gt; prices = cardPrices.get(cardId);</b>
-<b class="pc">&nbsp;            if (prices.size() &lt; 2) {</b>
+<b class="fc">&nbsp;            if (prices.size() &lt; 2) {</b>
 &nbsp;                continue;
 &nbsp;            }
 &nbsp;
@@ -212,10 +212,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;            movers.add(mover);</b>
 &nbsp;        }
 &nbsp;
-<b class="pc">&nbsp;        if (&quot;gainers&quot;.equals(direction)) {</b>
-<b class="nc">&nbsp;            movers.removeIf(m -&gt; (Double) m.get(&quot;changePercent&quot;) &lt;= 0);</b>
-<b class="pc">&nbsp;        } else if (&quot;losers&quot;.equals(direction)) {</b>
-<b class="nc">&nbsp;            movers.removeIf(m -&gt; (Double) m.get(&quot;changePercent&quot;) &gt;= 0);</b>
+<b class="fc">&nbsp;        if (&quot;gainers&quot;.equals(direction)) {</b>
+<b class="pc">&nbsp;            movers.removeIf(m -&gt; (Double) m.get(&quot;changePercent&quot;) &lt;= 0);</b>
+<b class="fc">&nbsp;        } else if (&quot;losers&quot;.equals(direction)) {</b>
+<b class="pc">&nbsp;            movers.removeIf(m -&gt; (Double) m.get(&quot;changePercent&quot;) &gt;= 0);</b>
 &nbsp;        }
 &nbsp;
 &nbsp;        //Sorts by change percentage to get the top 10 biggest movers
@@ -249,7 +249,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

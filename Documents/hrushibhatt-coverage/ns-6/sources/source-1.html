@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    78.6%
   </span>
   <span class="absValue">
-    (7/14)
+    (11/14)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    25%
+    87.5%
   </span>
   <span class="absValue">
-    (2/8)
+    (7/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    41.9%
+    87.1%
   </span>
   <span class="absValue">
-    (13/31)
+    (27/31)
   </span>
 </td>
 </tr>
@@ -139,13 +139,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @Operation(summary = &quot;Get top 10 most expensive cards for a specific card type&quot;)
 &nbsp;    @GetMapping(path = &quot;/api/cards/top10/{cardType}&quot;)
 &nbsp;    List&lt;Market&gt; getTop10MostExpensiveCardsByCardType(@PathVariable String cardType) {
-<b class="nc">&nbsp;        return marketRepository.findTop10ByCardTypeOrderByPriceDesc(cardType);</b>
+<b class="fc">&nbsp;        return marketRepository.findTop10ByCardTypeOrderByPriceDesc(cardType);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Operation(summary = &quot;Search cards by name, case-insensitive&quot;)
 &nbsp;    @GetMapping(path = &quot;/api/cards/search/{cardName}&quot;)
 &nbsp;    List&lt;Market&gt; getCardsByCardName(@PathVariable String cardName) {
-<b class="nc">&nbsp;        return marketRepository.findByCardNameContainingIgnoreCase(cardName);</b>
+<b class="fc">&nbsp;        return marketRepository.findByCardNameContainingIgnoreCase(cardName);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Operation(summary = &quot;Create a new card&quot;)
@@ -161,20 +161,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @Operation(summary = &quot;Update a card by its ID&quot;)
 &nbsp;    @PutMapping(path = &quot;/api/cards/{id}&quot;)
 &nbsp;    Market updateCard(@PathVariable Long id, @RequestBody Market request) {
-<b class="nc">&nbsp;        Market card = marketRepository.findCardById(id);</b>
-<b class="nc">&nbsp;        if (card == null) {</b>
-<b class="nc">&nbsp;            return null;</b>
+<b class="fc">&nbsp;        Market card = marketRepository.findCardById(id);</b>
+<b class="fc">&nbsp;        if (card == null) {</b>
+<b class="fc">&nbsp;            return null;</b>
 &nbsp;        }
-<b class="nc">&nbsp;        request.setId(id);</b>
-<b class="nc">&nbsp;        marketRepository.save(request);</b>
-<b class="nc">&nbsp;        return marketRepository.findCardById(id);</b>
+<b class="fc">&nbsp;        request.setId(id);</b>
+<b class="fc">&nbsp;        marketRepository.save(request);</b>
+<b class="fc">&nbsp;        return marketRepository.findCardById(id);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Operation(summary = &quot;Delete card by its ID&quot;)
 &nbsp;    @DeleteMapping(path = &quot;/api/cards/{id}&quot;)
 &nbsp;    String deleteCard(@PathVariable Long id) {
-<b class="pc">&nbsp;        if (!marketRepository.existsById(id)) {</b>
-<b class="nc">&nbsp;            return error;</b>
+<b class="fc">&nbsp;        if (!marketRepository.existsById(id)) {</b>
+<b class="fc">&nbsp;            return error;</b>
 &nbsp;        }
 <b class="fc">&nbsp;        marketRepository.deleteById(id);</b>
 <b class="fc">&nbsp;        return success;</b>
@@ -183,12 +183,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @Operation(summary = &quot;Delete all cards of a specific type&quot;)
 &nbsp;    @DeleteMapping(path = &quot;/api/cards/type/{cardType}&quot;)
 &nbsp;    String deleteCardsByCardType(@PathVariable String cardType) {
-<b class="nc">&nbsp;        List&lt;Market&gt; cards = marketRepository.findByCardType(cardType);</b>
-<b class="nc">&nbsp;        if (cards.isEmpty()) {</b>
-<b class="nc">&nbsp;            return &quot;{\&quot;message\&quot;:\&quot;No cards found with type: &quot; + cardType + &quot;\&quot;}&quot;;</b>
+<b class="fc">&nbsp;        List&lt;Market&gt; cards = marketRepository.findByCardType(cardType);</b>
+<b class="fc">&nbsp;        if (cards.isEmpty()) {</b>
+<b class="fc">&nbsp;            return &quot;{\&quot;message\&quot;:\&quot;No cards found with type: &quot; + cardType + &quot;\&quot;}&quot;;</b>
 &nbsp;        }
-<b class="nc">&nbsp;        marketRepository.deleteAll(cards);</b>
-<b class="nc">&nbsp;        return success;</b>
+<b class="fc">&nbsp;        marketRepository.deleteAll(cards);</b>
+<b class="fc">&nbsp;        return success;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Operation(summary = &quot;Fetch all POKEMON cards from the external API and store in Market database&quot;)
@@ -232,7 +232,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

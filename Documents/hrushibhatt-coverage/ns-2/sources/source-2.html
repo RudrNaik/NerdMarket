@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    14.3%
+    85.7%
   </span>
   <span class="absValue">
-    (1/7)
+    (6/7)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    18.8%
   </span>
   <span class="absValue">
-    (0/16)
+    (3/16)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.3%
+    26.7%
   </span>
   <span class="absValue">
-    (1/30)
+    (8/30)
   </span>
 </td>
 </tr>
@@ -102,9 +102,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private UserRepository userRepository;
 &nbsp;
 &nbsp;    private Users requireAdmin(Long userId) {
-<b class="nc">&nbsp;        Users user = userRepository.findUsersById(userId);</b>
-<b class="nc">&nbsp;        if (user == null || !user.isAdmin()) {</b>
-<b class="nc">&nbsp;            throw new RuntimeException(&quot;Unauthorized - admin access required&quot;);</b>
+<b class="fc">&nbsp;        Users user = userRepository.findUsersById(userId);</b>
+<b class="pc">&nbsp;        if (user == null || !user.isAdmin()) {</b>
+<b class="fc">&nbsp;            throw new RuntimeException(&quot;Unauthorized - admin access required&quot;);</b>
 &nbsp;        }
 <b class="nc">&nbsp;        return user;</b>
 &nbsp;    }
@@ -118,12 +118,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Users&gt; getAllUsers(Long userId) {
-<b class="nc">&nbsp;        requireAdmin(userId);</b>
+<b class="fc">&nbsp;        requireAdmin(userId);</b>
 <b class="nc">&nbsp;        return userRepository.findAll();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void deleteUserAccount(Long userId, Long targetId) {
-<b class="nc">&nbsp;        requireAdmin(userId);</b>
+<b class="fc">&nbsp;        requireAdmin(userId);</b>
 <b class="nc">&nbsp;        if (userId.equals(targetId)) {</b>
 <b class="nc">&nbsp;            throw new RuntimeException(&quot;Can&#39;t delete your own account&quot;);</b>
 &nbsp;        }
@@ -132,7 +132,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Users unlockUser(Long userId, Long targetId) {
-<b class="nc">&nbsp;        requireAdmin(userId);</b>
+<b class="fc">&nbsp;        requireAdmin(userId);</b>
 <b class="nc">&nbsp;        Users target = requireUser(targetId);</b>
 <b class="nc">&nbsp;        target.setLocked(false);</b>
 <b class="nc">&nbsp;        target.setLoginAttempts(0);</b>
@@ -140,7 +140,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Users updateUser(Long userId, Long targetId, Boolean admin, Boolean active) {
-<b class="nc">&nbsp;        requireAdmin(userId);</b>
+<b class="fc">&nbsp;        requireAdmin(userId);</b>
 <b class="nc">&nbsp;        Users target = requireUser(targetId);</b>
 &nbsp;
 <b class="nc">&nbsp;        if (admin != null) {</b>
@@ -180,7 +180,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>

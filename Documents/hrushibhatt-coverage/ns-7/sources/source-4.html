@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    10%
+    50%
   </span>
   <span class="absValue">
-    (1/10)
+    (5/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    8.3%
   </span>
   <span class="absValue">
-    (0/12)
+    (1/12)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    2%
+    12%
   </span>
   <span class="absValue">
-    (1/50)
+    (6/50)
   </span>
 </td>
 </tr>
@@ -192,7 +192,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    //get all notifications for a user
 &nbsp;    public List&lt;UserNotification&gt; getUserNotifications(Long userId) {
-<b class="nc">&nbsp;        return userNotificationRepository.findByUserIdOrderByIdDesc(userId);</b>
+<b class="fc">&nbsp;        return userNotificationRepository.findByUserIdOrderByIdDesc(userId);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    //Get unread notifications for user
@@ -202,12 +202,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    //Get unread count for a user
 &nbsp;    public long getUnreadCount(Long userId) {
-<b class="nc">&nbsp;        return userNotificationRepository.countByUserIdAndIsReadFalse(userId);</b>
+<b class="fc">&nbsp;        return userNotificationRepository.countByUserIdAndIsReadFalse(userId);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    //Mark notification as read for a user
 &nbsp;    public UserNotification markAsRead(Long userNotificationId) {
-<b class="nc">&nbsp;        UserNotification userNotification = userNotificationRepository.findById(userNotificationId).orElseThrow(() -&gt; new RuntimeException(&quot;User not found&quot;));</b>
+<b class="fc">&nbsp;        UserNotification userNotification = userNotificationRepository.findById(userNotificationId).orElseThrow(() -&gt; new RuntimeException(&quot;User not found&quot;));</b>
 <b class="nc">&nbsp;        userNotification.setRead(true);</b>
 <b class="nc">&nbsp;        userNotification.setReadAt(LocalDateTime.now());</b>
 <b class="nc">&nbsp;        return userNotificationRepository.save(userNotification);</b>
@@ -215,8 +215,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    //Delete notification for user
 &nbsp;    public void deleteUserNotification(Long userNotificationId) {
-<b class="nc">&nbsp;        if (!userNotificationRepository.existsById(userNotificationId)) {</b>
-<b class="nc">&nbsp;            throw new RuntimeException(&quot;Notification not found&quot;);</b>
+<b class="pc">&nbsp;        if (!userNotificationRepository.existsById(userNotificationId)) {</b>
+<b class="fc">&nbsp;            throw new RuntimeException(&quot;Notification not found&quot;);</b>
 &nbsp;        }
 <b class="nc">&nbsp;        userNotificationRepository.deleteById(userNotificationId);</b>
 &nbsp;    }
@@ -245,7 +245,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-05-04 20:20</div>
+    <div style="float:right;">generated on 2026-05-06 16:39</div>
 </div>
 </body>
 </html>
