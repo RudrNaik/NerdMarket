@@ -373,4 +373,43 @@ public class HrushiSystemTest {
         //Verify the unread count never exceeds the total count
         assertTrue(unreadCount <= userNotifs.length(), "Unread count should not exceed total notifications");
     }
+
+    //TEST 8: Price tracking populate, gainers, and losers endpoints.
+    @Test
+    public void priceTrackingPopulateAndDirectionTest() throws Exception {
+        //Trigger the populate endpoint - copies all cards >$3 into price_tracking
+        ResponseEntity<String> populateResponse = restTemplate.getForEntity(baseUrl + "/api/prices/populate", String.class);
+        assertEquals(200, populateResponse.getStatusCode().value());
+        assertNotNull(populateResponse.getBody(), "Populate should return a response message");
+
+        //Get all price records - should not be empty after populate
+        ResponseEntity<String> allPricesResponse = restTemplate.getForEntity(baseUrl + "/api/prices", String.class);
+        assertEquals(200, allPricesResponse.getStatusCode().value());
+        JSONArray allPrices = new JSONArray(allPricesResponse.getBody());
+        assertTrue(allPrices.length() > 0, "Price records should exist after populate");
+
+        //Hit gainers endpoint - exercises the gainers branch in calculateBiggestMovers
+        ResponseEntity<String> gainersResponse = restTemplate.getForEntity(baseUrl + "/api/prices/biggest-movers/gainers", String.class);
+        assertEquals(200, gainersResponse.getStatusCode().value());
+        JSONArray gainers = new JSONArray(gainersResponse.getBody());
+        assertNotNull(gainers, "Gainers list should not be null");
+
+        //Verify gainers all have positive change percent (the filtering rule)
+        for (int i = 0; i < gainers.length(); i++) {
+            double changePercent = gainers.getJSONObject(i).getDouble("changePercent");
+            assertTrue(changePercent > 0, "Gainers should have positive change percent");
+        }
+
+        //Hit losers endpoint - exercises the losers branch in calculateBiggestMovers
+        ResponseEntity<String> losersResponse = restTemplate.getForEntity(baseUrl + "/api/prices/biggest-movers/losers", String.class);
+        assertEquals(200, losersResponse.getStatusCode().value());
+        JSONArray losers = new JSONArray(losersResponse.getBody());
+        assertNotNull(losers, "Losers list should not be null");
+
+        //Verify losers all have negative change percent (the filtering rule)
+        for (int i = 0; i < losers.length(); i++) {
+            double changePercent = losers.getJSONObject(i).getDouble("changePercent");
+            assertTrue(changePercent < 0, "Losers should have negative change percent");
+        }
+    }
 }
