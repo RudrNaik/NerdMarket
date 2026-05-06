@@ -1,0 +1,411 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MarketService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">NerdMarket.market</a>
+</div>
+
+<h1>Coverage Summary for Class: MarketService (NerdMarket.market)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MarketService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/92)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.1%
+  </span>
+  <span class="absValue">
+    (5/159)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;//Contains logic to handle external API calls and save it to the database.
+&nbsp;//Purpose of this file is for it to be called to populate the database.
+&nbsp;
+&nbsp;package NerdMarket.market;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.client.RestTemplate;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class MarketService {
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private MarketRepository marketRepository;
+&nbsp;    private final RestTemplate restTemplate;
+&nbsp;
+<b class="fc">&nbsp;    public MarketService() {</b>
+<b class="fc">&nbsp;        org.springframework.http.client.SimpleClientHttpRequestFactory factory =</b>
+&nbsp;            new org.springframework.http.client.SimpleClientHttpRequestFactory();
+<b class="fc">&nbsp;        factory.setConnectTimeout(10000);</b>
+<b class="fc">&nbsp;        factory.setReadTimeout(15000);</b>
+<b class="fc">&nbsp;        this.restTemplate = new RestTemplate(factory);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Market findOrCreate(String name, String set, String type) {
+<b class="nc">&nbsp;        Market existing = marketRepository.findByCardNameAndCardSetAndCardType(name, set, type);</b>
+<b class="nc">&nbsp;        if (existing != null) return existing;</b>
+<b class="nc">&nbsp;        Market card = new Market();</b>
+<b class="nc">&nbsp;        card.setCardName(name);</b>
+<b class="nc">&nbsp;        card.setCardSet(set);</b>
+<b class="nc">&nbsp;        card.setCardType(type);</b>
+<b class="nc">&nbsp;        return card;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //Fetch all pokemon cards from TCGDex
+&nbsp;    public String fetchAllPokemonCards() {
+&nbsp;        try {
+<b class="nc">&nbsp;            String setsUrl = &quot;https://api.tcgdex.net/v2/en/sets&quot;;</b>
+<b class="nc">&nbsp;            List&lt;Map&gt; sets = restTemplate.getForObject(setsUrl, List.class);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (sets == null || sets.isEmpty()) {</b>
+<b class="nc">&nbsp;                return &quot;No sets found&quot;;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            int totalCards = 0;</b>
+<b class="nc">&nbsp;            int totalSets = sets.size();</b>
+<b class="nc">&nbsp;            int currentSet = 0;</b>
+&nbsp;
+&nbsp;            // Looping through each set
+<b class="nc">&nbsp;            for (Map setInfo : sets) {</b>
+<b class="nc">&nbsp;                String setId = (String) setInfo.get(&quot;id&quot;);</b>
+<b class="nc">&nbsp;                currentSet++;</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Fetching set &quot; + currentSet + &quot;/&quot; + totalSets + &quot;: &quot; + setId);</b>
+&nbsp;                try {
+&nbsp;                    // Get full set details with card list
+<b class="nc">&nbsp;                    String setUrl = &quot;https://api.tcgdex.net/v2/en/sets/&quot; + setId;</b>
+<b class="nc">&nbsp;                    Map setResponse = restTemplate.getForObject(setUrl, Map.class);</b>
+<b class="nc">&nbsp;                    if (setResponse == null) continue;</b>
+&nbsp;
+<b class="nc">&nbsp;                    List&lt;Map&gt; cards = (List&lt;Map&gt;) setResponse.get(&quot;cards&quot;);</b>
+<b class="nc">&nbsp;                    if (cards == null) continue;</b>
+&nbsp;                    // Fetch each card in the set
+<b class="nc">&nbsp;                    for (Map cardInfo : cards) {</b>
+<b class="nc">&nbsp;                        String cardId = (String) cardInfo.get(&quot;id&quot;);</b>
+&nbsp;                        try {
+<b class="nc">&nbsp;                            String cardUrl = &quot;https://api.tcgdex.net/v2/en/cards/&quot; + cardId;</b>
+<b class="nc">&nbsp;                            Map cardResponse = restTemplate.getForObject(cardUrl, Map.class);</b>
+<b class="nc">&nbsp;                            if (cardResponse != null) {</b>
+<b class="nc">&nbsp;                                String name = (String) cardResponse.get(&quot;name&quot;);</b>
+<b class="nc">&nbsp;                                String rarity = (String) cardResponse.get(&quot;rarity&quot;);</b>
+<b class="nc">&nbsp;                                Map set = (Map) cardResponse.get(&quot;set&quot;);</b>
+<b class="nc">&nbsp;                                String setName = (set != null) ? (String) set.get(&quot;name&quot;) : &quot;Unknown&quot;;</b>
+<b class="nc">&nbsp;                                Market marketCard = findOrCreate(name, setName, &quot;POKEMON&quot;);</b>
+<b class="nc">&nbsp;                                marketCard.setCardRarity(rarity);</b>
+&nbsp;                                // Get price from TCGPlayer which now supports all updated tags/types
+<b class="nc">&nbsp;                                double existingPrice = marketCard.getPrice();</b>
+<b class="nc">&nbsp;                                boolean foundPrice = false;</b>
+<b class="nc">&nbsp;                                String matchedVariant = null;</b>
+<b class="nc">&nbsp;                                Object pricingObj = cardResponse.get(&quot;pricing&quot;);</b>
+<b class="nc">&nbsp;                                if (pricingObj instanceof Map&lt;?, ?&gt; pricingMap) {</b>
+<b class="nc">&nbsp;                                    Object tcgplayerObj = pricingMap.get(&quot;tcgplayer&quot;);</b>
+<b class="nc">&nbsp;                                    if (tcgplayerObj instanceof Map&lt;?, ?&gt; tcgplayerMap) {</b>
+<b class="nc">&nbsp;                                        String[] variantKeys = {&quot;holofoil&quot;, &quot;normal&quot;, &quot;reverse-holofoil&quot;, &quot;reverseHolofoil&quot;, &quot;reverse&quot;, &quot;1st-edition-holofoil&quot;, &quot;1st-edition&quot;, &quot;unlimited-holofoil&quot;, &quot;unlimited&quot;};</b>
+<b class="nc">&nbsp;                                        for (String key : variantKeys) {</b>
+<b class="nc">&nbsp;                                            Object variantObj = tcgplayerMap.get(key);</b>
+<b class="nc">&nbsp;                                            if (!(variantObj instanceof Map&lt;?, ?&gt; variantMap)) {</b>
+&nbsp;                                                continue;
+&nbsp;                                            }
+<b class="nc">&nbsp;                                            Object marketPriceObj = variantMap.get(&quot;marketPrice&quot;);</b>
+<b class="nc">&nbsp;                                            if (marketPriceObj instanceof Number num) {</b>
+<b class="nc">&nbsp;                                                marketCard.setPrice(num.doubleValue());</b>
+<b class="nc">&nbsp;                                                foundPrice = true;</b>
+<b class="nc">&nbsp;                                                matchedVariant = key;</b>
+&nbsp;                                                break;
+&nbsp;                                            }
+<b class="nc">&nbsp;                                            if (marketPriceObj instanceof String s) {</b>
+&nbsp;                                                try {
+<b class="nc">&nbsp;                                                    marketCard.setPrice(Double.parseDouble(s));</b>
+<b class="nc">&nbsp;                                                    foundPrice = true;</b>
+<b class="nc">&nbsp;                                                    matchedVariant = key;</b>
+&nbsp;                                                    break;
+&nbsp;                                                } catch (NumberFormatException ignored) {
+&nbsp;                                                }
+&nbsp;                                            }
+&nbsp;                                        }
+&nbsp;                                    }
+&nbsp;                                }
+&nbsp;                                // If no price found, keep existing price and don&#39;t overwrite with 0
+<b class="nc">&nbsp;                                System.out.println(&quot;Pokemon card: &quot; + name + &quot; | set=&quot; + setName + &quot; | matchedVariant=&quot; + matchedVariant + &quot; | finalPrice=&quot; + marketCard.getPrice());</b>
+&nbsp;                                // Get image of the card from API
+<b class="nc">&nbsp;                                String imageUrl = (String) cardResponse.get(&quot;image&quot;);</b>
+<b class="nc">&nbsp;                                if (imageUrl != null) {</b>
+<b class="nc">&nbsp;                                    marketCard.setImageUrl(imageUrl + &quot;/high.webp&quot;);</b>
+&nbsp;                                }
+<b class="nc">&nbsp;                                marketRepository.save(marketCard);</b>
+<b class="nc">&nbsp;                                totalCards++;</b>
+<b class="nc">&nbsp;                                if (totalCards % 1000 == 0 &amp;&amp; totalCards &gt; 0) {</b>
+<b class="nc">&nbsp;                                    System.out.println(&quot;Pokemon progress: &quot; + totalCards + &quot; cards processed (set &quot; + currentSet + &quot;/&quot; + totalSets + &quot;)&quot;);</b>
+&nbsp;                                }
+&nbsp;                            }
+&nbsp;                            // Small delay to avoid skipping cards
+<b class="nc">&nbsp;                            Thread.sleep(50);</b>
+&nbsp;                        } catch (Exception e) {
+<b class="nc">&nbsp;                            System.out.println(&quot;Failed to fetch card: &quot; + cardId + &quot; | &quot; + e.getClass().getSimpleName() + &quot; | &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                            e.printStackTrace();</b>
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;                    // Delay between each set that gets imported.
+<b class="nc">&nbsp;                    Thread.sleep(200);</b>
+&nbsp;                } catch (Exception e) {
+<b class="nc">&nbsp;                    System.out.println(&quot;Failed to fetch set: &quot; + setId +  &quot; | &quot; + e.getClass().getSimpleName() + &quot; | &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                    e.printStackTrace();</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            return &quot;Successfully added &quot; + totalCards + &quot; Pokemon cards from &quot; + totalSets + &quot; sets&quot;;</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            return &quot;Error: &quot; + e.getMessage();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    //Fetch all MTG cards from Scryfall
+&nbsp;    public String fetchAllMTGCards() {
+&nbsp;        try {
+&nbsp;            //Gets all sets for MTG rom Scryfall API
+<b class="nc">&nbsp;            String setsUrl = &quot;https://api.scryfall.com/sets&quot;;</b>
+<b class="nc">&nbsp;            Map setsResponse = restTemplate.getForObject(setsUrl, Map.class);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (setsResponse == null){</b>
+<b class="nc">&nbsp;                return &quot;No sets found&quot;;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            List&lt;Map&gt; sets = (List&lt;Map&gt;) setsResponse.get(&quot;data&quot;);</b>
+<b class="nc">&nbsp;            if (sets == null || sets.isEmpty()) {</b>
+<b class="nc">&nbsp;                return &quot;No sets found&quot;;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            int totalCards = 0;</b>
+<b class="nc">&nbsp;            int totalSets = sets.size();</b>
+<b class="nc">&nbsp;            int currentSet = 0;</b>
+&nbsp;
+&nbsp;            //Looping through every set in API
+<b class="nc">&nbsp;            for (Map setInfo : sets) {</b>
+<b class="nc">&nbsp;                String setName = (String) setInfo.get(&quot;name&quot;);</b>
+<b class="nc">&nbsp;                String setCode = (String) setInfo.get(&quot;code&quot;);</b>
+<b class="nc">&nbsp;                currentSet++;</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Fetching MTG set &quot; + currentSet + &quot;/&quot; + totalSets + &quot;: &quot; + setName);</b>
+&nbsp;
+&nbsp;                try {
+&nbsp;                    //Fetch all cards in the Set that it is currently in
+<b class="nc">&nbsp;                    String searchUrl = &quot;https://api.scryfall.com/cards/search?q=set:&quot; + setCode;</b>
+<b class="nc">&nbsp;                    String nextPage = searchUrl;</b>
+&nbsp;
+<b class="nc">&nbsp;                    while (nextPage != null) {</b>
+<b class="nc">&nbsp;                        Map pageResponse = restTemplate.getForObject(nextPage, Map.class);</b>
+<b class="nc">&nbsp;                        if (pageResponse == null) break;</b>
+&nbsp;
+<b class="nc">&nbsp;                        List&lt;Map&gt; cards = (List&lt;Map&gt;) pageResponse.get(&quot;data&quot;);</b>
+<b class="nc">&nbsp;                        if (cards != null) {</b>
+<b class="nc">&nbsp;                            for (Map card : cards) {</b>
+&nbsp;                                try {
+<b class="nc">&nbsp;                                    Market marketCard = findOrCreate((String) card.get(&quot;name&quot;), (String) card.get(&quot;set_name&quot;), &quot;MTG&quot;);</b>
+<b class="nc">&nbsp;                                    marketCard.setCardRarity((String) card.get(&quot;rarity&quot;));</b>
+&nbsp;                                    //Get price of card
+<b class="nc">&nbsp;                                    Map prices = (Map) card.get(&quot;prices&quot;);</b>
+<b class="nc">&nbsp;                                    if (prices != null &amp;&amp; prices.get(&quot;usd&quot;) != null) {</b>
+<b class="nc">&nbsp;                                        marketCard.setPrice(Double.parseDouble((String) prices.get(&quot;usd&quot;)));</b>
+&nbsp;                                    }
+&nbsp;
+&nbsp;                                    //Get image URL of card
+<b class="nc">&nbsp;                                    Map imageUris = (Map) card.get(&quot;image_uris&quot;);</b>
+<b class="nc">&nbsp;                                    if (imageUris != null &amp;&amp; imageUris.get(&quot;normal&quot;) != null) {</b>
+<b class="nc">&nbsp;                                        marketCard.setImageUrl((String) imageUris.get(&quot;normal&quot;));</b>
+&nbsp;                                    }
+<b class="nc">&nbsp;                                    marketRepository.save(marketCard);</b>
+<b class="nc">&nbsp;                                    totalCards++;</b>
+&nbsp;                                } catch (Exception e) {
+<b class="nc">&nbsp;                                    System.out.println(&quot;Failed to fetch MTG card: &quot; + card.get(&quot;name&quot;) + &quot; | &quot; + e.getClass().getSimpleName() + &quot; | &quot; + e.getMessage());</b>
+&nbsp;                                }
+&nbsp;                            }
+&nbsp;                        }
+&nbsp;                        //Checks next page in the API
+<b class="nc">&nbsp;                        Boolean hasMore = (Boolean) pageResponse.get(&quot;has_more&quot;);</b>
+<b class="nc">&nbsp;                        if (hasMore != null &amp;&amp; hasMore) {</b>
+<b class="nc">&nbsp;                            nextPage = (String) pageResponse.get(&quot;next_page&quot;);</b>
+<b class="nc">&nbsp;                            Thread.sleep(150);</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            nextPage = null;</b>
+&nbsp;                        }
+&nbsp;                    }
+<b class="nc">&nbsp;                    Thread.sleep(200);</b>
+&nbsp;                } catch (Exception e) {
+<b class="nc">&nbsp;                    System.out.println(&quot;Failed: &quot; + setName);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            return &quot;Successfully added &quot; + totalCards + &quot;MTG cards from &quot; + totalSets + &quot; sets&quot;;</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            return &quot;Error: &quot; + e.getMessage();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    //Fetch all cards from YGOPROdeck
+&nbsp;    public String fetchAllYugiohCards() {
+&nbsp;        try {
+&nbsp;            //YGOPRODeck has no sets so all cards can be returnedin one request.
+<b class="nc">&nbsp;            String url = &quot;https://db.ygoprodeck.com/api/v7/cardinfo.php&quot;;</b>
+<b class="nc">&nbsp;            Map response = restTemplate.getForObject(url, Map.class);</b>
+<b class="nc">&nbsp;            if (response == null){</b>
+<b class="nc">&nbsp;                return &quot;No cards found&quot;;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            List&lt;Map&gt; cards = (List&lt;Map&gt;) response.get(&quot;data&quot;);</b>
+<b class="nc">&nbsp;            if (cards == null || cards.isEmpty()) {</b>
+<b class="nc">&nbsp;                return &quot;no cards found&quot;;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            int totalCards = 0;</b>
+<b class="nc">&nbsp;            int total = cards.size();</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Fetching &quot; + total + &quot; Yu-Gi-Oh cards&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            for (Map card : cards) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    String name = (String) card.get(&quot;name&quot;);</b>
+&nbsp;
+&nbsp;                    //Grab Set and Rarity if Available in the API.
+&nbsp;                    String setName;
+&nbsp;                    String rarity;
+<b class="nc">&nbsp;                    List&lt;Map&gt; cardSets = (List&lt;Map&gt;) card.get(&quot;card_sets&quot;);</b>
+<b class="nc">&nbsp;                    if (cardSets != null &amp;&amp; !cardSets.isEmpty()) {</b>
+<b class="nc">&nbsp;                        Map firstSet = cardSets.get(0);</b>
+<b class="nc">&nbsp;                        setName = (String) firstSet.get(&quot;set_name&quot;);</b>
+<b class="nc">&nbsp;                        rarity = (String) firstSet.get(&quot;set_rarity&quot;);</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        setName = &quot;unknown&quot;;</b>
+<b class="nc">&nbsp;                        rarity = &quot;unknown&quot;;</b>
+&nbsp;                    }
+&nbsp;
+<b class="nc">&nbsp;                    Market marketCard = findOrCreate(name, setName, &quot;YU-Gi-Oh&quot;);</b>
+<b class="nc">&nbsp;                    marketCard.setCardRarity(rarity != null ? rarity : &quot;Unknown&quot;);</b>
+&nbsp;                    //Grab prices from api.
+<b class="nc">&nbsp;                    List&lt;Map&gt; cardPrices = (List&lt;Map&gt;) card.get(&quot;card_prices&quot;);</b>
+<b class="nc">&nbsp;                    if (cardPrices != null &amp;&amp; !cardPrices.isEmpty()) {</b>
+<b class="nc">&nbsp;                        Map priceInfo = cardPrices.get(0);</b>
+<b class="nc">&nbsp;                        String tcgPrice = (String) priceInfo.get(&quot;tcgplayer_price&quot;);</b>
+<b class="nc">&nbsp;                        if (tcgPrice != null &amp;&amp; !tcgPrice.isEmpty()) {</b>
+<b class="nc">&nbsp;                            marketCard.setPrice(Double.parseDouble(tcgPrice));</b>
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;
+&nbsp;                    //Get image of the card.
+<b class="nc">&nbsp;                    List&lt;Map&gt; cardImages = (List&lt;Map&gt;) card.get(&quot;card_images&quot;);</b>
+<b class="nc">&nbsp;                    if (cardImages != null &amp;&amp; !cardImages.isEmpty()) {</b>
+<b class="nc">&nbsp;                        Map imageInfo = cardImages.get(0);</b>
+<b class="nc">&nbsp;                        marketCard.setImageUrl((String) imageInfo.get(&quot;image_url&quot;));</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    marketRepository.save(marketCard);</b>
+<b class="nc">&nbsp;                    totalCards++;</b>
+&nbsp;
+&nbsp;                    //Tell me the progress after every 1000 cards.
+<b class="nc">&nbsp;                    if (totalCards % 1000 == 0) {</b>
+<b class="nc">&nbsp;                        System.out.println(&quot;Progress: &quot; + totalCards + &quot;/&quot; + total);</b>
+&nbsp;                    }
+&nbsp;                } catch (Exception e) {
+<b class="nc">&nbsp;                    System.out.println(&quot;Failed to fetch Yu-Gi-Oh card: &quot; + card.get(&quot;name&quot;) + &quot; | &quot; + e.getClass().getSimpleName() + &quot; | &quot; + e.getMessage());</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            return &quot;Successfully added &quot; + totalCards + &quot;Yu-Gi-Oh cards&quot;;</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            return &quot;Error: &quot; + e.getMessage();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-04 20:20</div>
+</div>
+</body>
+</html>

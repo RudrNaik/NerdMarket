@@ -1,0 +1,166 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ScanningWebSocketConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">NerdMarket.scanning</a>
+</div>
+
+<h1>Coverage Summary for Class: ScanningWebSocketConfig (NerdMarket.scanning)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScanningWebSocketConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ScanningWebSocketConfig$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">ScanningWebSocketConfig$$SpringCGLIB$$FastClass$$0</td>
+  </tr>
+  <tr>
+    <td class="name">ScanningWebSocketConfig$$SpringCGLIB$$FastClass$$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package NerdMarket.scanning;
+&nbsp;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+&nbsp;import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+&nbsp;import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+&nbsp;import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+&nbsp;import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
+&nbsp;import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+&nbsp;
+&nbsp;@Configuration
+&nbsp;@EnableWebSocketMessageBroker
+<b class="fc">&nbsp;public class ScanningWebSocketConfig implements WebSocketMessageBrokerConfigurer {</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void configureMessageBroker(MessageBrokerRegistry config) {
+<b class="fc">&nbsp;        config.enableSimpleBroker(&quot;/topic&quot;, &quot;/queue&quot;);</b>
+<b class="fc">&nbsp;        config.setApplicationDestinationPrefixes(&quot;/app&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void registerStompEndpoints(StompEndpointRegistry registry) {
+<b class="fc">&nbsp;        registry.addEndpoint(&quot;/ws/scanning&quot;)</b>
+<b class="fc">&nbsp;                .setAllowedOriginPatterns(&quot;*&quot;);</b>
+<b class="fc">&nbsp;        registry.addEndpoint(&quot;/ws/notifications&quot;)</b>
+<b class="fc">&nbsp;                .setAllowedOriginPatterns(&quot;*&quot;);</b>
+<b class="fc">&nbsp;        registry.addEndpoint(&quot;/ws/chat&quot;)</b>
+<b class="fc">&nbsp;                .setAllowedOriginPatterns(&quot;*&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    public ServletServerContainerFactoryBean createWebSocketContainer() {
+<b class="fc">&nbsp;        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();</b>
+<b class="fc">&nbsp;        container.setMaxTextMessageBufferSize(10 * 1024 * 1024);</b>
+<b class="fc">&nbsp;        container.setMaxBinaryMessageBufferSize(10 * 1024 * 1024);</b>
+<b class="fc">&nbsp;        return container;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+<b class="fc">&nbsp;        registration.setMessageSizeLimit(10 * 1024 * 1024);   // 10MB max message</b>
+<b class="fc">&nbsp;        registration.setSendBufferSizeLimit(10 * 1024 * 1024); // 10MB send buffer</b>
+<b class="fc">&nbsp;        registration.setSendTimeLimit(30 * 1000);              // 30s send timeout</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-04 20:20</div>
+</div>
+</body>
+</html>

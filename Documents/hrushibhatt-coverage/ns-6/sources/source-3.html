@@ -1,0 +1,105 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Market</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">NerdMarket.market</a>
+</div>
+
+<h1>Coverage Summary for Class: Market (NerdMarket.market)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">Market$HibernateInstantiator</td>
+  </tr>
+  <tr>
+    <td class="name">Market$HibernateProxy</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;//This file will map to the Market table in MySQL.
+&nbsp;//Will define fields such as cardType, cardName, Set, Rarity, and Price
+&nbsp;
+&nbsp;package NerdMarket.market;
+&nbsp;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Data
+&nbsp;@NoArgsConstructor
+&nbsp;@AllArgsConstructor
+&nbsp;
+&nbsp;public class Market {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    private String cardType;        //So here would be like Pokemon, MTG, YuGiOH, Baseball, etc..
+&nbsp;    private String cardName;        //This is the name of it: &quot;Charizard EX&quot;
+&nbsp;    private String cardSet;         //Special set: Pokemon &gt; Surging Sparks, Prismatic Evolution, etc..
+&nbsp;    private String cardRarity;      //EX: Pokemon &gt; Holo, Illustration Rare, etc..
+&nbsp;    private double price;           //Current Value (could add recent change in value, etc..)
+&nbsp;    private String imageUrl;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-04 20:20</div>
+</div>
+</body>
+</html>

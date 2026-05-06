@@ -1,0 +1,165 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ScanningWebSocketEventListener</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">NerdMarket.debugging</a>
+</div>
+
+<h1>Coverage Summary for Class: ScanningWebSocketEventListener (NerdMarket.debugging)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScanningWebSocketEventListener</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (2/14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package NerdMarket.debugging;
+&nbsp;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.context.event.EventListener;
+&nbsp;import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.web.socket.CloseStatus;
+&nbsp;import org.springframework.web.socket.messaging.SessionConnectEvent;
+&nbsp;import org.springframework.web.socket.messaging.SessionConnectedEvent;
+&nbsp;import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+&nbsp;import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class ScanningWebSocketEventListener {</b>
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger log = LoggerFactory.getLogger(ScanningWebSocketEventListener.class);</b>
+&nbsp;
+&nbsp;    @EventListener
+&nbsp;    public void handleConnect(SessionConnectEvent event) {
+<b class="nc">&nbsp;        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());</b>
+<b class="nc">&nbsp;        log.info(&quot;[WS] Client connecting - session: {}&quot;, accessor.getSessionId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @EventListener
+&nbsp;    public void handleConnected(SessionConnectedEvent event) {
+<b class="nc">&nbsp;        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());</b>
+<b class="nc">&nbsp;        log.info(&quot;[WS] Client connected - session: {}&quot;, accessor.getSessionId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @EventListener
+&nbsp;    public void handleSubscribe(SessionSubscribeEvent event) {
+<b class="nc">&nbsp;        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());</b>
+<b class="nc">&nbsp;        log.info(&quot;[WS] Client subscribed to {} - session: {}&quot;, accessor.getDestination(), accessor.getSessionId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @EventListener
+&nbsp;    public void handleDisconnect(SessionDisconnectEvent event) {
+<b class="nc">&nbsp;        String sessionId = event.getSessionId();</b>
+<b class="nc">&nbsp;        CloseStatus closeStatus = event.getCloseStatus();</b>
+<b class="nc">&nbsp;        int code = closeStatus != null ? closeStatus.getCode() : -1;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (code != CloseStatus.NORMAL.getCode()) {</b>
+<b class="nc">&nbsp;            log.warn(&quot;[WS] Abnormal disconnect - session: {}, close status: {}&quot;, sessionId, closeStatus);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            log.info(&quot;[WS] Client disconnected - session: {}, close status: {}&quot;, sessionId, closeStatus);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-04 20:20</div>
+</div>
+</body>
+</html>

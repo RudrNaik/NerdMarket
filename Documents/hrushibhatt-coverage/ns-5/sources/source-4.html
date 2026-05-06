@@ -1,0 +1,171 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > StartupLogger</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">NerdMarket.debugging</a>
+</div>
+
+<h1>Coverage Summary for Class: StartupLogger (NerdMarket.debugging)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StartupLogger</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StartupLogger$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package NerdMarket.debugging;
+&nbsp;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.boot.context.event.ApplicationReadyEvent;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.context.event.EventListener;
+&nbsp;import org.springframework.core.env.Environment;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;@Configuration
+<b class="fc">&nbsp;public class StartupLogger {</b>
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger log = LoggerFactory.getLogger(StartupLogger.class);</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private Environment environment;
+&nbsp;
+&nbsp;    @EventListener
+&nbsp;    public void onApplicationReady(ApplicationReadyEvent event) {
+<b class="fc">&nbsp;        String port = environment.getProperty(&quot;server.port&quot;, &quot;8080&quot;);</b>
+<b class="fc">&nbsp;        long maxMemoryMb = Runtime.getRuntime().maxMemory() / (1024 * 1024);</b>
+<b class="fc">&nbsp;        int processors = Runtime.getRuntime().availableProcessors();</b>
+<b class="fc">&nbsp;        String[] profiles = environment.getActiveProfiles();</b>
+<b class="pc">&nbsp;        String activeProfiles = profiles.length &gt; 0 ? Arrays.toString(profiles) : &quot;[default]&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        log.info(&quot;========================================&quot;);</b>
+<b class="fc">&nbsp;        log.info(&quot;  NerdMarket started successfully&quot;);</b>
+<b class="fc">&nbsp;        log.info(&quot;  Port              : {}&quot;, port);</b>
+<b class="fc">&nbsp;        log.info(&quot;  Max Memory        : {} MB&quot;, maxMemoryMb);</b>
+<b class="fc">&nbsp;        log.info(&quot;  CPU Processors    : {}&quot;, processors);</b>
+<b class="fc">&nbsp;        log.info(&quot;  Active Profiles   : {}&quot;, activeProfiles);</b>
+<b class="fc">&nbsp;        log.info(&quot;========================================&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-04 20:20</div>
+</div>
+</body>
+</html>
