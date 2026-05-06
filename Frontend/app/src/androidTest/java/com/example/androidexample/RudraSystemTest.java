@@ -266,6 +266,72 @@ public class RudraSystemTest {
     }
 
 
+    @Test
+    public void testSearchNav() {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(CardSearchActivity.class))) {
+
+            onView(withId(R.id.cardlookup_to_main_button)).perform(click());
+            onView(withId(R.id.main_toPortfolio_image)).perform(click());
+            onView(withId(R.id.cardBinder_toSearch_image)).perform(click());
+        }
+    }
+
+    @Test
+    public void testCardDisplaysInSearch() throws InterruptedException {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(CardSearchActivity.class))) {
+
+            onView(withId(R.id.card_search_field)).perform(typeText("Raichu"), closeSoftKeyboard());
+            onView(withId(R.id.card_search_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS);
+
+            onView(allOf(withId(R.id.card_view), isDisplayed())).check(matches(isDisplayed()));
+        }
+    }
+
+    @Test
+    public void testCardSearchVisibility() throws InterruptedException {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(CardSearchActivity.class))) {
+
+            onView(withId(R.id.card_search_field)).perform(typeText("Raichu"), closeSoftKeyboard());
+            onView(withId(R.id.card_search_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS);
+
+            onView(allOf(withId(R.id.candleStick), isDisplayed())).check(matches(isDisplayed()));
+        }
+    }
+
+    @Test
+    public void testCardSearchEnableEditMode() {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(CardSearchActivity.class))) {
+
+            onView(withId(R.id.card_search_field)).perform(typeText("A Case for K9"), closeSoftKeyboard());
+            onView(withId(R.id.card_search_btn)).perform(click());
+            Thread.sleep(SIMULATED_DELAY_MS);
+
+            onView(withId(R.id.card_view)).perform(scrollTo());
+            onView(withId(R.id.card_edit_btn)).perform(click());
+
+            onView(withId(R.id.card_name_edit)).check(matches(isDisplayed()));
+            onView(withId(R.id.card_save_btn)).check(matches(isDisplayed()));
+
+            Thread.sleep(SIMULATED_DELAY_MS);
+
+            onView(withId(R.id.card_save_btn)).perform(scrollTo(),click());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void testCardSearchCameraSearchNav() {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(CardSearchActivity.class))) {
+            onView(withId(R.id.Search_camera_btn)).perform(click());
+        }
+    }
+
+
+
+
 
 
 
