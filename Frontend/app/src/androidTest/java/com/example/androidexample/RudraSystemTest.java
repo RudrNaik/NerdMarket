@@ -18,12 +18,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.containsString;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.not;
 
@@ -42,6 +37,15 @@ public class RudraSystemTest {
         i.putExtra("id", ID);
         i.putExtra("username", USERNAME);
         i.putExtra("isAdmin", true);
+        return i;
+    }
+
+    private static Intent chatIntent(Class<?> enteredClass) {
+        Intent i = new Intent(ApplicationProvider.getApplicationContext(), enteredClass);
+        i.putExtra("username", USERNAME);
+        i.putExtra("id", ID);
+        i.putExtra("isAdmin", true);
+        i.putExtra("roomId", 1);
         return i;
     }
 
@@ -289,7 +293,7 @@ public class RudraSystemTest {
     }
 
     @Test
-    public void testCardSearchVisibility() throws InterruptedException {
+    public void testCardSearchCandleStickVisibility() throws InterruptedException {
         try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(CardSearchActivity.class))) {
 
             onView(withId(R.id.card_search_field)).perform(typeText("Raichu"), closeSoftKeyboard());
@@ -328,6 +332,39 @@ public class RudraSystemTest {
             onView(withId(R.id.Search_camera_btn)).perform(click());
         }
     }
+
+    @Test
+    public void testLiveChatUIExists() {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(LiveChatMenuActivity.class))) {
+            onView(allOf(withId(R.id.room_list_container), isDisplayed())).check(matches(isDisplayed()));
+        }
+    }
+
+
+    @Test
+    public void testLiveChatNav() {
+        try (ActivityScenario<CardBinderActivity> scenario = ActivityScenario.launch(sessionIntent(LiveChatMenuActivity.class))) {
+            onView(withId(R.id.chat_menu_back_btn)).perform(click());
+        }
+    }
+
+    @Test
+    public void testLiveChatMessage() {
+        try (ActivityScenario<LiveChatActivity> scenario = ActivityScenario.launch(chatIntent(LiveChatActivity.class))) {
+
+            onView(withId(R.id.chat_message_input)).perform(typeText("Hello"), closeSoftKeyboard());
+
+            onView(withId(R.id.chat_message_input)).check(matches(withText("Hello")));
+        }
+    }
+
+
+
+
+
+
+
+
 
 
 
